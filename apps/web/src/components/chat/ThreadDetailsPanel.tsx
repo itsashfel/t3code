@@ -202,12 +202,11 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
         };
         return (
           <>
-            <div className="group/details-items">
+            <div className="group/details-items pb-2">
               {show.environment || show.openIn || show.scripts ? (
                 <ThreadDetailsSection
                   headingId="thread-details-workspace-heading"
                   title={gt("Workspace")}
-                  separated={false}
                   showHeading={false}
                 >
                   <div className="flex flex-col">
@@ -261,7 +260,6 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
                   headingId="thread-details-version-control-heading"
                   title={gt("Version Control")}
                   showHeading={false}
-                  separated={density === "full"}
                 >
                   <div className="flex flex-col">
                     {show.branch ? (
@@ -334,7 +332,7 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
               ) : null}
 
               {/* Shown only when no section above has content, so an emptied card can be refilled. */}
-              <div className="p-2 group-has-[>section>:last-child:not(:empty)]/details-items:hidden">
+              <div className="p-2 group-has-[>section>:last-child>:not(:empty)]/details-items:hidden">
                 <ThreadDetailsControl
                   size="xs"
                   variant="ghost"

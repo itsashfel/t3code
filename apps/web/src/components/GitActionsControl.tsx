@@ -1715,17 +1715,6 @@ function CheckoutGitActionsControl({
               <span className="shrink-0">
                 <T>Changes</T>
               </span>
-              {changesBaseLabel ? (
-                <SharedTooltipTrigger
-                  render={
-                    <span className="pointer-events-auto min-w-0 truncate font-normal text-muted-foreground" />
-                  }
-                  label={changesBaseLabel}
-                  className="max-w-96 break-words"
-                >
-                  {changesBaseLabel}
-                </SharedTooltipTrigger>
-              ) : null}
               <span className="ml-auto flex shrink-0 items-baseline gap-2 ps-2 font-mono tabular-nums">
                 <span
                   className={
@@ -1748,13 +1737,23 @@ function CheckoutGitActionsControl({
               </span>
             </span>
           </TooltipTrigger>
-          {changesBreakdown && (changesTotals.insertions > 0 || changesTotals.deletions > 0) ? (
+          {changesBaseLabel ? (
             // Base UI fixes the popup width on open; remeasure when the breakdown changes.
-            <TooltipPopup key={JSON.stringify(changesBreakdown)} side="bottom">
-              <ChangeBreakdownGrid
-                breakdown={changesBreakdown}
-                total={{ additions: changesTotals.insertions, deletions: changesTotals.deletions }}
-              />
+            <TooltipPopup
+              key={JSON.stringify(changesBreakdown)}
+              side="bottom"
+              className="max-w-96 break-words"
+            >
+              <p className="text-muted-foreground">{changesBaseLabel}</p>
+              {changesBreakdown && (changesTotals.insertions > 0 || changesTotals.deletions > 0) ? (
+                <ChangeBreakdownGrid
+                  breakdown={changesBreakdown}
+                  total={{
+                    additions: changesTotals.insertions,
+                    deletions: changesTotals.deletions,
+                  }}
+                />
+              ) : null}
             </TooltipPopup>
           ) : null}
         </Tooltip>

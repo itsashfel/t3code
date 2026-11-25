@@ -10,7 +10,6 @@ import {
 import {
   type ComposerContextReference,
   collectInlineContextIds,
-  stripInlineContextReferences,
 } from "~/lib/composerContextReferences";
 import {
   type ComposerFileAttachment,
@@ -148,12 +147,9 @@ export function useComposerAttachmentIntake(input: {
     // large image is being compressed, and the attachments and errors belong
     // to the thread the paste happened in.
     const threadId = activeThreadId;
+    // Images in a typed prompt show only as thumbnails, never as inline name chips.
     const imageAttachmentsGetChips =
-      !options?.skipImageInlineChip &&
-      (options?.selection !== undefined ||
-        pendingUserInputs.length > 0 ||
-        projectSelectionRequired ||
-        stripInlineContextReferences(promptRef.current).trim().length > 0);
+      !options?.skipImageInlineChip && (pendingUserInputs.length > 0 || projectSelectionRequired);
 
     // Validation happens synchronously so concurrent pastes see each other:
     // accepted files reserve their attachment slots (as preparing images)

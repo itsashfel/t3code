@@ -22,7 +22,7 @@ import {
   useRemoteOpenState,
 } from "../../remoteOpen";
 import { useEnvironment } from "../../state/environments";
-import { ChevronDownIcon, SquareArrowOutUpRightIcon } from "lucide-react";
+import { AppWindowIcon, ChevronDownIcon, SquareArrowOutUpRightIcon } from "lucide-react";
 
 import { Group, GroupSeparator } from "../ui/group";
 import {
@@ -279,16 +279,14 @@ export const OpenInPicker = memo(function OpenInPicker({
         });
       }}
     >
-      {primaryOption?.Icon ? (
+      {isPanel ? (
+        // The panel keeps one icon family; editor brand icons stay in the menu and header.
+        <AppWindowIcon aria-hidden="true" className={THREAD_DETAILS_PANEL_ICON_CLASS} />
+      ) : primaryOption?.Icon ? (
         <primaryOption.Icon
           aria-hidden="true"
-          className={cn(
-            isPanel ? THREAD_DETAILS_PANEL_ICON_CLASS : "size-3.5",
-            getOpenInIconClass(primaryOption.kind),
-          )}
+          className={cn("size-3.5", getOpenInIconClass(primaryOption.kind))}
         />
-      ) : isPanel ? (
-        <SquareArrowOutUpRightIcon aria-hidden="true" className={THREAD_DETAILS_PANEL_ICON_CLASS} />
       ) : null}
       <span
         className={cn(

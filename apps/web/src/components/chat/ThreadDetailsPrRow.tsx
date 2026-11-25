@@ -79,7 +79,6 @@ import {
   THREAD_DETAILS_PANEL_ICON_CLASS,
   THREAD_DETAILS_PANEL_LABEL_CLASS,
   THREAD_DETAILS_PANEL_SPLIT_GROUP_CLASS,
-  THREAD_DETAILS_PANEL_SPLIT_SEPARATOR_CLASS,
 } from "./threadDetailsPanelStyles";
 
 // A null checks response is settled; polling cannot find checks.
@@ -464,42 +463,38 @@ export function ThreadDetailsPrRow({
 
   const watching =
     onStopWatching !== undefined && (detail?.state ?? pr?.state ?? "open") === "open";
-  const watchControl = (part: "secondary" | "icon") =>
-    watching ? (
-      <SharedTooltipTrigger
-        render={
-          <ThreadDetailsControl
-            type="button"
-            variant="ghost"
-            size="sm"
-            part={part}
-            className="group/watch"
-            aria-label={gt("Stop watching #{number}", { number })}
-            onClick={onStopWatching}
-          />
-        }
-        label={
-          <>
-            <T>
-              Watching: the agent wakes when checks finish, someone comments, or the branch
-              conflicts. Click to stop.
-            </T>
-          </>
-        }
-      >
-        <EyeIcon
-          aria-hidden
-          className={cn(part === "icon" ? "size-3.5" : "size-4", "group-hover/watch:hidden")}
+  const watchControl = watching ? (
+    <SharedTooltipTrigger
+      render={
+        <ThreadDetailsControl
+          type="button"
+          variant="ghost"
+          size="sm"
+          part="icon"
+          className="group/watch"
+          aria-label={gt("Stop watching #{number}", { number })}
+          onClick={onStopWatching}
         />
-        <EyeOffIcon
-          aria-hidden
-          className={cn(part === "icon" ? "size-3.5" : "size-4", "hidden group-hover/watch:block")}
-        />
-      </SharedTooltipTrigger>
-    ) : null;
+      }
+      label={
+        <T>
+          Watching: the agent wakes when checks finish, someone comments, or the branch conflicts.
+          Click to stop.
+        </T>
+      }
+    >
+      <EyeIcon aria-hidden className="size-3.5 group-hover/watch:hidden" />
+      <EyeOffIcon aria-hidden className="hidden size-3.5 group-hover/watch:block" />
+    </SharedTooltipTrigger>
+  ) : null;
 
-  // The title row wraps to two lines; a conventional-commit prefix eats most of one line.
-  const openRow = (text: string, part: "row" | "primary", wrap = false) => (
+  const numberTag = title ? (
+    <span aria-hidden className="shrink-0 text-xs tabular-nums text-muted-foreground">
+      #{number}
+    </span>
+  ) : null;
+
+  const openRow = (part: "row" | "primary", showNumber: boolean) => (
     <Tooltip>
       <TooltipTrigger
         render={
@@ -507,7 +502,7 @@ export function ThreadDetailsPrRow({
             type="button"
             variant="ghost"
             size="sm"
-            part={wrap ? "title" : part}
+            part={part}
             aria-label={openAriaLabel}
             onClick={onOpen}
             onAuxClick={onOpen}
@@ -515,33 +510,29 @@ export function ThreadDetailsPrRow({
         }
       >
         {icon}
-        <span
-          className={cn(
-            "min-w-0 flex-1 text-left",
-            wrap
-              ? "line-clamp-2 whitespace-normal leading-4.5"
-              : cn("truncate", THREAD_DETAILS_PANEL_LABEL_CLASS),
-          )}
-        >
-          {text}
+        <span className={cn("min-w-0 flex-1 truncate text-left", THREAD_DETAILS_PANEL_LABEL_CLASS)}>
+          {title || label}
         </span>
+        {showNumber && numberTag}
       </TooltipTrigger>
       {rowTooltip}
     </Tooltip>
   );
 
-  const showChecks = detail !== null && checksRollup !== null && !conflicting && !detail.isDraft;
+  const showChecks =
+    detail !== null &&
+    detail.state === "open" &&
+    checksRollup !== null &&
+    !conflicting &&
+    !detail.isDraft;
 
   return (
     <>
-      {detail !== null && (showChecks || trailingAction !== null || watching) ? (
-        <div className="pb-1.5">
-          {openRow(detail.title, "row", true)}
-          <div className="flex h-5 min-w-0 items-center gap-0.5 ps-9 pe-2.5 text-xs text-muted-foreground">
-            <span aria-hidden className="me-1 shrink-0 tabular-nums">
-              #{number}
-            </span>
-            {showChecks && checksRollup !== null ? (
+      {(detail !== null && (showChecks || trailingAction !== null)) || watching ? (
+        <div className={THREAD_DETAILS_PANEL_SPLIT_GROUP_CLASS}>
+          {openRow("primary", false)}
+          <div className="flex shrink-0 items-center gap-0.5 pe-1.5 text-xs text-muted-foreground">
+            {detail !== null && showChecks && checksRollup !== null ? (
               <PullRequestChecksPopover
                 checksState={checksRollup}
                 checks={detail.checks}
@@ -549,8 +540,7 @@ export function ThreadDetailsPrRow({
                 render={<ThreadDetailsControl part="meta" className="min-w-0 shrink" />}
               />
             ) : null}
-            {watchControl("icon")}
-            <span className="flex-1" />
+            {watchControl}
             {trailingAction ? (
               <SharedTooltipTrigger
                 render={
@@ -569,17 +559,13 @@ export function ThreadDetailsPrRow({
                 {trailingAction.pending ? trailingAction.pendingLabel : trailingAction.label}
                 {trailingAction.suffix}
               </SharedTooltipTrigger>
-            ) : null}
+            ) : (
+              <span className="ps-1">{numberTag}</span>
+            )}
           </div>
         </div>
-      ) : watching ? (
-        <div className={THREAD_DETAILS_PANEL_SPLIT_GROUP_CLASS}>
-          {openRow(label, "primary")}
-          <span aria-hidden="true" className={THREAD_DETAILS_PANEL_SPLIT_SEPARATOR_CLASS} />
-          {watchControl("secondary")}
-        </div>
       ) : (
-        openRow(label, "row")
+        openRow("row", true)
       )}
       {rowAction === "merge" ? (
         <AlertDialog open={confirmingMerge} onOpenChange={(open) => setConfirmingMerge(open)}>
