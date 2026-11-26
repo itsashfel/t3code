@@ -84,6 +84,15 @@ fragment LinearIssue on Issue {
       ...LinearLabel
     }
   }
+  priority
+  parent {
+    identifier
+    title
+    url
+    state {
+      ...LinearWorkflowState
+    }
+  }
 }
 
 fragment LinearPageInfo on PageInfo {

@@ -37,8 +37,10 @@ import { msg, T, useGT, useMessages, Var } from "gt-react";
 import { Fragment, useEffect, useEffectEvent, useState, type ReactNode } from "react";
 
 import { RefreshIcon } from "~/components/ui/refresh-icon";
+import { ListLayoutToggle } from "~/components/pullRequest/PullRequestListFilters";
 import { IssueDetailPanel } from "~/components/issue/IssueDetailPanel";
-import { IssueRow, type IssueRowTarget } from "~/components/issue/IssueRow";
+import { type IssueRowTarget } from "~/components/issue/IssueRow";
+import { IssueListTree, issueRowSelectionKey } from "~/components/issue/IssueListTree";
 import {
   issueListPreferences,
   writeIssueListPreferences,
@@ -341,6 +343,7 @@ export function IssuesPage() {
       ...(merged.label?.length ? { label: merged.label } : {}),
       ...(merged.assignee ? { assignee: merged.assignee } : {}),
       ...(merged.order ? { order: merged.order } : {}),
+      ...(merged.layout ? { layout: merged.layout } : {}),
       ...(merged.selectedEnvironmentId
         ? { selectedEnvironmentId: merged.selectedEnvironmentId }
         : {}),
@@ -504,7 +507,22 @@ export function IssuesPage() {
 
   // Every writable scope the workspace has, for the composer.
 
-  const showTracker = groups.length > 1;
+  const selectedIssueKey =
+    renderedSurface?.kind === "issue"
+      ? issueRowSelectionKey({
+          environmentId: renderedSurface.environmentId,
+          projectId: renderedSurface.projectId as ProjectId,
+          host: renderedSurface.host ?? "",
+          scope: renderedSurface.scope,
+          key: renderedSurface.key,
+        })
+      : null;
+  // Rows from one server need no server name, however many servers are connected.
+  const listedEnvironments = new Set(
+    groups.flatMap((group) => group.rows.map((row) => row.environmentId)),
+  );
+  const environmentLabelOf = (row: { readonly environmentId: EnvironmentId }) =>
+    listedEnvironments.size > 1 ? environmentLabels.get(row.environmentId) : undefined;
   const noneAnswered = list.answers.length === 0;
 
   const listBody: ReactNode = !issuesSupported ? (
@@ -551,9 +569,10 @@ export function IssuesPage() {
       </EmptyHeader>
     </Empty>
   ) : (
-    <div className="flex flex-col gap-6">
+    // Rows carry their own inset, so the list widens by it to line row text up with the toolbar.
+    <div className="-mx-3 flex flex-col gap-8">
       {list.error ? (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-warning/30 bg-warning-surface px-3 py-2 text-xs">
+        <div className="mx-3 flex items-center justify-between gap-3 rounded-lg border border-warning/30 bg-warning-surface px-3 py-2 text-xs">
           <span>
             <T>
               <Var>{list.error}</Var> Showing the issues that loaded.
@@ -566,12 +585,17 @@ export function IssuesPage() {
       ) : null}
       {groups.map((group) => {
         const presentation = issueTrackerPresentation(group.tracker.tracker);
-        const showScope = new Set(group.rows.map((row) => row.scope.toLowerCase())).size > 1;
+        // A key is only unique within its scope, so a tracker read for several projects names it.
+        const showScope =
+          group.tracker.projectCount > 1 ||
+          new Set(group.rows.map((row) => row.scope.toLowerCase())).size > 1;
         return (
-          <section key={issueTrackerKey(group.tracker)} className="flex flex-col gap-1">
-            <h2 className="flex items-center gap-1.5 px-3 text-xs font-medium text-muted-foreground">
-              <presentation.Icon aria-hidden className="size-3.5" />
-              {presentation.providerName}
+          <section key={issueTrackerKey(group.tracker)} className="flex flex-col gap-2">
+            <h2 className="flex items-center gap-1.5 px-3 text-xs text-muted-foreground">
+              <presentation.Icon aria-hidden className="size-3.5 text-foreground/90" />
+              <span className="text-sm font-semibold text-foreground/90">
+                {presentation.providerName}
+              </span>
               {presentation.providerName.toLowerCase() !== group.tracker.host ? (
                 <span className="font-normal">· {group.tracker.host}</span>
               ) : null}
@@ -606,30 +630,14 @@ export function IssuesPage() {
                 )}
               </p>
             ) : null}
-            {group.rows.map((row) => {
-              const key = issueEntryKey(row);
-              const selected =
-                renderedSurface?.kind === "issue" &&
-                renderedSurface.environmentId === row.environmentId &&
-                issueEntryKey({
-                  ...renderedSurface,
-                  host: renderedSurface.host ?? "",
-                  projectId: renderedSurface.projectId as ProjectId,
-                }) === key;
-              return (
-                <IssueRow
-                  key={`${row.environmentId}:${key}`}
-                  entry={row}
-                  selected={selected}
-                  showScope={showScope}
-                  showTracker={showTracker}
-                  {...(capableEnvironments.length > 1 && environmentLabels.has(row.environmentId)
-                    ? { environmentLabel: environmentLabels.get(row.environmentId) }
-                    : {})}
-                  onSelect={selectEntry}
-                />
-              );
-            })}
+            <IssueListTree
+              rows={group.rows}
+              grouped={search.layout !== "flat"}
+              selectedKey={selectedIssueKey}
+              showScope={showScope}
+              environmentLabelOf={environmentLabelOf}
+              onSelect={selectEntry}
+            />
             {group.more.map((environmentId) => {
               const moreFailure = held.get(environmentId)?.moreFailure ?? null;
               return (
@@ -728,6 +736,11 @@ export function IssuesPage() {
                   onChange={(order) =>
                     updateSearch({ order: order === "created" ? "created" : undefined })
                   }
+                />
+                <ListLayoutToggle
+                  grouped={search.layout !== "flat"}
+                  groupedLabel={gt("Group by status")}
+                  onChange={(grouped) => updateSearch({ layout: grouped ? undefined : "flat" })}
                 />
                 <IssueFiltersMenu
                   state={search.status}

@@ -14,6 +14,7 @@ import {
   type IssueLinkedPullRequest,
   type IssueReaction,
   type IssueReactionContent,
+  type IssuePriority,
   type IssueState,
   type IssueTemplate,
   type IssueViewerPermissions,
@@ -126,10 +127,29 @@ function parseIdentifier(key: string): string | null {
   return /^[A-Za-z][A-Za-z0-9]*-[1-9]\d*$/.test(key.trim()) ? key.trim().toUpperCase() : null;
 }
 
+/** Active work first, then planned, then shelved and finished: how Linear orders its own boards. */
+const STATE_TYPE_RANK: Readonly<Record<string, number>> = {
+  started: 0,
+  unstarted: 1,
+  backlog: 2,
+  triage: 3,
+  completed: 4,
+  canceled: 5,
+};
+
 function toState(state: LinearApi.LinearWorkflowState): IssueState {
+  // Rank by type, then by the team's own position within it.
+  const order = (STATE_TYPE_RANK[state.type] ?? 6) * 100_000 + state.position;
   return CLOSED_STATE_TYPES.includes(state.type)
-    ? { category: "closed", name: state.name, closeReason: state.type }
-    : { category: "open", name: state.name };
+    ? { category: "closed", name: state.name, closeReason: state.type, order }
+    : { category: "open", name: state.name, order };
+}
+
+/** Linear's 0 means no priority; 1 (urgent) to 4 (low) match the common scale. */
+function toPriority(priority: number): IssuePriority | undefined {
+  return priority === 1 || priority === 2 || priority === 3 || priority === 4
+    ? priority
+    : undefined;
 }
 
 /**
@@ -164,6 +184,7 @@ function userName(user: LinearApi.LinearUser): string {
 
 /** Linear's connections report no totals, so a listing shows no comment count. */
 function toSummary(issue: LinearApi.LinearIssue, commentCount = 0): TrackerIssueSummary {
+  const priority = toPriority(issue.priority);
   return {
     key: issue.identifier,
     displayKey: issue.identifier,
@@ -177,6 +198,18 @@ function toSummary(issue: LinearApi.LinearIssue, commentCount = 0): TrackerIssue
     assignees: issue.assignee === null ? [] : [toActor(issue.assignee)],
     labels: issue.labels.nodes.map((label) => ({ name: label.name, color: label.color })),
     commentCount,
+    ...(priority === undefined ? {} : { priority }),
+    ...(issue.parent == null
+      ? {}
+      : {
+          parent: {
+            key: issue.parent.identifier,
+            displayKey: issue.parent.identifier,
+            title: issue.parent.title,
+            url: issue.parent.url,
+            state: toState(issue.parent.state),
+          },
+        }),
   };
 }
 

@@ -60,8 +60,24 @@ export const IssueState = Schema.Struct({
   name: TrimmedNonEmptyString,
   /** How a closed state ended, where the tracker says: `completed`, or its word for not done. */
   closeReason: Schema.optional(TrimmedNonEmptyString),
+  /** Where the state falls in the tracker's workflow, lowest first, so lists can group in order. */
+  order: Schema.optional(Schema.Number),
 });
 export type IssueState = typeof IssueState.Type;
+
+/** A tracker's priority on the common 1 (urgent) to 4 (low) scale; absent means none set. */
+export const IssuePriority = Schema.Literals([1, 2, 3, 4]);
+export type IssuePriority = typeof IssuePriority.Type;
+
+/** The issue a sub-issue belongs to, enough to show it as the sub-issue's context. */
+export const IssueParent = Schema.Struct({
+  key: TrimmedNonEmptyString,
+  displayKey: TrimmedNonEmptyString,
+  title: TrimmedNonEmptyString,
+  url: TrimmedNonEmptyString,
+  state: IssueState,
+});
+export type IssueParent = typeof IssueParent.Type;
 
 /** What a listing asks for: either category, or both. */
 export const IssueListState = Schema.Literals(["all", "open", "closed"]);
@@ -121,6 +137,9 @@ export const IssueSummary = Schema.Struct({
   assignees: Schema.Array(IssueActor),
   labels: Schema.Array(IssueLabel),
   commentCount: NonNegativeInt,
+  priority: Schema.optional(IssuePriority),
+  /** Set on a sub-issue, where the tracker has them. */
+  parent: Schema.optional(IssueParent),
 });
 export type IssueSummary = typeof IssueSummary.Type;
 

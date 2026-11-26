@@ -16,6 +16,10 @@ import {
 } from "./pullRequestPresentation";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 
+/** A stacked row's own box; the intrinsic size matches three lines so skipped rows keep their height. */
+export const STACKED_ROW_CLASS =
+  "flex items-center rounded-lg [content-visibility:auto] [contain-intrinsic-block-size:80px]";
+
 export const PULL_REQUEST_ROW_CLASS =
   "group/pr-row flex w-full items-center gap-2 rounded-md py-1 pr-1 text-left";
 
@@ -28,6 +32,7 @@ export function PullRequestRowGlyph({
   baseBranch,
   below,
   className,
+  glyphClassName,
 }: {
   state: PullRequestState;
   isDraft: boolean;
@@ -35,11 +40,16 @@ export function PullRequestRowGlyph({
   baseBranch?: string | undefined;
   below?: ReactNode;
   className?: string;
+  glyphClassName?: string;
 }) {
   return (
     <span className={cn("flex w-4 shrink-0 flex-col items-center gap-0.5", className)}>
       <span className="relative inline-flex">
-        <PullRequestStateGlyph state={state} isDraft={isDraft} />
+        <PullRequestStateGlyph
+          state={state}
+          isDraft={isDraft}
+          {...(glyphClassName === undefined ? {} : { className: glyphClassName })}
+        />
         {/* Offset the wrapper to keep the badge-sized tooltip trigger anchored. */}
         <span className="absolute -right-1 -bottom-1 inline-flex">
           <PullRequestConflictGlyph
@@ -99,6 +109,65 @@ export function PullRequestRowLines({
         ) : null}
       </span>
     </span>
+  );
+}
+
+/**
+ * The list pages' row, shaped like a thread in the sidebar: where it lives on top, the title in
+ * the middle, who and what underneath. `dimmed` is a parent shown only to hold its children.
+ */
+export function StackedRowLines({
+  glyph,
+  heading,
+  title,
+  meta,
+  trailing,
+  updatedAt,
+  dimmed = false,
+}: {
+  glyph: ReactNode;
+  heading: ReactNode;
+  title: ReactNode;
+  meta?: ReactNode;
+  trailing?: ReactNode;
+  updatedAt?: string | null | undefined;
+  dimmed?: boolean;
+}) {
+  return (
+    <span className="flex min-w-0 flex-1 flex-col gap-1">
+      <span className="flex h-4 min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+        {glyph}
+        <span className="flex min-w-0 items-center gap-1 truncate">{heading}</span>
+        {updatedAt ? (
+          <span className="ml-auto shrink-0 whitespace-nowrap pl-2 tabular-nums">
+            <RelativeTime timestamp={updatedAt} />
+          </span>
+        ) : null}
+      </span>
+      <span
+        className={cn(
+          "min-w-0 truncate text-sm leading-5",
+          dimmed ? "text-muted-foreground" : "font-medium text-foreground",
+        )}
+      >
+        {title}
+      </span>
+      {meta || trailing ? (
+        <span className="flex h-4 min-w-0 items-center gap-1.5 overflow-hidden text-xs text-muted-foreground">
+          {meta}
+          {trailing ? (
+            <span className="ml-auto flex shrink-0 items-center gap-2 pl-2">{trailing}</span>
+          ) : null}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+/** Children of a row sit under it on a guide that starts below the parent's glyph. */
+export function StackedRowChildren({ children }: { children: ReactNode }) {
+  return (
+    <div className="ml-4.75 flex flex-col gap-1 border-l border-border/70 pl-1">{children}</div>
   );
 }
 

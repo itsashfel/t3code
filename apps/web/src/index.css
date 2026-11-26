@@ -1894,8 +1894,13 @@ body {
 }
 
 :where(:not(iframe))::-webkit-scrollbar-thumb {
-  background: var(--app-scrollbar-thumb);
+  background: transparent;
   border-radius: 3px;
+}
+
+/* The thumb shows only while its element scrolls (scrollActivity.ts) or under the pointer, to drag. */
+:where([data-scrolling]:not(iframe))::-webkit-scrollbar-thumb {
+  background: var(--app-scrollbar-thumb);
 }
 
 :where(:not(iframe))::-webkit-scrollbar-thumb:hover {
@@ -2249,6 +2254,10 @@ body {
   background: var(--muted);
   padding: 0.8rem 0.9rem;
   scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.chat-markdown pre[data-scrolling] {
   scrollbar-color: color-mix(in srgb, var(--contrast-border) 78%, transparent) transparent;
 }
 
@@ -2262,7 +2271,7 @@ body {
   height: var(--app-scrollbar-width);
 }
 
-.chat-markdown pre::-webkit-scrollbar-thumb {
+.chat-markdown pre[data-scrolling]::-webkit-scrollbar-thumb {
   border-radius: 999px;
   background: color-mix(in srgb, var(--contrast-border) 78%, transparent);
 }
@@ -2393,11 +2402,9 @@ body {
   max-width: none;
 }
 
-/* Keep overflow discoverable when the edge fade falls between columns. */
 .chat-markdown
   .chat-markdown-table-container
   [data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] {
-  opacity: 1;
   --app-scrollbar-thumb: color-mix(in srgb, var(--muted-foreground) 60%, transparent);
   --app-scrollbar-thumb-hover: color-mix(in srgb, var(--muted-foreground) 80%, transparent);
 }

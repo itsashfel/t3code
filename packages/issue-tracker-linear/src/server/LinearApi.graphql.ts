@@ -131,6 +131,19 @@ export const LinearIssueLabelsIssueLabelConnection = Schema.Struct({
 })
 export interface LinearIssueLabelsIssueLabelConnection extends Schema.Struct.Type<typeof LinearIssueLabelsIssueLabelConnection.fields> {}
 
+/** An issue is the core work item in Linear. Issues belong to a team, have a workflow status, can be assigned to users, carry a priority level, and can be organized into projects and cycles. Issues support sub-issues (parent-child hierarchy up to 10 levels deep), labels, due dates, estimates, and SLA tracking. They can also be linked to other issues via relations, attached to releases, and tracked through their full history of changes. */
+export const ParentIssue = Schema.Struct({
+  /** Issue's human readable identifier (e.g. ENG-123). */
+  identifier: Schema.String,
+  /** The issue's title. This is the primary human-readable summary of the work item. */
+  title: Schema.String,
+  /** Issue URL. */
+  url: Schema.String,
+  /** The workflow state (issue status) that the issue is currently in. Workflow states represent the issue's progress through the team's workflow, such as Triage, Todo, In Progress, Done, or Canceled. */
+  state: LinearWorkflowState
+})
+export interface ParentIssue extends Schema.Struct.Type<typeof ParentIssue.fields> {}
+
 /**
  * `fragment LinearIssue on Issue`
  *
@@ -169,7 +182,11 @@ export const LinearIssue = Schema.Struct({
   /** The user to whom the issue is assigned. Null if the issue is unassigned. */
   assignee: Schema.NullOr(LinearUser),
   /** Labels associated with this issue. */
-  labels: LinearIssueLabelsIssueLabelConnection
+  labels: LinearIssueLabelsIssueLabelConnection,
+  /** The priority of the issue. 0 = No priority, 1 = Urgent, 2 = High, 3 = Medium, 4 = Low. */
+  priority: Shared.Float,
+  /** The parent of the issue. */
+  parent: Schema.NullOr(ParentIssue)
 })
 export interface LinearIssue extends Schema.Struct.Type<typeof LinearIssue.fields> {}
 
@@ -251,7 +268,7 @@ export const T3Issues = GraphQL.query("T3Issues", {
       { name: "issues", body: ["(first:$", "first", " after:$", "after", " filter:$", "filter", " orderBy:$", "orderBy", "){nodes{...LinearIssue}pageInfo{...LinearPageInfo}}"] }
     ],
     fragments: [
-      { name: "LinearIssue", body: ["on Issue{id identifier number title url createdAt updatedAt completedAt canceledAt state{...LinearWorkflowState}team{key}creator{...LinearUser}botActor{...LinearBot}assignee{...LinearUser}labels{nodes{...LinearLabel}}}"] },
+      { name: "LinearIssue", body: ["on Issue{id identifier number title url createdAt updatedAt completedAt canceledAt state{...LinearWorkflowState}team{key}creator{...LinearUser}botActor{...LinearBot}assignee{...LinearUser}labels{nodes{...LinearLabel}}priority parent{identifier title url state{...LinearWorkflowState}}}"] },
       { name: "LinearPageInfo", body: ["on PageInfo{hasNextPage endCursor}"] },
       { name: "LinearWorkflowState", body: ["on WorkflowState{id name type position}"] },
       { name: "LinearUser", body: ["on User{id name displayName email avatarUrl}"] },
@@ -382,6 +399,10 @@ export const T3IssueIssueIssue = Schema.Struct({
   assignee: Schema.NullOr(LinearUser),
   /** Labels associated with this issue. */
   labels: LinearIssueLabelsIssueLabelConnection,
+  /** The priority of the issue. 0 = No priority, 1 = Urgent, 2 = High, 3 = Medium, 4 = Low. */
+  priority: Shared.Float,
+  /** The parent of the issue. */
+  parent: Schema.NullOr(ParentIssue),
   /** The issue's description in markdown format. */
   description: Schema.NullOr(Schema.String),
   /** Comments associated with the issue, including inline comments on the issue's description. */
@@ -406,7 +427,7 @@ export const T3Issue = GraphQL.query("T3Issue", {
       { name: "issue", body: ["(id:$", "id", "){...LinearIssue description team{states(first:100){nodes{...LinearWorkflowState}}}comments(first:$", "comments", " orderBy:createdAt){nodes{...LinearComment}pageInfo{...LinearPageInfo}}reactions{...LinearReaction}attachments(first:50){nodes{url title sourceType metadata}}history(first:100 orderBy:createdAt){nodes{id createdAt actor{...LinearUser}botActor{...LinearBot}fromState{...LinearWorkflowState}toState{...LinearWorkflowState}fromAssignee{...LinearUser}toAssignee{...LinearUser}addedLabels{...LinearLabel}removedLabels{...LinearLabel}fromTitle toTitle}}}"] }
     ],
     fragments: [
-      { name: "LinearIssue", body: ["on Issue{id identifier number title url createdAt updatedAt completedAt canceledAt state{...LinearWorkflowState}team{key}creator{...LinearUser}botActor{...LinearBot}assignee{...LinearUser}labels{nodes{...LinearLabel}}}"] },
+      { name: "LinearIssue", body: ["on Issue{id identifier number title url createdAt updatedAt completedAt canceledAt state{...LinearWorkflowState}team{key}creator{...LinearUser}botActor{...LinearBot}assignee{...LinearUser}labels{nodes{...LinearLabel}}priority parent{identifier title url state{...LinearWorkflowState}}}"] },
       { name: "LinearWorkflowState", body: ["on WorkflowState{id name type position}"] },
       { name: "LinearComment", body: ["on Comment{id body createdAt url user{...LinearUser}botActor{...LinearBot}reactions{...LinearReaction}}"] },
       { name: "LinearPageInfo", body: ["on PageInfo{hasNextPage endCursor}"] },

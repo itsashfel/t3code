@@ -199,9 +199,14 @@ export function JumpHintBadge(props: { label: string }) {
 export const JUMP_HINT_SLOT_CLASS_NAME =
   "[&>:not([data-jump-hint])]:invisible [&>:not([data-jump-hint])]:absolute";
 
-function WorkingDuration(props: { environmentId: EnvironmentId; startedAt: string | null }) {
+function WorkingDuration(props: {
+  environmentId: EnvironmentId;
+  startedAt: string | null;
+  /** Shown before the run has a start time, such as while it compacts ahead of its turn. */
+  fallback: string;
+}) {
   const startedMs = props.startedAt !== null ? Date.parse(props.startedAt) : Number.NaN;
-  if (Number.isNaN(startedMs)) return null;
+  if (Number.isNaN(startedMs)) return props.fallback;
   return <WorkingDurationLabel environmentId={props.environmentId} startedMs={startedMs} />;
 }
 
@@ -1070,9 +1075,6 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
           : shouldRecede
             ? "text-sidebar-muted-foreground/75 hover:bg-sidebar-row-hover hover:text-sidebar-foreground"
             : "bg-transparent text-sidebar-foreground hover:bg-sidebar-row-hover",
-    shouldRecede &&
-      (status === "preparing" || status === "working") &&
-      "opacity-70 transition-opacity hover:opacity-100 focus-within:opacity-100 motion-reduce:transition-none",
     isFileDragOver && "ring-1 ring-inset ring-primary/70",
     isFileDragOver && !props.isActive && !isSelected && "bg-sidebar-row-hover",
     props.sortable?.isDragging &&
@@ -1135,11 +1137,9 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
           : variant !== "slim"
             ? cn(
                 "truncate",
-                shouldRecede
-                  ? "text-foreground/85 group-hover/sidebar-row:text-foreground group-focus-visible/sidebar-row:text-foreground"
-                  : status === "failed" && !isUnread && !isWoke
-                    ? "text-foreground/95"
-                    : "text-foreground",
+                !shouldRecede && status === "failed" && !isUnread && !isWoke
+                  ? "text-foreground/95"
+                  : "text-foreground",
               )
             : cn(
                 "truncate group-focus-within/sidebar-row:text-foreground group-hover/sidebar-row:text-foreground",
@@ -1687,6 +1687,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                             <WorkingDuration
                               environmentId={thread.environmentId}
                               startedAt={resolveWorkingStartedAt(thread)}
+                              fallback={topStatus.label}
                             />
                           </span>
                         ) : status === "waiting" ? (
@@ -1694,6 +1695,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                             <WorkingDuration
                               environmentId={thread.environmentId}
                               startedAt={thread.latestRun?.completedAt ?? null}
+                              fallback={topStatus.label}
                             />
                           </span>
                         ) : (

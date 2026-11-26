@@ -14,58 +14,50 @@ import { memo, type RefCallback } from "react";
 import { cn } from "~/lib/utils";
 import { getSourceControlPresentationForKind } from "~/sourceControlPresentation";
 
+import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 import { PullRequestChecksPopover } from "./PullRequestChecksPopover";
 import { pullRequestPanelReference } from "./usePullRequestDetail";
 import type { EnvironmentPullRequestEntry } from "./pullRequestList.logic";
 import { openOnHostLabel, showPullRequestLinkContextMenu } from "./pullRequestLinkContextMenu";
 import {
-  PULL_REQUEST_ROW_CLASS,
-  PULL_REQUEST_ROW_NUMBER_CLASS,
   PullRequestRowAuthor,
   PullRequestRowGlyph,
-  PullRequestRowLines,
+  STACKED_ROW_CLASS,
+  StackedRowLines,
 } from "./PullRequestListRow";
 import { PullRequestPrivateMark } from "./PullRequestDetailLayout";
 import { PullRequestLabelChip, PullRequestReviewDecisionGlyph } from "./pullRequestPresentation";
-import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 
-const LABEL_SLOTS = [
-  { overflow: "@xl/pr-row-meta:hidden" },
-  { overflow: "@3xl/pr-row-meta:hidden" },
-  { overflow: "" },
-] as const;
-
+/** Each wider row shows one more chip; the count of the rest sits after the last chip shown. */
 function PullRequestRowLabels({ labels }: { labels: EnvironmentPullRequestEntry["labels"] }) {
-  if (labels.length === 0) return null;
+  const [first, second, third] = labels;
+  if (!first) return null;
+  const overflow = (shown: number) => labels.length - shown;
   return (
     <span className="flex min-w-0 items-center gap-1">
-      {LABEL_SLOTS.map((slot, index) => {
-        const label = labels[index];
-        if (!label) return null;
-        const remaining = labels.length - index - 1;
-        return (
-          <PullRequestLabelChip
-            key={label.name}
-            label={label}
-            className={
-              index === 0
-                ? ""
-                : index === 1
-                  ? "hidden @xl/pr-row-meta:inline-flex"
-                  : "hidden @3xl/pr-row-meta:inline-flex"
-            }
-          >
-            {remaining > 0 ? (
-              <span className={cn("shrink-0", slot.overflow)}>+{remaining}</span>
-            ) : null}
-          </PullRequestLabelChip>
-        );
-      })}
+      <PullRequestLabelChip label={first} />
+      {second ? (
+        <PullRequestLabelChip label={second} className="hidden @xl/pr-row-meta:inline-flex" />
+      ) : null}
+      {third ? (
+        <PullRequestLabelChip label={third} className="hidden @3xl/pr-row-meta:inline-flex" />
+      ) : null}
+      {overflow(1) > 0 ? (
+        <span className="ml-0.5 shrink-0 tabular-nums @xl/pr-row-meta:hidden">+{overflow(1)}</span>
+      ) : null}
+      {overflow(2) > 0 ? (
+        <span className="ml-0.5 hidden shrink-0 tabular-nums @xl/pr-row-meta:inline @3xl/pr-row-meta:hidden">
+          +{overflow(2)}
+        </span>
+      ) : null}
+      {overflow(3) > 0 ? (
+        <span className="ml-0.5 hidden shrink-0 tabular-nums @3xl/pr-row-meta:inline">
+          +{overflow(3)}
+        </span>
+      ) : null}
     </span>
   );
 }
-
-const PAGE_ROW_CLASS = "px-3 py-2.5";
 
 export type PullRequestRowTarget = Pick<
   EnvironmentPullRequestEntry,
@@ -113,10 +105,7 @@ function PullRequestRowImpl({
       ref={statsRef}
       data-pull-request-stats-key={statsKey}
       data-pull-request-key={statsKey}
-      className={cn(
-        "flex items-center rounded-md [content-visibility:auto] [contain-intrinsic-block-size:56.5px]",
-        selected ? "bg-accent" : "hover:bg-accent/60",
-      )}
+      className={cn(STACKED_ROW_CLASS, selected ? "bg-accent" : "hover:bg-accent/60")}
     >
       <button
         type="button"
@@ -130,60 +119,97 @@ function PullRequestRowImpl({
         onBlur={(event) => {
           if (!event.currentTarget.matches(":hover")) onIntent?.(null);
         }}
-        className={cn(
-          PULL_REQUEST_ROW_CLASS,
-          PAGE_ROW_CLASS,
-          "min-w-0 flex-1 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ring",
-        )}
+        className="@container/pr-row-meta flex min-w-0 flex-1 cursor-pointer items-center rounded-lg px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ring"
       >
-        <PullRequestRowGlyph
-          state={entry.state}
-          isDraft={entry.isDraft}
-          mergeability={entry.mergeability}
-          baseBranch={entry.baseBranch}
-          className="mt-0.75 self-start"
-        />
-        <PullRequestRowLines
-          number={
-            <span
-              className={PULL_REQUEST_ROW_NUMBER_CLASS}
-              onContextMenu={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                void showPullRequestLinkContextMenu({
-                  url: entry.url,
-                  openLabel: openOnHostLabel(sourceControlClients.get(entry.provider)),
-                  position: { x: event.clientX, y: event.clientY },
-                  source: contextMenuSourceOf(event),
-                });
-              }}
-            >
-              #{entry.number}
-            </span>
+        <StackedRowLines
+          glyph={
+            <PullRequestRowGlyph
+              state={entry.state}
+              isDraft={entry.isDraft}
+              mergeability={entry.mergeability}
+              baseBranch={entry.baseBranch}
+              glyphClassName="size-3.5"
+            />
           }
-          title={entry.title}
-          signals={
+          heading={
             <>
-              {entry.visibility === "private" ? (
-                <PullRequestPrivateMark className="size-3 text-muted-foreground" />
+              <span
+                className="shrink-0 tabular-nums"
+                onContextMenu={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  void showPullRequestLinkContextMenu({
+                    url: entry.url,
+                    openLabel: openOnHostLabel(sourceControlClients.get(entry.provider)),
+                    position: { x: event.clientX, y: event.clientY },
+                    source: contextMenuSourceOf(event),
+                  });
+                }}
+              >
+                #{entry.number}
+              </span>
+              {showProvider ? (
+                <SharedTooltipTrigger
+                  render={<span className="inline-flex shrink-0" />}
+                  label={providerName}
+                >
+                  <Icon aria-label={providerName} className="size-3" />
+                </SharedTooltipTrigger>
               ) : null}
-              {entry.checksState === undefined ? null : (
-                <PullRequestChecksPopover
-                  checksState={entry.checksState}
-                  environmentId={entry.environmentId}
-                  reference={{
-                    ...pullRequestPanelReference({ ...entry, host: entry.host.toLowerCase() }),
-                    allowStale: false,
-                  }}
-                />
-              )}
-              {entry.reviewDecision === undefined ? null : (
-                <PullRequestReviewDecisionGlyph decision={entry.reviewDecision} />
-              )}
+              {entry.visibility === "private" ? (
+                <PullRequestPrivateMark className="size-3 shrink-0" />
+              ) : null}
+              {showProjectTitle ? <span className="truncate">· {entry.repository}</span> : null}
+              {environmentLabel ? (
+                <span className="min-w-0 max-w-32 truncate">· {environmentLabel}</span>
+              ) : null}
             </>
           }
-          status={
+          title={entry.title}
+          updatedAt={entry.updatedAt}
+          meta={
             <>
+              {matchedElsewhere ? (
+                <SharedTooltipTrigger
+                  render={
+                    <span className="flex min-w-6 shrink-0 items-center gap-1 overflow-hidden rounded-full border border-border/80 px-1 text-3xs" />
+                  }
+                  label={
+                    <>
+                      <T>Matched in the description</T>
+                    </>
+                  }
+                >
+                  <span className="sr-only">
+                    <T>matched in the description</T>
+                  </span>
+                  <SearchIcon aria-hidden className="size-3 shrink-0" />
+                </SharedTooltipTrigger>
+              ) : null}
+              <PullRequestRowAuthor actor={entry.author} className="max-w-40 shrink-0" />
+              {entry.labels.length > 0 ? <PullRequestRowLabels labels={entry.labels} /> : null}
+            </>
+          }
+          trailing={
+            <>
+              {/* Fixed slots, so checks, review, and line counts line up down the list. */}
+              <span className="inline-flex w-4 justify-center">
+                {entry.checksState === undefined ? null : (
+                  <PullRequestChecksPopover
+                    checksState={entry.checksState}
+                    environmentId={entry.environmentId}
+                    reference={{
+                      ...pullRequestPanelReference({ ...entry, host: entry.host.toLowerCase() }),
+                      allowStale: false,
+                    }}
+                  />
+                )}
+              </span>
+              <span className="inline-flex w-4 justify-center">
+                {entry.reviewDecision === undefined ? null : (
+                  <PullRequestReviewDecisionGlyph decision={entry.reviewDecision} />
+                )}
+              </span>
               {entry.stack ? (
                 <PullRequestStackPopover
                   environmentId={entry.environmentId}
@@ -199,64 +225,22 @@ function PullRequestRowImpl({
                   }
                 />
               ) : null}
-              <PullRequestChangeBreakdownStat
-                environmentId={entry.environmentId}
-                reference={{
-                  projectId: entry.projectId,
-                  host: entry.host,
-                  repository: entry.repository,
-                  number: entry.number,
-                }}
-                additions={entry.additions}
-                deletions={entry.deletions}
-                className="tabular-nums"
-              />
+              <span className="inline-flex min-w-20 justify-end">
+                <PullRequestChangeBreakdownStat
+                  environmentId={entry.environmentId}
+                  reference={{
+                    projectId: entry.projectId,
+                    host: entry.host,
+                    repository: entry.repository,
+                    number: entry.number,
+                  }}
+                  additions={entry.additions}
+                  deletions={entry.deletions}
+                  className="tabular-nums"
+                />
+              </span>
             </>
           }
-          metaClassName="@container/pr-row-meta"
-          meta={
-            <>
-              {matchedElsewhere ? (
-                <SharedTooltipTrigger
-                  render={
-                    <span className="flex min-w-6 items-center gap-1 overflow-hidden rounded-full border border-border/80 px-1 text-3xs" />
-                  }
-                  label={
-                    <>
-                      <T>Matched in the description</T>
-                    </>
-                  }
-                >
-                  <span className="sr-only">
-                    <T>matched in the description</T>
-                  </span>
-                  <SearchIcon aria-hidden className="size-3 shrink-0" />
-                  <span aria-hidden className="hidden truncate @xs/pr-row-meta:block">
-                    <T>matched in the description</T>
-                  </span>
-                </SharedTooltipTrigger>
-              ) : null}
-              {showProvider ? (
-                <SharedTooltipTrigger
-                  render={<span className="inline-flex shrink-0" />}
-                  label={providerName}
-                >
-                  <Icon aria-label={providerName} className="size-3" />
-                </SharedTooltipTrigger>
-              ) : null}
-              <PullRequestRowAuthor
-                actor={entry.author}
-                className="min-w-3.5 max-w-40"
-                labelClassName="sr-only @xs/pr-row-meta:not-sr-only @xs/pr-row-meta:truncate"
-              />
-              {showProjectTitle ? <span className="truncate">{entry.repository}</span> : null}
-              {environmentLabel ? (
-                <span className="min-w-0 max-w-32 truncate">{environmentLabel}</span>
-              ) : null}
-              {entry.labels.length > 0 ? <PullRequestRowLabels labels={entry.labels} /> : null}
-            </>
-          }
-          updatedAt={entry.updatedAt}
         />
       </button>
       {hostActions.size > 0 ? (

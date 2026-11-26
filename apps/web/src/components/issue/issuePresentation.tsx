@@ -1,6 +1,7 @@
-import type { IssueState, IssueTrackerKind } from "@t3tools/contracts";
+import type { IssuePriority, IssueState, IssueTrackerKind } from "@t3tools/contracts";
 import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
 import { CircleCheckIcon, CircleDotIcon, CircleSlashIcon, TicketIcon } from "lucide-react";
+import { msg, useMessages } from "gt-react";
 
 import { cn } from "~/lib/utils";
 import { LinearIcon, type Icon } from "~/components/Icons";
@@ -65,6 +66,52 @@ export function IssueStateGlyph({ state, className }: { state: IssueState; class
         />
       </TooltipTrigger>
       <TooltipPopup>{presentation.label}</TooltipPopup>
+    </Tooltip>
+  );
+}
+
+const PRIORITY_LABELS = {
+  1: msg("Urgent", { $context: "issue priority" }),
+  2: msg("High", { $context: "issue priority" }),
+  3: msg("Medium", { $context: "issue priority" }),
+  4: msg("Low", { $context: "issue priority" }),
+} as const;
+
+/** Linear's marks: a filled square for urgent, then three bars lit by how high the rest go. */
+export function IssuePriorityGlyph({ priority }: { priority: IssuePriority }) {
+  const resolve = useMessages();
+  const label = resolve(PRIORITY_LABELS[priority]);
+  const lit = 4 - priority + 1;
+  return (
+    <Tooltip>
+      <TooltipTrigger render={<span className="inline-flex shrink-0" />}>
+        {priority === 1 ? (
+          <svg role="img" aria-label={label} viewBox="0 0 14 14" className="size-3.5 shrink-0">
+            <rect width="14" height="14" rx="3" className="fill-warning/20" />
+            <path
+              d="M7 3.5v4.25M7 10.25v.25"
+              className="stroke-warning"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+            />
+          </svg>
+        ) : (
+          <svg role="img" aria-label={label} viewBox="0 0 14 14" className="size-3.5 shrink-0">
+            {[0, 1, 2].map((bar) => (
+              <rect
+                key={bar}
+                x={1.5 + bar * 4}
+                y={8 - bar * 3}
+                width="3"
+                height={5 + bar * 3}
+                rx="1"
+                className={bar < lit ? "fill-current" : "fill-current opacity-30"}
+              />
+            ))}
+          </svg>
+        )}
+      </TooltipTrigger>
+      <TooltipPopup>{label}</TooltipPopup>
     </Tooltip>
   );
 }

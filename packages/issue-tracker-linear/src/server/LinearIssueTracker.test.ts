@@ -59,6 +59,8 @@ const issue = (
   botActor: null,
   assignee: THEO,
   labels: { nodes: [{ id: "lbl_bug", name: "Bug", color: "#f00" }] },
+  priority: 0,
+  parent: null,
   ...overrides,
 });
 
@@ -259,7 +261,15 @@ describe("LinearIssueTracker", () => {
                   state: state("Done", "completed"),
                   completedAt: "2026-07-03T00:00:00.000Z",
                 }),
-                issue("ENG-1"),
+                issue("ENG-1", {
+                  priority: 2,
+                  parent: {
+                    identifier: "ENG-0",
+                    title: "Epic",
+                    url: "https://linear.app/acme/issue/ENG-0",
+                    state: state("Todo", "unstarted", 3),
+                  },
+                }),
               ],
               pageInfo: { hasNextPage: true, endCursor: "cur_2" },
             },
@@ -282,9 +292,24 @@ describe("LinearIssueTracker", () => {
       });
       expect(page.nextCursor).toBe("cur_2");
       expect(page.items.map((item) => [item.key, item.displayKey, item.state])).toEqual([
-        ["ENG-2", "ENG-2", { category: "closed", name: "Done", closeReason: "completed" }],
-        ["ENG-1", "ENG-1", { category: "open", name: "In Progress" }],
+        [
+          "ENG-2",
+          "ENG-2",
+          { category: "closed", name: "Done", closeReason: "completed", order: 400_000 },
+        ],
+        ["ENG-1", "ENG-1", { category: "open", name: "In Progress", order: 0 }],
       ]);
+      // Linear's "No priority" (0) is left off; a sub-issue names its parent.
+      expect(page.items[0]?.priority).toBeUndefined();
+      expect(page.items[1]).toMatchObject({
+        priority: 2,
+        parent: {
+          key: "ENG-0",
+          displayKey: "ENG-0",
+          title: "Epic",
+          state: { category: "open", name: "Todo", order: 100_003 },
+        },
+      });
       // A listing carries no comment totals, whatever the row's position.
       expect(page.items.map((item) => item.commentCount)).toEqual([0, 0]);
       expect(page.items[0]).toMatchObject({

@@ -30,6 +30,7 @@ export function pullRequestGroups({
   providers,
   viewers,
   involvement,
+  flat = false,
   localFilters,
   hasLocalFilters,
   text,
@@ -46,6 +47,8 @@ export function pullRequestGroups({
   providers: PullRequestListResult["providers"];
   viewers: PullRequestListResult["viewers"];
   involvement: PullRequestInvolvement;
+  /** One run instead of the involvement groups. */
+  flat?: boolean;
   localFilters: PullRequestListFilters;
   hasLocalFilters: boolean;
   text: string;
@@ -100,7 +103,7 @@ export function pullRequestGroups({
   );
 
   const groups = (() => {
-    if (involvement !== "all") return [{ key: "others" as const, label: "", entries }];
+    if (involvement !== "all" || flat) return [{ key: "others" as const, label: "", entries }];
     if (baselineEmpty) {
       return groupPullRequestsByInvolvement(entries, viewers);
     }

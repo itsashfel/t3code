@@ -57,6 +57,7 @@ import {
   VolumeOffIcon,
 } from "lucide-react";
 import {
+  Fragment,
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type ReactElement,
@@ -84,7 +85,7 @@ import {
   Menu,
   MenuItem,
   MenuPopup,
-  MenuShortcut,
+  MenuSeparator,
   MenuSub,
   MenuSubPopup,
   MenuSubTrigger,
@@ -324,7 +325,7 @@ function SurfaceMenuItem(props: {
       aria-keyshortcuts={props.shortcut}
     >
       {props.children}
-      <MenuShortcut>{props.shortcut}</MenuShortcut>
+      <Kbd className="ms-auto">{props.shortcut}</Kbd>
     </MenuItem>
   );
   if (props.available || !props.disabledReason) return item;
@@ -1118,7 +1119,7 @@ function RightPanelTab(
       style={{ transform: CSS.Translate.toString(transform), transition }}
       className={cn(
         // Tab icons are drawn at 12px across the app; the tab bar shows them a step larger.
-        "cursor-pointer group/tab relative flex h-8 max-w-48 min-w-20 shrink-0 items-center gap-1.5 rounded-lg pr-3 pl-2.5 text-sm [&_img]:size-3.5 [&_svg]:size-3.5",
+        "cursor-pointer group/tab relative flex h-7.5 max-w-48 min-w-20 shrink-0 items-center gap-1.5 rounded-lg pr-3 pl-2.5 text-sm [&_img]:size-3.5 [&_svg]:size-3.5",
         props.ownsDesktopTitleBar && "[-webkit-app-region:no-drag]",
         props.active
           ? "bg-accent text-foreground"
@@ -1179,6 +1180,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
   const addSurfaceActions = [
     {
       label: msg("Browser"),
+      group: "panels",
       icon: Globe2,
       shortcut: "B",
       available: props.browserAvailable,
@@ -1187,6 +1189,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
     },
     {
       label: msg("Terminal"),
+      group: "panels",
       icon: TerminalSquare,
       shortcut: "T",
       available: props.terminalAvailable,
@@ -1195,6 +1198,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
     },
     {
       label: msg("Files"),
+      group: "panels",
       icon: Files,
       shortcut: "F",
       available: props.filesAvailable,
@@ -1203,6 +1207,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
     },
     {
       label: msg("Diff"),
+      group: "panels",
       icon: FileDiff,
       shortcut: "D",
       available: props.diffAvailable,
@@ -1211,6 +1216,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
     },
     {
       label: msg("Pull request"),
+      group: "review",
       icon: PullRequestGlyph.pullRequest,
       shortcut: "P",
       available: props.pullRequestAvailable,
@@ -1219,6 +1225,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
     },
     {
       label: msg("Linked items"),
+      group: "review",
       icon: PullRequestGlyph.link,
       shortcut: "L",
       available: props.pullRequestsAvailable,
@@ -1227,6 +1234,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
     },
     {
       label: msg("Device"),
+      group: "other",
       icon: Smartphone,
       shortcut: "M",
       available: props.deviceAvailable,
@@ -1237,6 +1245,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
       ? [
           {
             label: msg("Side chat"),
+            group: "other",
             icon: MessagesSquare,
             shortcut: "S",
             available: props.sideChatAvailable === true && !props.sideChatDisabledReason,
@@ -1586,56 +1595,66 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                   align="start"
                   side="bottom"
                   sideOffset={6}
+                  className="min-w-52"
                   onKeyDownCapture={handleAddSurfaceMenuKeyDown}
                 >
-                  {addSurfaceActions.map((action) => {
+                  {addSurfaceActions.map((action, index) => {
                     const Icon = action.icon;
+                    const separator =
+                      index > 0 && addSurfaceActions[index - 1]?.group !== action.group ? (
+                        <MenuSeparator />
+                      ) : null;
                     if (action.label === "Browser" && action.available) {
                       return (
-                        <MenuSub key={action.label}>
-                          <MenuSubTrigger
-                            className="[&>svg:last-child]:ms-0"
-                            aria-keyshortcuts={action.shortcut}
-                            onClick={(event) => {
-                              const pointerType =
-                                "pointerType" in event.nativeEvent &&
-                                typeof event.nativeEvent.pointerType === "string"
-                                  ? event.nativeEvent.pointerType
-                                  : undefined;
-                              if (!shouldOpenDefaultBrowserProfileFromMenuClick(pointerType))
-                                return;
-                              setAddSurfaceMenuOpen(false);
-                              action.onClick();
-                            }}
-                          >
-                            <Icon />
-                            {messages(action.label)}
-                            <MenuShortcut>{action.shortcut}</MenuShortcut>
-                          </MenuSubTrigger>
-                          <MenuSubPopup className="max-w-56">
-                            {browserProfiles.map((profile) => (
-                              <MenuItem
-                                key={profile.id}
-                                onClick={() => props.onAddBrowserInProfile(profile.id)}
-                              >
-                                <span className="min-w-0 truncate">{profile.name}</span>
-                              </MenuItem>
-                            ))}
-                          </MenuSubPopup>
-                        </MenuSub>
+                        <Fragment key={action.label}>
+                          {separator}
+                          <MenuSub>
+                            <MenuSubTrigger
+                              className="[&>svg:last-child]:ms-0"
+                              aria-keyshortcuts={action.shortcut}
+                              onClick={(event) => {
+                                const pointerType =
+                                  "pointerType" in event.nativeEvent &&
+                                  typeof event.nativeEvent.pointerType === "string"
+                                    ? event.nativeEvent.pointerType
+                                    : undefined;
+                                if (!shouldOpenDefaultBrowserProfileFromMenuClick(pointerType))
+                                  return;
+                                setAddSurfaceMenuOpen(false);
+                                action.onClick();
+                              }}
+                            >
+                              <Icon />
+                              {messages(action.label)}
+                              <Kbd className="ms-auto">{action.shortcut}</Kbd>
+                            </MenuSubTrigger>
+                            <MenuSubPopup className="max-w-56">
+                              {browserProfiles.map((profile) => (
+                                <MenuItem
+                                  key={profile.id}
+                                  onClick={() => props.onAddBrowserInProfile(profile.id)}
+                                >
+                                  <span className="min-w-0 truncate">{profile.name}</span>
+                                </MenuItem>
+                              ))}
+                            </MenuSubPopup>
+                          </MenuSub>
+                        </Fragment>
                       );
                     }
                     return (
-                      <SurfaceMenuItem
-                        key={action.label}
-                        available={action.available}
-                        disabledReason={action.disabledReason}
-                        shortcut={action.shortcut}
-                        onClick={action.onClick}
-                      >
-                        <Icon />
-                        {messages(action.label)}
-                      </SurfaceMenuItem>
+                      <Fragment key={action.label}>
+                        {separator}
+                        <SurfaceMenuItem
+                          available={action.available}
+                          disabledReason={action.disabledReason}
+                          shortcut={action.shortcut}
+                          onClick={action.onClick}
+                        >
+                          <Icon />
+                          {messages(action.label)}
+                        </SurfaceMenuItem>
+                      </Fragment>
                     );
                   })}
                 </MenuPopup>

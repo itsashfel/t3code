@@ -5,6 +5,7 @@ import "@fontsource-variable/inter";
 import "./index.css";
 
 import { trackKeyboardLayout } from "./keyboardLayout";
+import { trackScrollActivity } from "./scrollActivity";
 import { hasCloudPublicConfig } from "./cloud/publicConfig";
 import { isElectron } from "./env";
 import { startAppServices } from "./appInit";
@@ -14,6 +15,8 @@ import { chunkLoadState } from "./lib/chunkReloadGuard";
 
 const stopTrackingKeyboardLayout = trackKeyboardLayout();
 import.meta.hot?.dispose(stopTrackingKeyboardLayout);
+const stopTrackingScrollActivity = trackScrollActivity();
+import.meta.hot?.dispose(stopTrackingScrollActivity);
 
 const router = startAppServices();
 

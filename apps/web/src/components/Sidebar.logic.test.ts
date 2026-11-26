@@ -1028,21 +1028,21 @@ describe("unseen completion with background work", () => {
       roster: "dev server",
       task: { kind: "command" },
       status: "ready",
-      receded: false,
+      working: false,
       pill: "Completed",
     },
     {
       roster: "dev server watchdog",
       task: { kind: "monitor" },
       status: "ready",
-      receded: false,
+      working: false,
       pill: "Completed",
     },
     {
       roster: "awaited command",
       task: { kind: "command", awaited: true },
       status: "waiting",
-      receded: true,
+      working: true,
       pill: "Waiting",
     },
   ] as const)("presents a completed thread with a $roster roster", (expected) => {
@@ -1067,8 +1067,8 @@ describe("unseen completion with background work", () => {
         isActive: false,
         isSelected: false,
       }),
-    ).toBe(expected.receded);
-    expect(isSidebarThreadWorking(thread)).toBe(expected.receded);
+    ).toBe(false);
+    expect(isSidebarThreadWorking(thread)).toBe(expected.working);
     expect(resolveThreadStatusPill({ thread })).toMatchObject({ label: expected.pill });
   });
 });

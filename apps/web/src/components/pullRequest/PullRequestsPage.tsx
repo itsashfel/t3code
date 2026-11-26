@@ -67,6 +67,7 @@ import { PULL_REQUEST_SAVED_VIEWS, pullRequestSavedViewPatch } from "./pullReque
 import { environmentMachineIcon } from "../EnvironmentMachineIcon";
 import { PullRequestDetailPanel } from "./PullRequestDetailPanel";
 import {
+  ListLayoutToggle,
   PullRequestFiltersMenu,
   PullRequestSearchInput,
   pullRequestHostLabel,
@@ -277,6 +278,7 @@ export function PullRequestsPage() {
           involvement: next.involvement ?? previous.involvement,
           state: next.state ?? previous.state,
           ...(next.sort && next.sort !== "ready" ? { sort: next.sort } : {}),
+          ...(next.layout ? { layout: next.layout } : {}),
           ...(next.repository ? { repository: next.repository } : {}),
           ...(next.number ? { number: next.number } : {}),
           ...(next.projectId ? { projectId: next.projectId } : {}),
@@ -783,6 +785,7 @@ export function PullRequestsPage() {
     providers: baselineQuery.data?.providers ?? listData?.providers ?? [],
     viewers,
     involvement: search.involvement,
+    flat: search.layout === "flat",
     localFilters,
     hasLocalFilters,
     text: typedParsed.text,
@@ -1233,7 +1236,11 @@ export function PullRequestsPage() {
   const openPanelControls = (
     <div
       className={cn(
-        "absolute top-[var(--workspace-controls-top)] right-[var(--workspace-controls-right)] z-50 mr-px flex h-[var(--workspace-topbar-height)] items-center gap-1 [-webkit-app-region:no-drag]",
+        "absolute top-[var(--workspace-controls-top)] right-[var(--workspace-controls-right)] z-50 mr-px flex items-center gap-1 [-webkit-app-region:no-drag]",
+        // Over a docked panel, center in its compact tab bar, as the thread view does.
+        rightPanelState.isOpen && !rightPanelMaximized
+          ? "h-10 wco:h-[var(--workspace-topbar-height)]"
+          : "h-[var(--workspace-topbar-height)]",
         mobileSidebarSheetMounted && "hidden",
       )}
       data-workspace-titlebar-controls
@@ -1295,7 +1302,10 @@ export function PullRequestsPage() {
       ) : (
         <PullRequestListGroups
           groups={displayGroups}
-          environmentLabels={capableEnvironments.length > 1 ? environmentLabels : null}
+          environmentLabels={
+            // Rows from one server need no server name, however many servers are connected.
+            new Set(entries.map((entry) => entry.environmentId)).size > 1 ? environmentLabels : null
+          }
           query={typedParsed.text}
           selected={selected}
           showProvider={showProvider}
@@ -1377,6 +1387,14 @@ export function PullRequestsPage() {
       onChange={(next) => updateListScope({ sort: next })}
     />
   );
+  const layoutToggle =
+    search.involvement === "all" ? (
+      <ListLayoutToggle
+        grouped={search.layout !== "flat"}
+        groupedLabel={gt("Group by involvement")}
+        onChange={(grouped) => updateListScope({ layout: grouped ? undefined : "flat" })}
+      />
+    ) : null;
   const filtersMenu = (
     <PullRequestFiltersMenuInSidebarOrder
       onOpenChange={setFiltersOpen}
@@ -1432,7 +1450,12 @@ export function PullRequestsPage() {
     onState: (state: PullRequestListState) => updateListScope({ state }),
     onHost: (host: string | undefined) => updateListScope({ host }),
     searchInput,
-    sortMenu,
+    sortMenu: (
+      <>
+        {sortMenu}
+        {layoutToggle}
+      </>
+    ),
     filtersMenu,
     savedViewsMenu: (
       <SavedViewsMenu

@@ -17,6 +17,7 @@ import {
   FolderGit2Icon,
   LayersIcon,
   ListFilterIcon,
+  ListTreeIcon,
   SearchIcon,
   TagIcon,
   UserRoundIcon,
@@ -47,6 +48,7 @@ import {
   MenuSubTrigger,
   MenuTrigger,
 } from "../ui/menu";
+import { Toggle } from "../ui/toggle";
 import {
   pullRequestAuthorChoices,
   selectedPullRequestAuthor,
@@ -708,5 +710,33 @@ export function PullRequestFiltersMenu({
         />
       </MenuPopup>
     </Menu>
+  );
+}
+
+/** Switches a list between its groups and one flat run; pressed means grouped. */
+export function ListLayoutToggle({
+  grouped,
+  groupedLabel,
+  onChange,
+}: {
+  grouped: boolean;
+  /** Names what grouping does on this page, such as "Group by status". */
+  groupedLabel: string;
+  onChange: (grouped: boolean) => void;
+}) {
+  return (
+    <SharedTooltipTrigger
+      render={
+        <Toggle
+          variant="outline"
+          aria-label={groupedLabel}
+          pressed={grouped}
+          onPressedChange={onChange}
+        />
+      }
+      label={groupedLabel}
+    >
+      <ListTreeIcon aria-hidden className="size-4" />
+    </SharedTooltipTrigger>
   );
 }

@@ -25,6 +25,8 @@ export interface IssueListPreferences {
   readonly label?: ReadonlyArray<string> | undefined;
   readonly assignee?: string | undefined;
   readonly order?: "created" | undefined;
+  /** Issues sit under their status by default; `flat` lists them in one run. */
+  readonly layout?: "flat" | undefined;
 }
 
 const DEFAULT_ISSUE_LIST_PREFERENCES = {
@@ -48,6 +50,7 @@ export const IssueListPreferencesSchema = Schema.Struct({
   label: Schema.optional(Schema.Array(BoundedPreference).check(Schema.isMaxLength(20))),
   assignee: Schema.optional(BoundedPreference),
   order: Schema.optional(Schema.Literal("created")),
+  layout: Schema.optional(Schema.Literal("flat")),
 });
 const decodePreferences = Schema.decodeUnknownOption(IssueListPreferencesSchema);
 
@@ -67,6 +70,7 @@ export function issueListPreferences(search: {
   readonly label?: ReadonlyArray<string> | undefined;
   readonly assignee?: string | undefined;
   readonly order?: "created" | undefined;
+  readonly layout?: "flat" | undefined;
 }): IssueListPreferences {
   return {
     who: search.who,
@@ -79,6 +83,7 @@ export function issueListPreferences(search: {
     ...(search.label?.length ? { label: search.label } : {}),
     ...(search.assignee ? { assignee: search.assignee } : {}),
     ...(search.order ? { order: search.order } : {}),
+    ...(search.layout ? { layout: search.layout } : {}),
   };
 }
 
