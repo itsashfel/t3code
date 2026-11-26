@@ -87,7 +87,7 @@ export default function NotebookPreview(props: {
   return (
     <>
       <div
-        className="border-b border-border/60 px-3 py-2 text-xs text-muted-foreground tabular-nums"
+        className="border-b border-border/80 px-3 py-2 text-xs text-muted-foreground tabular-nums"
         role="status"
       >
         {gt("{count, plural, one {{formatted} cell} other {{formatted} cells}}", {
@@ -108,9 +108,9 @@ export default function NotebookPreview(props: {
             <section
               key={index}
               aria-label={gt("Cell {number}", { number: String(index + 1) })}
-              className="min-w-0 overflow-hidden rounded-md border border-border/60"
+              className="min-w-0 overflow-hidden rounded-md border border-border/80"
             >
-              <div className="border-b border-border/60 bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground">
+              <div className="border-b border-border/80 bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground">
                 {cell.kind === "code" ? props.notebook.language : cell.kind} · {index + 1}
               </div>
               {cell.kind === "markdown" ? (
@@ -135,7 +135,7 @@ export default function NotebookPreview(props: {
                   <div
                     key={outputIndex}
                     data-notebook-output={output.kind === "html" ? key : undefined}
-                    className="box-content border-t border-border/60"
+                    className="box-content border-t border-border/80"
                     style={{
                       minHeight: output.kind === "html" && !mounted ? estimatedHeight : undefined,
                     }}

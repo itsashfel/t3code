@@ -375,7 +375,7 @@ export function SavedBackendListRow({
           {permissionsOpen && (
             <div
               id={`remote-permissions-${environmentId}`}
-              className="mt-2 border-t border-border/50"
+              className="mt-2 border-t border-border/80"
             >
               <SessionPermissions
                 environmentId={environmentId}

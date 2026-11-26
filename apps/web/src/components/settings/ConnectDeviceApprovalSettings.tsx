@@ -77,7 +77,7 @@ export function ConnectDeviceApprovalSettings({
                 <p className="text-sm font-medium text-foreground">
                   <T>
                     Waiting for approval ·{" "}
-                    <span className="font-mono tabular-nums">
+                    <span className="tabular-nums">
                       <Var>{connectRequest.verificationCode}</Var>
                     </span>
                   </T>
@@ -134,7 +134,7 @@ export function ConnectDeviceApprovalSettings({
                   {describeConnectDeviceClient(device, resolve)}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  <span className="font-mono tabular-nums">{device.verificationCode}</span>
+                  <span className="tabular-nums">{device.verificationCode}</span>
                   <span aria-hidden> · </span>
                   <T>
                     Trusted since{" "}
@@ -172,7 +172,7 @@ export function ConnectDeviceApprovalSettings({
       })}
       {devices.length === 0 && requests.length === 0 ? (
         <div className={ITEM_ROW_CLASSNAME}>
-          <p className="text-xs text-muted-foreground/60">
+          <p className="text-xs text-muted-foreground/85">
             <T>No device has connected through T3 Connect yet.</T>
           </p>
         </div>

@@ -32,60 +32,22 @@ export const DIFF_VIEW_UNSAFE_CSS = `${DIFF_SURFACE_THEME_UNSAFE_CSS}
   --diffs-fg-search-match-override: currentColor;
 }
 
-:is(
-  [data-line],
-  [data-line-annotation],
-  [data-merge-conflict],
-  [data-merge-conflict-actions],
-  [data-no-newline]
-)[data-selected-line] {
-  --diffs-line-bg: light-dark(
-    color-mix(
-      in lab,
-      var(--code-background) 88%,
-      color-mix(in srgb, var(--code-background) 50%, var(--diffs-modified-base))
-    ),
-    color-mix(
-      in lab,
-      var(--code-background) 80%,
-      color-mix(in srgb, var(--code-background) 70%, var(--diffs-modified-base))
-    )
-  ) !important;
-}
-
-:is([data-gutter-buffer], [data-column-number])[data-selected-line] {
-  --diffs-line-bg: light-dark(
-    color-mix(
-      in lab,
-      var(--code-background) 91%,
-      color-mix(in srgb, var(--code-background) 35%, var(--diffs-modified-base))
-    ),
-    color-mix(
-      in lab,
-      var(--code-background) 85%,
-      color-mix(in srgb, var(--code-background) 60%, var(--diffs-modified-base))
-    )
-  ) !important;
-}
-
-[data-indicators="bars"]
-  :is([data-column-number], [data-gutter-buffer="annotation"])[data-selected-line] {
+[data-indicators="bars"] [data-column-number][data-selected-line] {
   position: relative;
 }
 
-[data-indicators="bars"]
-  :is([data-column-number], [data-gutter-buffer="annotation"])[data-selected-line]::before {
+[data-indicators="bars"] [data-column-number][data-selected-line]::before {
   position: absolute !important;
   inset-block: 0 !important;
   inset-inline-start: 0 !important;
   display: block !important;
-  width: 4px !important;
-  min-width: 4px !important;
-  max-width: 4px !important;
+  width: 2px !important;
+  min-width: 2px !important;
+  max-width: 2px !important;
   height: auto !important;
   padding: 0 !important;
   content: "" !important;
-  background-color: var(--diffs-modified-base) !important;
+  background-color: var(--primary, var(--diffs-modified-base)) !important;
   background-image: none !important;
 }
 
@@ -103,7 +65,7 @@ export const DIFF_VIEW_UNSAFE_CSS = `${DIFF_SURFACE_THEME_UNSAFE_CSS}
   border-bottom-color: transparent !important;
   align-items: center !important;
   font-family: var(--font-sans) !important;
-  font-size: 12px !important;
+  font-size: 13px !important;
   line-height: 1 !important;
   /* Collapsed items are never remeasured: the painted header must match diffHeaderHeight.
      Center controls in that height instead of adding padding to their intrinsic height. */
@@ -133,7 +95,7 @@ export const DIFF_VIEW_UNSAFE_CSS = `${DIFF_SURFACE_THEME_UNSAFE_CSS}
 :is([data-separator="line-info"], [data-separator="line-info-basic"]) [data-separator-content] {
   color: color-mix(in srgb, var(--code-foreground) 50%, var(--code-background)) !important;
   font-family: var(--font-sans) !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
   text-decoration: none !important;
 }
 
@@ -171,7 +133,7 @@ export const DIFF_VIEW_UNSAFE_CSS = `${DIFF_SURFACE_THEME_UNSAFE_CSS}
 [data-diffs-header] [data-additions-count],
 [data-diffs-header] [data-deletions-count] {
   font-family: var(--font-mono) !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
   font-variant-numeric: tabular-nums;
   line-height: 1 !important;
 }

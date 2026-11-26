@@ -42,7 +42,7 @@ export function GuideNotes({
             <div className="flex min-w-0 flex-col gap-0.5">
               <p className="flex flex-wrap items-baseline gap-x-2 text-xs">
                 <span className="font-medium text-foreground">{note.title}</span>
-                <span className="truncate font-mono text-2xs text-muted-foreground">
+                <span className="truncate tabular-nums text-2xs text-muted-foreground">
                   {note.path.split("/").at(-1)}:{note.line}
                 </span>
               </p>

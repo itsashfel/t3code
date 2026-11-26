@@ -378,7 +378,7 @@ function WhenExpressionNodeEditor({
       : [condition.identifier];
 
     return (
-      <div className="flex items-center gap-2 rounded-md border border-border/70 bg-background/60 px-2 py-2">
+      <div className="flex items-center gap-2 rounded-md border border-border/90 bg-background/60 px-2 py-2">
         <Toggle
           pressed={condition.negated}
           onPressedChange={(pressed) => onChange(setConditionNegated(node, pressed))}
@@ -409,8 +409,8 @@ function WhenExpressionNodeEditor({
     return (
       <div
         className={cn(
-          "space-y-2 rounded-lg border border-border/70 bg-muted/20 p-2",
-          depth > 0 && "border-border/50 bg-background/50",
+          "space-y-2 rounded-lg border border-border/90 bg-muted/20 p-2",
+          depth > 0 && "border-border/80 bg-background/50",
         )}
       >
         <div className="flex items-center gap-2">
@@ -511,8 +511,8 @@ function WhenExpressionNodeEditor({
   return (
     <div
       className={cn(
-        "space-y-2 rounded-lg border border-border/60 bg-muted/10 p-2",
-        depth > 0 && "border-border/70 bg-background/55",
+        "space-y-2 rounded-lg border border-border/80 bg-muted/10 p-2",
+        depth > 0 && "border-border/90 bg-background/55",
       )}
     >
       <div className="flex flex-wrap items-center gap-2">
@@ -897,7 +897,7 @@ function KeybindingKeyControl({
               : formatShortcutLabel(row.binding.shortcut),
           })}
           className={cn(
-            "inline-flex h-8 cursor-pointer items-center rounded-md border border-transparent px-1.5 sm:h-7 outline-none transition-colors hover:border-border/70 hover:bg-accent focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/24",
+            "inline-flex h-8 cursor-pointer items-center rounded-md border border-transparent px-1.5 sm:h-7 outline-none transition-colors hover:border-border/90 hover:bg-accent focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/24",
             pillClassName,
           )}
         >
@@ -1068,7 +1068,7 @@ function KeybindingRowWhen({
   const m = useMessages();
   return (
     <span className="flex h-6 items-center gap-1.5">
-      <span className="text-xs leading-none text-muted-foreground/70">
+      <span className="text-xs leading-none text-muted-foreground/85">
         {gt("When", { $context: "heading for keybinding conditions" })}
       </span>
       <WhenClauseControl
@@ -1393,7 +1393,7 @@ function NewKeybindingSettingsRow(props: NewKeybindingProps) {
       title={gt("New keybinding")}
       description={
         <span className="flex h-6 items-center gap-1.5">
-          <span className="text-xs leading-none text-muted-foreground/70">
+          <span className="text-xs leading-none text-muted-foreground/85">
             {gt("When", { $context: "heading for keybinding conditions" })}
           </span>
           <NewKeybindingWhen draft={draft} variables={variables} />

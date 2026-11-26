@@ -9,12 +9,23 @@ import { cn } from "~/lib/utils";
 import { SharedTooltipTrigger } from "~/components/ui/shared-tooltip";
 
 export const FILE_SURFACE_SUBHEADER_CLASS =
-  "flex h-10 min-h-10 shrink-0 items-center gap-2 border-b border-border/60 bg-background px-3 in-data-[preview-panel-mode=inline]:mb-3 in-data-[preview-panel-mode=inline]:h-7 in-data-[preview-panel-mode=inline]:min-h-7 in-data-[preview-panel-mode=inline]:border-b-transparent";
+  "flex h-10 min-h-10 shrink-0 items-center gap-2 border-b border-border bg-background px-3";
 
 export const FILE_LINK_REVEAL_ATTRIBUTE = "data-file-link-reveal";
 
 export const FILE_LINK_REVEAL_UNSAFE_CSS = `
   ${DIFF_SURFACE_THEME_UNSAFE_CSS}
+
+  /* A neutral current-line band with a bright number, instead of the selection-blue tint. */
+  [data-line][data-editor-active-line] {
+    --diffs-selection-emphasis-mix-target: light-dark(black, white) !important;
+    --diffs-editor-active-line-source-mix: 95% !important;
+  }
+
+  [data-column-number][data-editor-active-line] {
+    --diffs-editor-active-line-source-mix: 100% !important;
+    color: var(--diffs-fg) !important;
+  }
 
   diffs-container {
     --diffs-bg: var(--code-background, var(--background)) !important;

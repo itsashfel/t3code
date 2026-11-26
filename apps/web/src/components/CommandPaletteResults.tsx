@@ -220,7 +220,7 @@ function ThreadRowContext({
     .filter((part) => part && part !== item.matchHint?.text)
     .join(" · ");
   return context ? (
-    <span className="max-w-[45%] shrink-0 truncate text-muted-foreground/70 text-xs">
+    <span className="max-w-[45%] shrink-0 truncate text-muted-foreground/85 text-xs">
       {context}
     </span>
   ) : null;
@@ -244,7 +244,7 @@ function DisabledCommandPaletteResultRow(props: {
           ) : props.item.matchHint ? (
             <SearchMatchHintLine hint={props.item.matchHint} />
           ) : props.item.description ? (
-            <span className="min-w-0 text-muted-foreground/70 text-xs">
+            <span className="min-w-0 text-muted-foreground/85 text-xs">
               {props.item.description}
             </span>
           ) : null}
@@ -309,7 +309,7 @@ function CommandPaletteResultRow(props: {
           ) : props.item.matchHint ? (
             <SearchMatchHintLine hint={props.item.matchHint} />
           ) : props.item.description ? (
-            <span className="min-w-0 text-muted-foreground/70 text-xs">
+            <span className="min-w-0 text-muted-foreground/85 text-xs">
               {props.item.description}
             </span>
           ) : null}
@@ -330,13 +330,13 @@ function CommandPaletteResultRow(props: {
         />
       ) : null}
       {props.item.timestamp ? (
-        <span className="min-w-12 shrink-0 text-right text-xs tabular-nums text-muted-foreground/70">
+        <span className="min-w-12 shrink-0 text-right text-xs tabular-nums text-muted-foreground/85">
           {props.item.timestamp}
         </span>
       ) : null}
       {shortcutLabel ? <CommandShortcut>{shortcutLabel}</CommandShortcut> : null}
       {props.item.kind === "submenu" ? (
-        <ChevronRightIcon className="-me-0.5 ms-auto size-4 shrink-0 text-muted-foreground/70" />
+        <ChevronRightIcon className="-me-0.5 ms-auto size-4 shrink-0 text-muted-foreground/85" />
       ) : null}
     </CommandItem>
   );

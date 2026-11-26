@@ -189,17 +189,17 @@ const ROUTE_STYLES: Record<
     width: 1.75,
     pill: "border-success/70 font-medium text-foreground",
   },
-  standby: { wire: "text-muted-foreground/60", width: 1, pill: "border-border" },
+  standby: { wire: "text-muted-foreground/85", width: 1, pill: "border-border" },
   trying: { wire: "text-warning", width: 1, dash: "1 4", pill: "border-warning/60" },
-  down: { wire: "text-muted-foreground/60", width: 1, dash: "4 4", pill: "border-dashed" },
-  idle: { wire: "text-muted-foreground/40", width: 1, dash: "4 4", pill: "border-dashed" },
+  down: { wire: "text-muted-foreground/85", width: 1, dash: "4 4", pill: "border-dashed" },
+  idle: { wire: "text-muted-foreground/85", width: 1, dash: "4 4", pill: "border-dashed" },
   refused: {
     wire: "text-destructive/80",
     width: 1,
     dash: "4 4",
     pill: "border-dashed border-destructive/60 text-destructive",
   },
-  offered: { wire: "text-muted-foreground/50", width: 1, dash: "1 4", pill: "border-dotted" },
+  offered: { wire: "text-muted-foreground/85", width: 1, dash: "1 4", pill: "border-dotted" },
 };
 
 function routeKindLabel(kind: ConnectionRouteKind, gt: GT): string {
@@ -882,7 +882,7 @@ function FleetCanvas({
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-t-xl border-b border-border/60 bg-background/50 px-3 py-1.5">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-t-xl border-b border-border/80 bg-background/50 px-3 py-1.5">
         <div className="w-48">
           <InputGroup>
             <InputGroupAddon>
@@ -1060,7 +1060,7 @@ function FleetCanvas({
       {/* Below the canvas, not over it: nothing on the map can end up under the controls. */}
       <div className="flex items-center justify-between gap-3 bg-background/50 px-3 py-1">
         <FleetLegend twoWay={fleetTwoWayLinks(graph).size > 0} />
-        <div className="flex shrink-0 items-center gap-1 rounded-lg border border-border/60 bg-popover/90 p-0.5 shadow-xs/5">
+        <div className="flex shrink-0 items-center gap-1 rounded-lg border border-border/80 bg-popover/90 p-0.5 shadow-xs/5">
           <Button
             size="icon-xs"
             variant="ghost"
@@ -1123,14 +1123,14 @@ function FleetLegend({ twoWay }: { readonly twoWay: boolean }) {
         {gt("Offline")}
       </li>
       <li className="flex items-center gap-1.5">
-        <svg aria-hidden viewBox="0 0 22 6" className="h-1.5 w-5.5 text-foreground/70">
+        <svg aria-hidden viewBox="0 0 22 6" className="h-1.5 w-5.5 text-foreground/85">
           <path d="M0 3L22 0.5V5.5Z" fill="currentColor" />
         </svg>
         {gt("Link", { $context: "noun, in a map legend: a line joining two linked machines" })}
       </li>
       {twoWay ? (
         <li className="flex items-center gap-1.5">
-          <svg aria-hidden viewBox="0 0 22 8" className="h-2 w-5.5 text-foreground/70">
+          <svg aria-hidden viewBox="0 0 22 8" className="h-2 w-5.5 text-foreground/85">
             <path d="M5 4H17" stroke="currentColor" strokeWidth="1.75" />
             <path d="M0 4L6 0.5V7.5ZM22 4L16 0.5V7.5Z" fill="currentColor" />
           </svg>
@@ -1267,7 +1267,7 @@ function CodeOnlyNotice({
   return (
     <div
       role="status"
-      className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-border/60 bg-background/50 px-3 py-2 text-xs"
+      className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-border/80 bg-background/50 px-3 py-2 text-xs"
     >
       <p className="min-w-0 flex-1 basis-64 text-muted-foreground">
         {needsCodeText(machines.length, gt)}
@@ -1423,7 +1423,7 @@ const FleetScene = memo(function FleetScene({
   const fadeName = (dimmed: boolean) =>
     cn(
       "transition-colors duration-150 motion-reduce:transition-none",
-      dimmed && "border-border/50 font-normal text-muted-foreground/45",
+      dimmed && "border-border/80 font-normal text-muted-foreground/45",
     );
   const routeLit = (edge: FleetRouteEdge) => lit === null || lit.edges.has(edge.id);
   // Painted last, so the routes in focus lie over the ones that are not.
@@ -1885,7 +1885,7 @@ const FleetScene = memo(function FleetScene({
                 aria-hidden
                 style={{ left: tray.x, top: tray.y, width: tray.width, height: tray.height }}
                 className={cn(
-                  "absolute rounded-xl border border-border/70 bg-foreground/3",
+                  "absolute rounded-xl border border-border/90 bg-foreground/3",
                   APPEAR,
                 )}
               />
@@ -1918,7 +1918,7 @@ const FleetScene = memo(function FleetScene({
                 ) : (
                   <span className="flex items-center gap-1.5 text-2xs leading-4 text-muted-foreground">
                     {only !== undefined && stack.sources.length === 1 ? (
-                      <AccessMeter access={only.access} className="text-foreground/70" />
+                      <AccessMeter access={only.access} className="text-foreground/85" />
                     ) : null}
                     <span className="whitespace-nowrap tabular-nums">
                       {gt("{machines, plural, one {# machine} other {# machines}}", {
@@ -2087,7 +2087,7 @@ const FleetScene = memo(function FleetScene({
                 )}
               </span>
               {compact || !shown ? null : (
-                <AccessMeter access={shown.link.access} className="text-foreground/70" />
+                <AccessMeter access={shown.link.access} className="text-foreground/85" />
               )}
             </button>
           );

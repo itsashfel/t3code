@@ -4256,17 +4256,8 @@
   "2843ab5fd6d5d3e1": "{term, select, mr {Merge request} cr {Demande de modification} other {Pull request}} #{number}, {state}",
   "d51ff529f508304a": "{term, select, mr {Merge request} cr {Demande de modification} other {Pull request}} #{number} : {title}",
   "b51d5be25d79b06c": "{count, plural, one {{formatted} fichier} other {{formatted} fichiers}}",
-  "2e034563c916f3eb": "Résoudre",
   "abe37e21953338e6": "Préparation...",
-  "66d185fcf7d5f3e6": "Basculer sur la branche et résoudre les conflits dans un nouveau fil",
-  "551ce3362d0307d4": "Résoudre les conflits dans ce fil",
-  "f70f754b79025c67": "Prête",
-  "763cb56e21879aad": "Marquage...",
-  "422f32e5d25da2ae": "Marquer cette {term, select, mr {merge request} cr {demande de modification} other {pull request}} comme prête pour la revue",
-  "9fe4c09b6a3ab4b4": "Corriger",
-  "0e48be2053a4b817": "Préparation du correctif",
   "6f6c67fa4032196b": "Corriger les checks en échec dans un nouveau fil",
-  "024f959a15903d60": "Corriger les checks en échec dans ce fil",
   "be85261ec6428209": "Fusion...",
   "087d8cedc3ea219d": "Arrêter de surveiller #{number}",
   "636eb97a97862aef": [
@@ -5536,7 +5527,6 @@
   "e8c281b1a85ac547": "Ajouter un commentaire…",
   "f2160b630793c7b4": "Commenter les lignes {rangeLabel}",
   "8d12e0769f6d5eb8": "Commenter",
-  "40ef11933aa35e8e": "⌘/Ctrl Enter pour envoyer",
   "ee90d50efb2fe9fb": "Chargement du diff…",
   "1601d7e39a52c48f": "Réessayer de charger le diff",
   "b7b137472adb6989": "Aperçu partiel du diff",
@@ -13030,5 +13020,7 @@
   "176e9d4d4033aaf2": "Started in a terminal",
   "75fe9ced794c3f8c": "pid {pid}",
   "fd8a2ee54ce70eef": "Open files appear here",
-  "b98b77906deb7369": "Pick a file in the tree."
+  "b98b77906deb7369": "Pick a file in the tree.",
+  "a53f6826c4fb3da2": "Remove comment",
+  "9bfa1bcd11ba9012": "Fix checks"
 }

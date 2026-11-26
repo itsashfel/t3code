@@ -439,7 +439,7 @@ export function ThemeSearchSection({
               const action = isInstalled ? gt("Update") : gt("Install");
               return (
                 <article
-                  className="group flex min-w-0 flex-col gap-3 rounded-xl border border-border/70 bg-card/60 p-3 transition-colors hover:bg-accent/20"
+                  className="group flex min-w-0 flex-col gap-3 rounded-xl border border-border/90 bg-card/60 p-3 transition-colors hover:bg-accent/20"
                   key={extension.id}
                 >
                   <div className="flex min-w-0 gap-3">

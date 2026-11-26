@@ -135,7 +135,9 @@ import { getTimelinePageScrollKey } from "./chat/pageScrollController";
 import { ContextChip } from "./ContextChip";
 import {
   ComposerContextActionsContext,
+  ComposerCodeCommentStrip,
   ComposerContextReferenceChip,
+  useComposerCodeComment,
   ComposerContextRecordsContext,
 } from "./composerContextPresentation";
 import type { AssistantCitationSourceAnchor } from "~/lib/assistantTextSelection";
@@ -639,6 +641,39 @@ const ComposerContextReferenceExtension = Node.create({
 });
 
 function ComposerContextReferenceNodeView({ node, editor, getPos }: NodeViewProps) {
+  const kind = (node.attrs.kind as string) ?? "";
+  const contextId = (node.attrs.contextId as string) ?? "";
+  const codeComment = useComposerCodeComment(kind, contextId);
+  if (codeComment) {
+    const remove = () => {
+      const pos = typeof getPos === "function" ? getPos() : null;
+      if (typeof pos !== "number") return;
+      const $pos = editor.state.doc.resolve(pos);
+      // A comment on its own line takes the line with it.
+      const ownLine = $pos.parent.type.name === "paragraph" && $pos.parent.childCount === 1;
+      editor
+        .chain()
+        .focus()
+        .deleteRange(
+          ownLine
+            ? { from: $pos.before(), to: $pos.after() }
+            : { from: pos, to: pos + node.nodeSize },
+        )
+        .run();
+    };
+    return (
+      <NodeViewWrapper
+        as="span"
+        className={cn(CHIP_NODE_SELECTION_CLASS_NAME, "flex w-full py-0.5")}
+        contentEditable={false}
+      >
+        <ComposerCodeCommentStrip
+          comment={codeComment}
+          onRemove={editor.isEditable ? remove : undefined}
+        />
+      </NodeViewWrapper>
+    );
+  }
   return (
     <NodeViewWrapper
       as="span"
@@ -660,8 +695,8 @@ function ComposerContextReferenceNodeView({ node, editor, getPos }: NodeViewProp
       }}
     >
       <ComposerContextReferenceChip
-        kind={(node.attrs.kind as string) ?? ""}
-        contextId={(node.attrs.contextId as string) ?? ""}
+        kind={kind}
+        contextId={contextId}
         label={(node.attrs.label as string) ?? ""}
       />
     </NodeViewWrapper>

@@ -55,7 +55,7 @@ export function DeviceToolVersions({
       <PopoverPopup align="end" width="md">
         <PopoverTitle>{kind ? m(label) : gt("Device tools")}</PopoverTitle>
         {tools ? (
-          <div className="mt-4 divide-y divide-border/50">
+          <div className="mt-4 divide-y divide-border/80">
             {(
               [
                 [msg("Device hub"), tools.hub],
@@ -70,17 +70,17 @@ export function DeviceToolVersions({
                     <dt className="text-muted-foreground">
                       <T context="running tool version">Running</T>
                     </dt>
-                    <dd className="text-right font-mono">
+                    <dd className="text-right tabular-nums">
                       {tool.runningVersion ?? gt("Not running")}
                     </dd>
                     <dt className="text-muted-foreground">
                       <T context="required tool version">Required</T>
                     </dt>
-                    <dd className="text-right font-mono">{tool.requiredVersion}</dd>
+                    <dd className="text-right tabular-nums">{tool.requiredVersion}</dd>
                     <dt className="text-muted-foreground">
                       <T context="installed tool versions">Installed</T>
                     </dt>
-                    <dd className="text-right font-mono break-words">
+                    <dd className="text-right tabular-nums break-words">
                       {tool.installedVersions.join(", ") || gt("None", { $context: "no versions" })}
                     </dd>
                   </dl>
@@ -92,7 +92,7 @@ export function DeviceToolVersions({
             <T>Versions have not been checked.</T>
           </p>
         )}
-        <p className="mt-4 border-t border-border/50 pt-3 text-xs text-muted-foreground">
+        <p className="mt-4 border-t border-border/80 pt-3 text-xs text-muted-foreground">
           {owner ? `${gt("Managed by {owner}.", { owner })} ` : ""}
           {gt("Tools update automatically on this host when needed.")}
         </p>

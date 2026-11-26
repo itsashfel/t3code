@@ -8,18 +8,10 @@ import { PullRequestGlyph } from "../pullRequest/pullRequestIcons";
 import { selectEnvironmentQueryData } from "@t3tools/client-runtime/state/runtime";
 import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
 import type { EnvironmentId, ProjectId, PullRequestRef } from "@t3tools/contracts";
-import {
-  ArrowUpRightIcon,
-  EyeIcon,
-  EyeOffIcon,
-  FileDiffIcon,
-  GitBranchIcon,
-  TriangleAlertIcon,
-} from "lucide-react";
+import { EyeIcon, EyeOffIcon, FileDiffIcon, GitBranchIcon, TriangleAlertIcon } from "lucide-react";
 import { AsyncResult } from "effect/reactivity";
 import type { MouseEvent as ReactMouseEvent } from "react";
 
-import type { ComposerThreadTarget } from "~/composerDraftStore";
 import { useLiveRefresh } from "~/hooks/useLiveRefresh";
 import { usePullRequestChecksRefresh } from "~/hooks/usePullRequestChecksRefresh";
 import { cn } from "~/lib/utils";
@@ -32,12 +24,9 @@ import {
 } from "~/state/query";
 
 import {
-  buildFixFindingsHandoff,
-  buildResolveConflictsPrompt,
   classifyPullRequestChecks,
   describePullRequestChecks,
   isPullRequestConflicting,
-  resolveThreadPanelPullRequestAction,
 } from "../pullRequest/pullRequestDetail.logic";
 import { PullRequestChecksPopover } from "../pullRequest/PullRequestChecksPopover";
 import {
@@ -48,18 +37,10 @@ import {
   resolvePullRequestState,
 } from "../pullRequest/pullRequestPresentation";
 import {
-  usePullRequestActionRunner,
-  usePullRequestHandoffs,
-  writeHandoffToComposer,
-  type PullRequestThreadTask,
-} from "../pullRequest/usePullRequestActions";
-import {
   ChangeRequestStatusIcon,
   type PrStatusIndicator,
   type ThreadPr,
 } from "../ThreadStatusIndicators";
-import { Spinner } from "../ui/spinner";
-import { toastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 import {
@@ -81,9 +62,7 @@ export function ThreadDetailsPrRow({
   project,
   label,
   onOpen,
-  onActed,
   onStopWatching,
-  composerTarget,
 }: {
   environmentId: EnvironmentId;
   pr: ThreadPr;
@@ -93,10 +72,7 @@ export function ThreadDetailsPrRow({
   project: EnvironmentProject | null;
   label: string;
   onOpen: (event: ReactMouseEvent<HTMLElement>) => void;
-  onActed?: () => void;
   onStopWatching?: (() => void) | undefined;
-  /** Fix and Resolve write here instead of checking the pull request out in a new thread. */
-  composerTarget?: ComposerThreadTarget | undefined;
 }) {
   const gt = useGT();
   const m = useMessages();
@@ -153,73 +129,9 @@ export function ThreadDetailsPrRow({
     checks: detail?.checks ?? [],
   });
 
-  const { actionPending, pendingAction, perform } = usePullRequestActionRunner({
-    environmentId,
-    reference,
-    headSha: detail?.headSha,
-    terminology,
-    onSuccess: () => {
-      checksQuery.refresh();
-      onActed?.();
-    },
-    // A refused merge usually means the row is stale, so show what the host has now.
-    onFailure: () => detailQuery.refresh(),
-  });
-  const { handoff, startHandoff } = usePullRequestHandoffs({ environmentId, detail });
-  const resolvedAction =
-    pendingAction === "ready" ? pendingAction : resolveThreadPanelPullRequestAction(detail);
-  // The row reports a mergeable PR with its checks and number; merging happens on the host.
-  const rowAction = resolvedAction === "merge" ? null : resolvedAction;
   const conflicting = isPullRequestConflicting(detail);
   const checksState = detail === null ? "none" : classifyPullRequestChecks(detail.checks);
   const checksRollup = detail === null ? null : pullRequestChecksState(detail.checks);
-
-  const handOff = (kind: "conflicts" | "findings", task: PullRequestThreadTask) => {
-    if (composerTarget === undefined) {
-      void startHandoff(kind, task);
-      return;
-    }
-    writeHandoffToComposer(composerTarget, task);
-    toastManager.add({
-      type: "success",
-      title: gt("Added to the composer"),
-      description: gt("The task is in the composer. Read it over, then send."),
-    });
-  };
-
-  const startResolveConflicts = () => {
-    if (detail === null) return;
-    handOff("conflicts", {
-      prompt: buildResolveConflictsPrompt({
-        number: detail.number,
-        url: detail.url,
-        headBranch: detail.headBranch,
-        baseBranch: detail.baseBranch,
-        inThisThread: composerTarget !== undefined,
-      }),
-    });
-  };
-
-  const startFixChecks = () => {
-    if (detail === null) return;
-    handOff(
-      "findings",
-      buildFixFindingsHandoff({
-        number: detail.number,
-        title: detail.title,
-        url: detail.url,
-        headBranch: detail.headBranch,
-        baseBranch: detail.baseBranch,
-        state: detail.state,
-        isDraft: detail.isDraft,
-        reviewThreads: [],
-        comments: [],
-        checks: detail.checks,
-        commentsTruncated: false,
-        inThisThread: composerTarget !== undefined,
-      }),
-    );
-  };
 
   const statePresentation =
     detail === null
@@ -302,11 +214,11 @@ export function ThreadDetailsPrRow({
                 aria-hidden
                 className={cn("size-3 shrink-0", statePresentation.toneClassName)}
               />
-              <div className="min-w-0 truncate text-foreground/75">{statePresentation.label}</div>
+              <div className="min-w-0 truncate text-foreground/85">{statePresentation.label}</div>
             </div>
             <div className="flex min-w-0 items-center gap-2">
               <GitBranchIcon className="size-3 shrink-0 stroke-muted-foreground" />
-              <div className="min-w-0 truncate text-foreground/75">
+              <div className="min-w-0 truncate text-foreground/85">
                 {detail.baseBranch} ← {detail.headBranch}
               </div>
             </div>
@@ -321,7 +233,7 @@ export function ThreadDetailsPrRow({
                         : "success"
                   }
                 />
-                <div className="min-w-0 truncate text-foreground/75">
+                <div className="min-w-0 truncate text-foreground/85">
                   {describePullRequestChecks(detail.checks, m)}
                 </div>
               </div>
@@ -338,7 +250,7 @@ export function ThreadDetailsPrRow({
             ) : null}
             <div className="flex min-w-0 items-center gap-2">
               <FileDiffIcon className="size-3 shrink-0 stroke-muted-foreground" />
-              <div className="min-w-0 flex items-baseline gap-1 truncate text-foreground/75">
+              <div className="min-w-0 flex items-baseline gap-1 truncate text-foreground/85">
                 {gt("{count, plural, one {{formatted} file} other {{formatted} files}}", {
                   count: detail.changedFiles,
                   formatted: detail.changedFiles.toLocaleString(),
@@ -350,64 +262,13 @@ export function ThreadDetailsPrRow({
               <PullRequestChangeBreakdownRows
                 environmentId={environmentId}
                 reference={reference}
-                className="pl-5 text-foreground/75"
+                className="pl-5 text-foreground/85"
               />
             ) : null}
           </div>
         </div>
       </TooltipPopup>
     );
-
-  const newThreadSuffix =
-    composerTarget === undefined ? (
-      <ArrowUpRightIcon aria-hidden className="size-3 shrink-0" />
-    ) : null;
-  const trailingAction =
-    rowAction === "resolve"
-      ? {
-          label: gt("Resolve", { $context: "verb, resolves merge conflicts" }),
-          pendingLabel: gt("Preparing..."),
-          pending: handoff === "conflicts",
-          destructive: true,
-          suffix: newThreadSuffix,
-          tooltip:
-            composerTarget === undefined
-              ? gt("Check the branch out and resolve the conflicts in a new thread")
-              : gt("Resolve the conflicts in this thread"),
-          onClick: startResolveConflicts,
-        }
-      : rowAction === "ready"
-        ? {
-            label: gt("Ready", { $context: "verb, marks a draft pull request ready for review" }),
-            pendingLabel: gt("Marking..."),
-            pending: actionPending,
-            destructive: false,
-            suffix: null,
-            tooltip: gt(
-              "Mark this {term, select, mr {merge request} cr {change request} other {pull request}} as ready for review",
-              { term },
-            ),
-            onClick: () => void perform("ready"),
-          }
-        : rowAction === "fix"
-          ? {
-              label: gt("Fix", { $context: "verb, fixes failing checks" }),
-              pendingLabel: gt("Fix", { $context: "verb, fixes failing checks" }),
-              pending: handoff === "findings",
-              destructive: true,
-              suffix:
-                handoff === "findings" ? (
-                  <Spinner size="xs" aria-label={gt("Preparing fix")} />
-                ) : (
-                  newThreadSuffix
-                ),
-              tooltip:
-                composerTarget === undefined
-                  ? gt("Fix the failing checks in a new thread")
-                  : gt("Fix the failing checks in this thread"),
-              onClick: startFixChecks,
-            }
-          : null;
 
   const watching =
     onStopWatching !== undefined && (detail?.state ?? pr?.state ?? "open") === "open";
@@ -453,12 +314,16 @@ export function ThreadDetailsPrRow({
     showChecks && checksRollup !== null
       ? pullRequestChecksStatePresentation(checksRollup, m)
       : null;
-  const checksIcon = checksPresentation ? (
-    <checksPresentation.Icon
-      aria-hidden
-      className={cn("size-3.5 shrink-0", checksPresentation.toneClassName)}
-    />
-  ) : null;
+  // Conflicts outrank checks: the PR view's Resolve is the next step.
+  const checksIcon =
+    detail?.state === "open" && conflicting ? (
+      <PullRequestGlyph.conflicting aria-hidden className="size-3.5 shrink-0 text-destructive" />
+    ) : checksPresentation ? (
+      <checksPresentation.Icon
+        aria-hidden
+        className={cn("size-3.5 shrink-0", checksPresentation.toneClassName)}
+      />
+    ) : null;
 
   const openRow = (part: "row" | "primary", showNumber: boolean) => (
     <Tooltip>
@@ -488,7 +353,7 @@ export function ThreadDetailsPrRow({
 
   return (
     <>
-      {(detail !== null && trailingAction !== null) || watching ? (
+      {watching ? (
         <div className={THREAD_DETAILS_PANEL_SPLIT_GROUP_CLASS}>
           {openRow("primary", false)}
           <div className="flex shrink-0 items-center gap-1.5 ps-1 pe-1.5 text-xs text-muted-foreground">

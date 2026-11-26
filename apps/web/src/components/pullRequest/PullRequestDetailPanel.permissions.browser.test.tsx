@@ -8,7 +8,6 @@ import {
 } from "@t3tools/contracts";
 import { expect, it, vi } from "vite-plus/test";
 import { page } from "vite-plus/test/browser";
-import appCss from "~/index.css?inline";
 import { DraftId, useComposerDraftStore } from "~/composerDraftStore";
 import { act, fakeTimers, render } from "../../../test/render";
 
@@ -74,7 +73,6 @@ vi.mock(import("~/state/use-atom-command"), async (original) => ({
   useAtomCommand: (() => command) as never,
 }));
 
-import { createWorkspaceFocusController, workspaceAreaProps } from "~/lib/workspaceFocus";
 import { PullRequestDetailPanel } from "./PullRequestDetailPanel";
 
 const detail: PullRequestDetailView = {
@@ -185,6 +183,21 @@ it("can still add conflict resolution to an existing composer without checkout s
   expect(draft?.prompt).toContain(detail.url);
 });
 
+it("offers Fix checks in the header when checks fail, adding the task to the composer", async () => {
+  setup();
+  const failing: PullRequestDetailView = {
+    ...detail,
+    mergeability: "mergeable",
+    checks: [{ name: "Unit tests", status: "failure", description: null, url: null }],
+  };
+  shown.detail = failing;
+  await using screen = await render(panel(true, failing));
+  const fix = screen.getByRole("button", { name: "Fix checks" });
+  await expect.element(fix).toBeEnabled();
+  await act(() => fix.click());
+  expect(useComposerDraftStore.getState().getComposerDraft(draftId)?.prompt).toContain(failing.url);
+});
+
 it("keeps a merge and a review on the head the reader was shown until they load new commits", async () => {
   setup();
   command.mockResolvedValue({ _tag: "Success", value: undefined });
@@ -258,42 +271,4 @@ it("reads the first diff page once the pointer rests on the Code tab", async () 
     environmentId,
     input: { projectId: detail.projectId, repository: detail.repository, number: detail.number },
   });
-});
-
-it("keeps a screen reader's place when scrolling the description condenses the header", async () => {
-  setup();
-  shown.detail = {
-    ...detail,
-    body: Array.from({ length: 80 }, (_, line) => `Line ${line}`).join("\n\n"),
-  };
-  const style = document.createElement("style");
-  style.textContent = appCss;
-  document.head.append(style);
-  using _style = { [Symbol.dispose]: () => style.remove() };
-  const controller = createWorkspaceFocusController(document);
-  using _controller = { [Symbol.dispose]: () => controller.dispose() };
-  await using screen = await render(
-    <div {...workspaceAreaProps("pull-requests", 1)} className="flex h-[600px] flex-col">
-      {panel()}
-    </div>,
-  );
-  const openOnHost = screen.getByRole("button", { name: "Open pull request #1 on host" });
-  await expect.element(openOnHost).toBeVisible();
-  const expanded = openOnHost.element() as HTMLButtonElement;
-  expanded.focus();
-  await expect.element(screen.getByText("Line 79")).toBeInTheDocument();
-  let scroller = screen.getByText("Line 79").element().parentElement;
-  while (scroller && getComputedStyle(scroller).overflowY !== "auto") {
-    scroller = scroller.parentElement;
-  }
-  using _timers = fakeTimers();
-  using moves = vi.spyOn(HTMLElement.prototype, "focus");
-  // Browse mode scrolls a heading into view without moving DOM focus.
-  await act(() => {
-    scroller!.scrollTop = scroller!.scrollHeight;
-  });
-  await vi.waitFor(() => expect(expanded.closest("[inert]")).not.toBeNull());
-  await act(() => vi.advanceTimersToNextFrame());
-  // A programmatic focus() pulls the screen reader's browse cursor back to the header.
-  expect(moves).not.toHaveBeenCalled();
 });

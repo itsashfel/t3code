@@ -65,7 +65,7 @@ export function RelayClientInstallDialog() {
     >
       <DialogPopup className="max-w-md" showCloseButton={isConfirming}>
         <DialogHeader>
-          <div className="flex size-9 items-center justify-center rounded-lg border border-border/70 bg-muted/60">
+          <div className="flex size-9 items-center justify-center rounded-lg border border-border/90 bg-muted/60">
             <DownloadIcon aria-hidden className="size-4.5 text-muted-foreground" />
           </div>
           <DialogTitle>
@@ -104,7 +104,7 @@ export function RelayClientInstallDialog() {
               </p>
             </div>
           ) : (
-            <div className="rounded-xl border border-border/70 bg-muted/35 p-3">
+            <div className="rounded-xl border border-border/90 bg-muted/35 p-3">
               <p className="text-sm font-medium text-foreground">
                 <T>Managed relay client</T>
               </p>

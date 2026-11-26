@@ -426,6 +426,7 @@ export function SettingsSidebarNav({ pathname }: { pathname: string }) {
                                   <span
                                     className={cn(
                                       "truncate",
+                                      !isActive && "text-sidebar-foreground/85",
                                       !compactSearchOpen && "max-md:sr-only",
                                     )}
                                   >

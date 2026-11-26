@@ -263,7 +263,8 @@ export const OpenInPicker = memo(function OpenInPicker({
       aria-label={primaryControlLabel}
       // Tooltip replaces the button data-slot, so toolbar theming needs a separate hook.
       data-toolbar-control=""
-      size={isPanel ? "sm" : "xs"}
+      // A file surface toolbar sizes its icon buttons sm; the header's are xs.
+      size={isPanel || compact ? "sm" : "xs"}
       variant={isPanel ? "ghost" : "outline"}
       part="primary"
       panel={isPanel}
@@ -324,7 +325,7 @@ export const OpenInPicker = memo(function OpenInPicker({
                 <ThreadDetailsControl
                   aria-label={gt("Choose editor")}
                   data-toolbar-control=""
-                  size={isPanel ? "sm" : "icon-xs"}
+                  size={isPanel ? "sm" : compact ? "icon-sm" : "icon-xs"}
                   variant={isPanel ? "ghost" : "outline"}
                   part="secondary"
                   panel={isPanel}

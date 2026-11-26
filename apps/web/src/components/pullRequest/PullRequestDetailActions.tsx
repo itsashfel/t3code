@@ -4,7 +4,14 @@ import type {
   PullRequestMergeMethod,
   PullRequestUpdateMethod,
 } from "@t3tools/contracts";
-import { CheckIcon, ChevronDownIcon, FolderGit2Icon, GitBranchIcon, PlayIcon } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  CircleXIcon,
+  FolderGit2Icon,
+  GitBranchIcon,
+  PlayIcon,
+} from "lucide-react";
 import { Branch, T, useGT } from "gt-react";
 import type { ReactNode } from "react";
 
@@ -201,6 +208,39 @@ export function PullRequestResolveConflictsButton({
 }
 
 /** The header's one prominent control, which depends on where the pull request stands. */
+/** Hands the failing checks, open review threads and comments to an agent to fix. */
+export function PullRequestFixChecksButton({
+  handoff,
+  onFix,
+}: {
+  handoff: string | null;
+  onFix: () => void;
+}) {
+  const gt = useGT();
+  const label = handoff === "findings" ? gt("Preparing...") : gt("Fix checks");
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <span className="inline-flex shrink-0">
+            <Button
+              size="xs"
+              variant="destructive-outline"
+              disabled={handoff !== null}
+              onClick={onFix}
+              aria-label={label}
+            >
+              <CircleXIcon aria-hidden className="size-3.5" />
+              <span className="@max-[30rem]/pr-header:hidden">{label}</span>
+            </Button>
+          </span>
+        }
+      />
+      <TooltipPopup side="top">{gt("Fix the failing checks in a new thread")}</TooltipPopup>
+    </Tooltip>
+  );
+}
+
 export function PullRequestPrimaryAction({
   pullRequestKey,
   primaryAction,

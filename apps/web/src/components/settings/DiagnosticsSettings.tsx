@@ -89,15 +89,15 @@ function StatBlock({
   tone?: "default" | "warning" | "danger";
 }) {
   return (
-    <div className="min-w-0 border-border/60 px-4 py-3 sm:px-5">
-      <div className="flex min-w-0 items-center gap-1.5 text-2xs font-medium uppercase tracking-widest text-muted-foreground/70">
+    <div className="min-w-0 border-border/80 px-4 py-3 sm:px-5">
+      <div className="flex min-w-0 items-center gap-1.5 text-2xs font-medium uppercase tracking-widest text-muted-foreground/85">
         <span className="min-w-0 truncate">{label}</span>
         {tooltip ? (
           <SharedTooltipTrigger
             render={
               <button
                 type="button"
-                className="cursor-pointer inline-flex size-3.5 shrink-0 items-center justify-center rounded-sm text-muted-foreground/60 hover:text-foreground"
+                className="cursor-pointer inline-flex size-3.5 shrink-0 items-center justify-center rounded-sm text-muted-foreground/85 hover:text-foreground"
                 aria-label={`${label} details`}
               >
                 <InfoIcon className="size-3" />
@@ -109,7 +109,7 @@ function StatBlock({
       </div>
       <div
         className={cn(
-          "mt-1 truncate font-mono text-lg font-semibold tabular-nums text-foreground",
+          "mt-1 truncate text-lg font-semibold tabular-nums text-foreground",
           tone === "warning" && "text-warning-foreground",
           tone === "danger" && "text-destructive",
         )}
@@ -177,7 +177,7 @@ function DiagnosticsTable({
             ))}
           </colgroup>
         ) : null}
-        <thead className="border-b border-border/60 text-2xs uppercase tracking-widest text-muted-foreground/70">
+        <thead className="border-b border-border/80 text-2xs uppercase tracking-widest text-muted-foreground/85">
           <tr>
             {headers.map((header, index) => (
               <th
@@ -192,7 +192,7 @@ function DiagnosticsTable({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-border/60">{children}</tbody>
+        <tbody className="divide-y divide-border/80">{children}</tbody>
       </table>
     </ScrollArea>
   );
@@ -213,7 +213,7 @@ function TraceIdCell({ traceId }: { traceId: string }) {
     <div className="flex w-full min-w-0 max-w-full items-center gap-2">
       <SharedTooltipTrigger
         render={
-          <span className="min-w-0 flex-1 truncate font-mono text-2xs">
+          <span className="min-w-0 flex-1 truncate tabular-nums text-2xs">
             {shortenTraceId(traceId)}
           </span>
         }
@@ -344,7 +344,7 @@ function ProcessDiagnosticsTable({
   };
 
   return (
-    <div className="border-t border-border/60">
+    <div className="border-t border-border/80">
       <ScrollArea
         radius="none"
         chainVerticalScroll
@@ -362,7 +362,7 @@ function ProcessDiagnosticsTable({
             <col className="w-[11%]" />
             <col className="w-[6%]" />
           </colgroup>
-          <thead className="sticky top-0 z-10 border-b border-border/60 bg-card text-2xs uppercase tracking-widest text-muted-foreground/70">
+          <thead className="sticky top-0 z-10 border-b border-border/80 bg-card text-2xs uppercase tracking-widest text-muted-foreground/85">
             <tr>
               <th className="px-4 py-2 font-semibold sm:pl-5">
                 <T>Name</T>
@@ -387,7 +387,7 @@ function ProcessDiagnosticsTable({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border/50">
+          <tbody className="divide-y divide-border/80">
             {visibleProcesses.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-4 py-4 text-xs text-muted-foreground sm:px-5">
@@ -404,10 +404,10 @@ function ProcessDiagnosticsTable({
                     onToggle={toggleProcess}
                   />
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums">
+                <td className="px-3 py-2 text-right align-middle tabular-nums">
                   {process.cpuPercent.toFixed(1)}%
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums">
+                <td className="px-3 py-2 text-right align-middle tabular-nums">
                   {formatBytes(process.rssBytes)}
                 </td>
                 <td className="px-3 py-2 align-middle text-muted-foreground">
@@ -417,7 +417,7 @@ function ProcessDiagnosticsTable({
                     variant="code"
                   />
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums text-muted-foreground">
+                <td className="px-3 py-2 text-right align-middle tabular-nums text-muted-foreground">
                   {process.pid}
                 </td>
                 <td className="truncate px-3 py-2 align-middle text-muted-foreground">
@@ -494,7 +494,7 @@ function ProcessResourceHistoryChart({
   const maxCpuPercent = Math.max(1, ...buckets.map((bucket) => bucket.maxCpuPercent));
 
   return (
-    <div className="border-t border-border/60 px-4 py-3 sm:px-5">
+    <div className="border-t border-border/80 px-4 py-3 sm:px-5">
       <div className="flex h-28 items-end gap-1 overflow-hidden rounded-sm bg-muted/10 p-2">
         {buckets.map((bucket) => {
           const peakHeight = Math.max(2, (bucket.maxCpuPercent / maxCpuPercent) * 100);
@@ -577,7 +577,7 @@ function ProcessResourceHistoryTable({
   }, null);
 
   return (
-    <div className="border-t border-border/60">
+    <div className="border-t border-border/80">
       <ScrollArea
         chainVerticalScroll
         scrollFade
@@ -595,7 +595,7 @@ function ProcessResourceHistoryTable({
             <col className="w-[16%]" />
             <col className="w-[10%]" />
           </colgroup>
-          <thead className="sticky top-0 z-10 border-b border-border/60 bg-card text-2xs uppercase tracking-widest text-muted-foreground/70">
+          <thead className="sticky top-0 z-10 border-b border-border/80 bg-card text-2xs uppercase tracking-widest text-muted-foreground/85">
             <tr>
               <th className="px-4 py-2 font-semibold sm:pl-5">
                 <T>Process</T>
@@ -623,7 +623,7 @@ function ProcessResourceHistoryTable({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border/50">
+          <tbody className="divide-y divide-border/80">
             {processes.length === 0 ? (
               <tr>
                 <td colSpan={8} className="px-4 py-4 text-xs text-muted-foreground sm:px-5">
@@ -643,19 +643,19 @@ function ProcessResourceHistoryTable({
                     }
                   />
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums">
+                <td className="px-3 py-2 text-right align-middle tabular-nums">
                   {formatCpuTime(process.cpuSecondsApprox, m)}
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums">
+                <td className="px-3 py-2 text-right align-middle tabular-nums">
                   {process.currentCpuPercent.toFixed(1)}%
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums">
+                <td className="px-3 py-2 text-right align-middle tabular-nums">
                   {process.avgCpuPercent.toFixed(1)}%
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums">
+                <td className="px-3 py-2 text-right align-middle tabular-nums">
                   {process.maxCpuPercent.toFixed(1)}%
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums">
+                <td className="px-3 py-2 text-right align-middle tabular-nums">
                   {formatBytes(process.maxRssBytes)}
                 </td>
                 <td className="px-3 py-2 align-middle text-muted-foreground">
@@ -665,7 +665,7 @@ function ProcessResourceHistoryTable({
                     variant="code"
                   />
                 </td>
-                <td className="px-3 py-2 text-right align-middle font-mono tabular-nums text-muted-foreground sm:pr-5">
+                <td className="px-3 py-2 text-right align-middle tabular-nums text-muted-foreground sm:pr-5">
                   {process.pid}
                 </td>
               </tr>
@@ -683,7 +683,7 @@ function DiagnosticsLastChecked({ checkedAt }: { checkedAt: DateTime.Utc | null 
 
   if (relative.status === "missing") {
     return (
-      <span className="text-2xs text-muted-foreground/50">
+      <span className="text-2xs text-muted-foreground/85">
         <T>Checking</T>
       </span>
     );
@@ -691,18 +691,18 @@ function DiagnosticsLastChecked({ checkedAt }: { checkedAt: DateTime.Utc | null 
 
   if (relative.status === "invalid") {
     return (
-      <span className="text-2xs text-muted-foreground/50">
+      <span className="text-2xs text-muted-foreground/85">
         <T>Checked unavailable</T>
       </span>
     );
   }
 
   return (
-    <span className="text-2xs text-muted-foreground/60">
+    <span className="text-2xs text-muted-foreground/85">
       {relative.suffix ? (
         <T context="the time is an elapsed time such as 5m">
           Checked{" "}
-          <span className="font-mono tabular-nums">
+          <span className="tabular-nums">
             <Var>{relative.value}</Var>
           </span>{" "}
           ago
@@ -1011,7 +1011,7 @@ function DiagnosticsSettingsBody() {
           />
         </StatsGrid>
         {processDiagnosticsError || processError ? (
-          <div className="space-y-2 border-t border-border/60 px-4 py-3 text-xs text-muted-foreground sm:px-5">
+          <div className="space-y-2 border-t border-border/80 px-4 py-3 text-xs text-muted-foreground sm:px-5">
             {processDiagnosticsError ? (
               <div className="flex items-start gap-2 text-destructive">
                 <AlertTriangleIcon className="size-3.5 h-lh shrink-0" />
@@ -1087,7 +1087,7 @@ function DiagnosticsSettingsBody() {
           />
         </StatsGrid>
         {processResourceError || resourceError ? (
-          <div className="space-y-2 border-t border-border/60 px-4 py-3 text-xs text-muted-foreground sm:px-5">
+          <div className="space-y-2 border-t border-border/80 px-4 py-3 text-xs text-muted-foreground sm:px-5">
             {processResourceError ? (
               <div className="flex items-start gap-2 text-destructive">
                 <AlertTriangleIcon className="size-3.5 h-lh shrink-0" />
@@ -1174,7 +1174,7 @@ function DiagnosticsSettingsBody() {
           />
         </StatsGrid>
         {openLogsDirectoryError || traceDiagnosticsError || error ? (
-          <div className="space-y-2 border-t border-border/60 px-4 py-3 text-xs text-muted-foreground sm:px-5">
+          <div className="space-y-2 border-t border-border/80 px-4 py-3 text-xs text-muted-foreground sm:px-5">
             {openLogsDirectoryError ? (
               <div className="flex items-start gap-2 text-destructive">
                 <AlertTriangleIcon className="size-3.5 h-lh shrink-0" />
@@ -1220,10 +1220,10 @@ function DiagnosticsSettingsBody() {
                 <td className="max-w-[360px] px-4 py-3 align-top text-muted-foreground">
                   <ExpandableText text={failure.cause} />
                 </td>
-                <td className="px-4 py-3 align-top font-mono tabular-nums">
+                <td className="px-4 py-3 align-top tabular-nums">
                   {formatDiagnosticsDuration(failure.durationMs)}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 align-top font-mono tabular-nums text-muted-foreground last:sm:pr-5">
+                <td className="whitespace-nowrap px-4 py-3 align-top tabular-nums text-muted-foreground last:sm:pr-5">
                   <RelativeTimeNoWrap value={failure.endedAt} />
                 </td>
               </tr>
@@ -1247,13 +1247,11 @@ function DiagnosticsSettingsBody() {
                 <td className="px-4 py-3 align-top text-xs font-medium text-foreground first:sm:pl-5">
                   {failure.name}
                 </td>
-                <td className="px-4 py-3 align-top font-mono tabular-nums">
-                  {formatCount(failure.count)}
-                </td>
+                <td className="px-4 py-3 align-top tabular-nums">{formatCount(failure.count)}</td>
                 <td className="max-w-[360px] px-4 py-3 align-top text-muted-foreground">
                   <ExpandableText text={failure.cause} />
                 </td>
-                <td className="w-px whitespace-nowrap px-4 py-3 align-top font-mono tabular-nums text-muted-foreground last:sm:pr-5">
+                <td className="w-px whitespace-nowrap px-4 py-3 align-top tabular-nums text-muted-foreground last:sm:pr-5">
                   <RelativeTimeNoWrap value={failure.lastSeenAt} />
                 </td>
               </tr>
@@ -1280,10 +1278,10 @@ function DiagnosticsSettingsBody() {
                 <td className="px-4 py-3 align-top text-xs font-medium text-foreground first:sm:pl-5">
                   {span.name}
                 </td>
-                <td className="px-4 py-3 align-top font-mono tabular-nums">
+                <td className="px-4 py-3 align-top tabular-nums">
                   {formatDiagnosticsDuration(span.durationMs)}
                 </td>
-                <td className="w-px whitespace-nowrap px-4 py-3 align-top font-mono tabular-nums text-muted-foreground">
+                <td className="w-px whitespace-nowrap px-4 py-3 align-top tabular-nums text-muted-foreground">
                   <RelativeTimeNoWrap value={span.endedAt} />
                 </td>
                 <td className="min-w-0 whitespace-nowrap px-4 py-3 align-top text-muted-foreground last:sm:pr-5">
@@ -1316,7 +1314,7 @@ function DiagnosticsSettingsBody() {
                 <col className="w-[26%]" />
                 <col className="w-[30%]" />
               </colgroup>
-              <thead className="border-b border-border/60 text-2xs uppercase tracking-widest text-muted-foreground/70">
+              <thead className="border-b border-border/80 text-2xs uppercase tracking-widest text-muted-foreground/85">
                 <tr>
                   <th className="whitespace-nowrap px-4 py-2.5 font-semibold sm:pl-5">
                     <T>Time</T>
@@ -1335,17 +1333,17 @@ function DiagnosticsSettingsBody() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/60">
+              <tbody className="divide-y divide-border/80">
                 {data.latestWarningAndErrorLogs.map((event) => (
                   <tr
                     key={`${event.traceId}:${event.spanId}:${DateTime.formatIso(event.seenAt)}:${event.message}`}
                     className="hover:bg-muted/15"
                   >
-                    <td className="whitespace-nowrap px-4 py-3 align-top font-mono tabular-nums text-muted-foreground sm:pl-5">
+                    <td className="whitespace-nowrap px-4 py-3 align-top tabular-nums text-muted-foreground sm:pl-5">
                       <RelativeTimeNoWrap value={event.seenAt} />
                     </td>
                     <td className="px-4 py-3 align-top">
-                      <span className="inline-flex rounded bg-muted px-1.5 py-0.5 font-mono text-2xs font-medium uppercase text-foreground/80">
+                      <span className="inline-flex rounded bg-muted px-1.5 py-0.5 tabular-nums text-2xs font-medium uppercase text-foreground/80">
                         {event.level}
                       </span>
                     </td>
@@ -1388,16 +1386,16 @@ function DiagnosticsSettingsBody() {
                 <td className="px-4 py-3 align-top text-xs font-medium text-foreground first:sm:pl-5">
                   {span.name}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 align-top font-mono tabular-nums">
+                <td className="whitespace-nowrap px-4 py-3 align-top tabular-nums">
                   {formatCount(span.count)}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 align-top font-mono tabular-nums">
+                <td className="whitespace-nowrap px-4 py-3 align-top tabular-nums">
                   {formatCount(span.failureCount)}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 align-top font-mono tabular-nums">
+                <td className="whitespace-nowrap px-4 py-3 align-top tabular-nums">
                   {formatDiagnosticsDuration(span.averageDurationMs)}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 align-top font-mono tabular-nums last:sm:pr-5">
+                <td className="whitespace-nowrap px-4 py-3 align-top tabular-nums last:sm:pr-5">
                   {formatDiagnosticsDuration(span.maxDurationMs)}
                 </td>
               </tr>

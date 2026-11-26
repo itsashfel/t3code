@@ -828,7 +828,7 @@ function TimelineRow({
           <span
             className={cn(
               "min-w-0 truncate text-sm",
-              live || selected || current ? "font-medium text-foreground" : "text-foreground/75",
+              live || selected || current ? "font-medium text-foreground" : "text-foreground/85",
             )}
           >
             {name}
@@ -1803,7 +1803,7 @@ function WorkflowAgentCard({
       ) : null}
       {summary.said === null ? null : (
         // Set off from the head, so headings in the reply read as the agent's, not the page's.
-        <div className="mt-3 border-t border-border/60 pt-3">
+        <div className="mt-3 border-t border-border/80 pt-3">
           <ChatMarkdown
             text={start !== null && !all ? start : summary.said}
             cwd={undefined}

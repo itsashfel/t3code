@@ -811,7 +811,7 @@ function UserTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "message" 
             ) : (
               <div
                 className={cn(
-                  "flex min-h-[72px] items-center justify-center px-2 py-3 text-center text-2xs text-muted-foreground/70",
+                  "flex min-h-[72px] items-center justify-center px-2 py-3 text-center text-2xs text-muted-foreground/85",
                   loneImage && "h-48 w-64 max-w-full",
                   collage && "h-full",
                 )}
@@ -905,7 +905,7 @@ function UserTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "message" 
     >
       {userMessage.attribution === "t3code" ? (
         <p
-          className="me-1 text-2xs text-muted-foreground/70"
+          className="me-1 text-2xs text-muted-foreground/85"
           data-user-message-attribution="t3code"
         >
           <T>Sent by T3 Code</T>

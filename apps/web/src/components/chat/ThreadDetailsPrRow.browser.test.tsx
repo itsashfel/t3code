@@ -161,13 +161,6 @@ const repositoryProject = {
   },
 } satisfies EnvironmentProject;
 
-const clickButton = async (scope: ParentNode, label: string) =>
-  await act(async () => {
-    [...scope.querySelectorAll("button")]
-      .find((button) => button.textContent?.trim() === label)!
-      .click();
-  });
-
 async function setup() {
   state.perform.mockReset().mockResolvedValue({ _tag: "Success", value: undefined });
   state.checkoutError = null;
@@ -192,31 +185,6 @@ async function setup() {
   useUiStateStore.getState().setPullRequestMergeMethod("merge");
   return renderUi(null);
 }
-
-it("adds the failing checks to a given composer instead of opening a new thread", async () => {
-  await using screen = await setup();
-  state.status = "failure";
-  await act(async () => {
-    await screen.rerender(
-      <ThreadDetailsPrRow
-        environmentId={EnvironmentId.make("environment")}
-        pr={null}
-        number={1}
-        status={null}
-        project={repositoryProject}
-        label="Test PR"
-        onOpen={vi.fn()}
-        composerTarget={threadRef}
-      />,
-    );
-  });
-  await clickButton(screen.container, "Fix");
-  expect(state.newThread).not.toHaveBeenCalled();
-  expect(state.prepareThread).not.toHaveBeenCalled();
-  expect(useComposerDraftStore.getState().getComposerDraft(threadRef)?.prompt).toContain(
-    "https://github.com/owner/repo/pull/1",
-  );
-});
 
 it("names a linked pull request row by its kind, number and title, not its URL", async () => {
   await using screen = await setup();
@@ -316,49 +284,35 @@ it("names the first linked issue and reveals more issues on demand", async () =>
   await expect.element(extra).not.toBeInTheDocument();
 });
 
-it("keeps Ready pending when refreshed detail becomes mergeable before the action settles", async () => {
-  await using screen = await setup();
-  const row = () => (
-    <ThreadDetailsPrRow
-      environmentId={EnvironmentId.make("environment")}
-      pr={null}
-      number={1}
-      status={null}
-      project={repositoryProject}
-      label="Test PR"
-      onOpen={vi.fn()}
-    />
-  );
-  let finish!: (result: { _tag: "Success"; value: undefined }) => void;
-  const result = new Promise<{ _tag: "Success"; value: undefined }>((resolve) => {
-    finish = resolve;
-  });
-  state.perform.mockReturnValueOnce(result);
-  state.isDraft = true;
-  await screen.rerender(row());
-  await clickButton(screen.container, "Ready");
-  expect(state.perform).toHaveBeenCalledWith(
-    expect.objectContaining({
-      input: expect.objectContaining({
-        projectId: repositoryProject.id,
-        repository: "owner/repo",
-        number: 1,
-        action: "ready",
-      }),
-    }),
-  );
-  await expect.element(screen.getByRole("button", { name: "Marking..." })).toBeDisabled();
-
-  state.isDraft = false;
-  await screen.rerender(row());
-  await expect.element(screen.getByRole("button", { name: "Marking..." })).toBeDisabled();
-  await act(async () => {
-    finish({ _tag: "Success", value: undefined });
-    await result;
-  });
-  await expect.element(screen.getByRole("button", { name: "Marking..." })).not.toBeInTheDocument();
-  expect(screen.container.querySelector("button")?.textContent).not.toContain("Merge");
-});
+it.each([
+  ["failing checks", { status: "failure", isDraft: false }],
+  ["a draft", { status: "success", isDraft: true }],
+] as const)(
+  "keeps a pull request with %s to one row; its actions live in the PR view",
+  async (_case, given) => {
+    await using screen = await setup();
+    state.status = given.status;
+    state.isDraft = given.isDraft;
+    await act(async () => {
+      await screen.rerender(
+        <ThreadDetailsPrRow
+          environmentId={EnvironmentId.make("environment")}
+          pr={null}
+          number={1}
+          status={null}
+          project={repositoryProject}
+          label="Test PR"
+          onOpen={vi.fn()}
+        />,
+      );
+    });
+    const buttons = [...screen.container.querySelectorAll("button")];
+    expect(buttons).toHaveLength(1);
+    for (const action of ["Fix", "Ready", "Resolve"]) {
+      expect(buttons[0]!.textContent).not.toContain(action);
+    }
+  },
+);
 
 it("shows a mergeable pull request as one row with its checks and number, not a Merge button", async () => {
   await using screen = await setup();

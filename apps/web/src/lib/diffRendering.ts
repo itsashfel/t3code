@@ -4,12 +4,13 @@ import type { FileDiffMetadata } from "@pierre/diffs/types";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "../i18n/messages";
-import { READABLE_LIGHT_THEME_NAME } from "./readableSyntaxTheme";
+import { READABLE_DARK_THEME_NAME, READABLE_LIGHT_THEME_NAME } from "./readableSyntaxTheme";
 
-// Light mode uses a darker pierre-light so syntax stays readable on every code surface.
+// Light mode uses a darker pierre-light so syntax stays readable on every code surface; dark mode
+// recolors pierre-dark to a calmer One Dark-style palette.
 export const DIFF_THEME_NAMES = {
   light: READABLE_LIGHT_THEME_NAME,
-  dark: "pierre-dark",
+  dark: READABLE_DARK_THEME_NAME,
 } as const;
 
 export type DiffThemeName = (typeof DIFF_THEME_NAMES)[keyof typeof DIFF_THEME_NAMES];
@@ -331,6 +332,32 @@ export function buildFileDiffEntries(files: ReadonlyArray<FileDiffMetadata>) {
 }
 
 export const DIFF_SURFACE_THEME_UNSAFE_CSS = `
+/* Selected lines keep their diff tint under a faint neutral lift, so the change type stays
+   readable; a comment card below them sits on the plain code surface. */
+:is([data-line], [data-no-newline], [data-column-number])[data-selected-line] {
+  --diffs-line-bg: color-mix(
+    in lab,
+    var(--diffs-computed-diff-line-bg) 90%,
+    var(--code-foreground, var(--foreground))
+  ) !important;
+}
+
+[data-column-number][data-selected-line] {
+  color: var(--code-foreground, var(--foreground)) !important;
+}
+
+[data-file] [data-column-number][data-selected-line] {
+  box-shadow: inset 2px 0 var(--primary, var(--diffs-modified-base));
+}
+
+:is([data-line-annotation], [data-gutter-buffer="annotation"]) {
+  --diffs-annotation-bg: var(--code-background, var(--background)) !important;
+}
+
+:is([data-line-annotation], [data-gutter-buffer="annotation"])[data-selected-line] {
+  --diffs-line-bg: var(--code-background, var(--background)) !important;
+}
+
 [data-diffs-header],
 [data-diff],
 [data-file],
@@ -358,27 +385,27 @@ export const DIFF_SURFACE_THEME_UNSAFE_CSS = `
 
   --diffs-bg-addition-override: light-dark(
     color-mix(in srgb, var(--code-background) calc(50% - var(--appearance-contrast-boost, 0%) / 4), var(--diff-addition)),
-    color-mix(in srgb, var(--code-background) calc(70% - var(--appearance-contrast-boost, 0%) / 4), var(--diff-addition))
+    #3fb950
   );
   --diffs-bg-addition-number-override: light-dark(
     color-mix(in srgb, var(--code-background) calc(35% - var(--appearance-contrast-boost, 0%) / 4), var(--diff-addition)),
-    color-mix(in srgb, var(--code-background) calc(60% - var(--appearance-contrast-boost, 0%) / 4), var(--diff-addition))
+    #3fb950
   );
   --diffs-bg-addition-hover-override: color-mix(in srgb, var(--code-background) 85%, var(--diff-addition));
   /* Pierre resolves emphasis on the host, before the diff's overrides can inherit. */
   /* Light emphasis stays above t3-light's readable syntax luminance floor. */
   --diffs-bg-addition-emphasis: light-dark(
     rgb(from var(--diffs-addition-base) r g b / 15%),
-    rgb(from var(--diffs-addition-base) r g b / calc(20% + var(--appearance-contrast-boost, 0%) / 4))
+    #35623a
   );
 
   --diffs-bg-deletion-override: light-dark(
     color-mix(in srgb, var(--code-background) calc(50% - var(--appearance-contrast-boost, 0%) / 4), var(--diff-deletion)),
-    color-mix(in srgb, var(--code-background) calc(70% - var(--appearance-contrast-boost, 0%) / 4), var(--diff-deletion))
+    #f85149
   );
   --diffs-bg-deletion-number-override: light-dark(
     color-mix(in srgb, var(--code-background) calc(35% - var(--appearance-contrast-boost, 0%) / 4), var(--diff-deletion)),
-    color-mix(in srgb, var(--code-background) calc(60% - var(--appearance-contrast-boost, 0%) / 4), var(--diff-deletion))
+    #f85149
   );
   --diffs-bg-deletion-hover-override: color-mix(
     in srgb,
@@ -387,11 +414,26 @@ export const DIFF_SURFACE_THEME_UNSAFE_CSS = `
   );
   --diffs-bg-deletion-emphasis: light-dark(
     rgb(from var(--diffs-deletion-base) r g b / 15%),
-    rgb(from var(--diffs-deletion-base) r g b / calc(20% + var(--appearance-contrast-boost, 0%) / 4))
+    #7a2d36
   );
+
+  /* Dark rows mix a pure red or green into the canvas (see the --mix-dark rule below), so changed
+     code sits on a clear tint and keeps its full syntax brightness; line numbers stay neutral. */
+  --diffs-fg-number-override: light-dark(var(--muted-foreground), #9c9c9c);
+  --diffs-fg-number-addition-override: light-dark(var(--diff-addition-foreground), #9fae9f);
+  --diffs-fg-number-deletion-override: light-dark(var(--diff-deletion-foreground), #b49f9f);
+  /* Softer change rails, so the tinted rows lead rather than the gutter bars. */
+  --diffs-addition-base: light-dark(var(--diff-addition), #60ab57) !important;
+  --diffs-deletion-base: light-dark(var(--diff-deletion), #d96b6b) !important;
 
   background-color: var(--diffs-bg) !important;
   color: var(--code-foreground) !important;
+}
+
+/* The library blends 15% of the row color into dark lines; a little more keeps changes legible. */
+[data-line],
+[data-no-newline] {
+  --mix-dark: 82% !important;
 }
 
 /* The library's change-icon colors are tuned for dark canvases; light mode takes the app's darker tokens. */

@@ -4260,17 +4260,8 @@
   "2843ab5fd6d5d3e1": "{term, select, mr {MR} cr {change request} other {PR}} #{number}，{state}",
   "d51ff529f508304a": "{term, select, mr {MR} cr {change request} other {PR}} #{number}：{title}",
   "b51d5be25d79b06c": "{count, plural, other {{formatted} 个文件}}",
-  "2e034563c916f3eb": "解决",
   "abe37e21953338e6": "正在准备…",
-  "66d185fcf7d5f3e6": "在新会话中检出分支并解决冲突",
-  "551ce3362d0307d4": "在此会话中解决冲突",
-  "f70f754b79025c67": "就绪",
-  "763cb56e21879aad": "正在标记…",
-  "422f32e5d25da2ae": "将此 {term, select, mr {MR} cr {change request} other {PR}} 标记为可供审查",
-  "9fe4c09b6a3ab4b4": "修复",
-  "0e48be2053a4b817": "正在准备修复",
   "6f6c67fa4032196b": "在新会话中修复未通过的检查",
-  "024f959a15903d60": "在此会话中修复未通过的检查",
   "be85261ec6428209": "正在合并…",
   "087d8cedc3ea219d": "停止关注 #{number}",
   "636eb97a97862aef": [
@@ -5541,7 +5532,6 @@
   "e8c281b1a85ac547": "添加评论…",
   "f2160b630793c7b4": "评论第 {rangeLabel} 行",
   "8d12e0769f6d5eb8": "评论",
-  "40ef11933aa35e8e": "⌘/Ctrl + Enter 发送",
   "ee90d50efb2fe9fb": "正在加载差异…",
   "1601d7e39a52c48f": "重试加载差异",
   "b7b137472adb6989": "部分差异预览",
@@ -13044,5 +13034,7 @@
   "176e9d4d4033aaf2": "Started in a terminal",
   "75fe9ced794c3f8c": "pid {pid}",
   "fd8a2ee54ce70eef": "Open files appear here",
-  "b98b77906deb7369": "Pick a file in the tree."
+  "b98b77906deb7369": "Pick a file in the tree.",
+  "a53f6826c4fb3da2": "Remove comment",
+  "9bfa1bcd11ba9012": "Fix checks"
 }

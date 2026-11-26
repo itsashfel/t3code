@@ -982,7 +982,7 @@ export default function DiffPanel({
       <div className="@container/diff-refs flex min-w-0 flex-1 items-center gap-3 [-webkit-app-region:no-drag]">
         <DropdownMenu>
           <DropdownMenuTrigger
-            render={<Button size="xs" variant="secondary" />}
+            render={<Button size="sm" variant="secondary" />}
             className={cn(
               "max-w-full",
               headerCommitSha !== null && "min-w-0 shrink",
@@ -1002,7 +1002,7 @@ export default function DiffPanel({
                     href={selectedCommitUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="shrink-0 font-mono text-xs text-muted-foreground underline underline-offset-4"
+                    className="shrink-0 tabular-nums text-xs text-muted-foreground underline underline-offset-4"
                     onClick={(event) => openCommitUrl(event, selectedCommitUrl)}
                   />
                 }
@@ -1011,7 +1011,7 @@ export default function DiffPanel({
                 {headerCommitSha.slice(0, 7)}
               </SharedTooltipTrigger>
             ) : (
-              <span className="shrink-0 font-mono text-xs text-muted-foreground">
+              <span className="shrink-0 tabular-nums text-xs text-muted-foreground">
                 {headerCommitSha.slice(0, 7)}
               </span>
             )
@@ -1129,12 +1129,12 @@ export default function DiffPanel({
                               }
                               onClick={(event) => openCommitUrl(event, commitUrl)}
                             >
-                              <span className="font-mono text-xs text-muted-foreground underline underline-offset-4">
+                              <span className="tabular-nums text-xs text-muted-foreground underline underline-offset-4">
                                 {commit.sha.slice(0, 7)}
                               </span>
                             </DropdownMenuItem>
                           ) : (
-                            <span className="shrink-0 px-2 font-mono text-xs text-muted-foreground">
+                            <span className="shrink-0 px-2 tabular-nums text-xs text-muted-foreground">
                               {commit.sha.slice(0, 7)}
                             </span>
                           )}
@@ -1174,7 +1174,7 @@ export default function DiffPanel({
         {isGitSelection && gitRepositories.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button size="xs" variant="ghost-muted" />}
+              render={<Button size="sm" variant="ghost-muted" />}
               className="min-w-14 max-w-48 shrink"
               aria-label={gt("Repository: {name}", {
                 name: gitRepository?.name ?? threadFolderName,
@@ -1209,7 +1209,7 @@ export default function DiffPanel({
         {repositorySections.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button size="xs" variant="ghost-muted" />}
+              render={<Button size="sm" variant="ghost-muted" />}
               className="min-w-14 max-w-48 shrink"
               aria-label={gt("Repository: {name}", {
                 name: selectedSection?.name ?? gt("All repositories"),
@@ -1286,8 +1286,9 @@ export default function DiffPanel({
               }}
             >
               <ComboboxTrigger
-                render={<Button variant="ghost-muted" size="xs" />}
-                className="min-w-9 max-w-48 shrink-0"
+                render={<Button variant="ghost-muted" size="sm" />}
+                // Shrinks to an ellipsis instead of being clipped when the toolbar is narrow.
+                className="min-w-12 max-w-48 shrink"
                 aria-label={gt("Change comparison target. Currently {base}", {
                   base: comparisonBaseRef,
                 })}
@@ -1304,7 +1305,7 @@ export default function DiffPanel({
                   value={baseRefQuery}
                   onChange={(event) => setBaseRefQuery(event.target.value)}
                 />
-                <div className="grid shrink-0 grid-cols-[1rem_minmax(0,1fr)] items-center gap-2 border-b border-border/70 ps-3 pe-6.5 pt-2 pb-1.5 font-medium text-3xs text-muted-foreground uppercase tracking-wide">
+                <div className="grid shrink-0 grid-cols-[1rem_minmax(0,1fr)] items-center gap-2 border-b border-border/90 ps-3 pe-6.5 pt-2 pb-1.5 font-medium text-3xs text-muted-foreground uppercase tracking-wide">
                   <span aria-hidden="true" />
                   <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_2rem] items-center">
                     <span>
@@ -1546,22 +1547,22 @@ export default function DiffPanel({
   return (
     <DiffPanelShell mode={mode} header={headerRow}>
       {!activeThread ? (
-        <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/70">
+        <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/85">
           <T>Select a thread to inspect turn diffs.</T>
         </div>
       ) : !isGitRepo && !hasRepositoryChanges && !toolCallSelection ? (
-        <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/70">
+        <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/85">
           <T>Turn diffs are unavailable because this project is not a git repository.</T>
         </div>
       ) : selectedRunId !== null && orderedTurnDiffSummaries.length === 0 ? (
-        <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/70">
+        <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/85">
           <T>No completed turns yet.</T>
         </div>
       ) : isGitSelection && !canReadFiles ? (
         fileAccess.isPending ? (
           <DiffPanelLoadingState label={gt("Checking file access...")} />
         ) : (
-          <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/70">
+          <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/85">
             {fileAccess.error ?? gt("This connection cannot read local diffs.")}
           </div>
         )
@@ -1569,7 +1570,7 @@ export default function DiffPanel({
         <>
           <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background">
             {preview?.incomplete && (
-              <p className="shrink-0 border-b border-border/70 bg-muted/40 px-3 py-1.5 text-2xs text-muted-foreground">
+              <p className="shrink-0 border-b border-border/90 bg-muted/40 px-3 py-1.5 text-2xs text-muted-foreground">
                 {selectedPatchError
                   ? gt(
                       "Showing tracked changes. Untracked changes could not be loaded. Refresh to retry.",
@@ -1578,7 +1579,7 @@ export default function DiffPanel({
               </p>
             )}
             {isSelectedPatchTruncated && !lazySource && (
-              <p className="shrink-0 border-b border-border/70 bg-muted/40 px-3 py-1.5 text-2xs text-muted-foreground">
+              <p className="shrink-0 border-b border-border/90 bg-muted/40 px-3 py-1.5 text-2xs text-muted-foreground">
                 {isGitSelection && selectedGitSource?.files && !preview?.incomplete
                   ? gt(
                       "This preview exceeds the size limit. Changes shown are incomplete. Totals include all changes.",
@@ -1587,7 +1588,7 @@ export default function DiffPanel({
               </p>
             )}
             {omittedToolCallFiles > 0 && (
-              <p className="shrink-0 border-b border-border/70 bg-muted/40 px-3 py-1.5 text-2xs text-muted-foreground">
+              <p className="shrink-0 border-b border-border/90 bg-muted/40 px-3 py-1.5 text-2xs text-muted-foreground">
                 {gt(
                   "This tool call changed {recorded} files. The recorded patch omits {omitted} of them.",
                   {
@@ -1637,7 +1638,7 @@ export default function DiffPanel({
                   }
                 />
               ) : (
-                <div className="flex h-full items-center justify-center px-3 py-2 text-xs text-muted-foreground/70">
+                <div className="flex h-full items-center justify-center px-3 py-2 text-xs text-muted-foreground/85">
                   <p>
                     {hasNoNetChanges
                       ? gt("No net changes in this selection.")
@@ -1770,7 +1771,8 @@ export default function DiffPanel({
                   <FileExplorerPane
                     resizable
                     storageKey="t3code:diff-file-tree-width"
-                    defaultWidthFraction={0.4}
+                    defaultWidthFraction={0.3}
+                    minWidth={200}
                     resizeLabel={gt("Resize Changes files")}
                   >
                     <DiffFileTree
@@ -1786,12 +1788,12 @@ export default function DiffPanel({
             ) : (
               <div className="min-h-0 flex-1 overflow-auto p-2">
                 <div className="space-y-2">
-                  <p className="text-2xs text-muted-foreground/75">
+                  <p className="text-2xs text-muted-foreground/85">
                     {renderablePatch?.kind === "raw" ? renderablePatch.reason : null}
                   </p>
                   <pre
                     className={cn(
-                      "max-h-[72vh] rounded-md border border-border/70 bg-background/70 p-3 font-mono text-2xs leading-relaxed text-muted-foreground/90",
+                      "max-h-[72vh] rounded-md border border-border/90 bg-background/70 p-3 font-mono text-2xs leading-relaxed text-muted-foreground/90",
                       wordWrap
                         ? "overflow-auto whitespace-pre-wrap wrap-break-word"
                         : "overflow-auto",

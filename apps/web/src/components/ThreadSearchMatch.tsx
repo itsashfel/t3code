@@ -27,7 +27,7 @@ export function SearchMatchHintLine(props: { hint: SearchMatchHint }) {
   const messages = useMessages();
   return (
     <span className="truncate text-xs text-muted-foreground/85">
-      <span className="text-muted-foreground/70">
+      <span className="text-muted-foreground/85">
         {gt("{label}:", { label: searchMatchHintLabel(props.hint.field, messages) })}
       </span>{" "}
       <HighlightedSearchText text={props.hint.text} ranges={props.hint.ranges} />

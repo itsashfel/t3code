@@ -48,7 +48,7 @@ export const accessLevel = (access: AuthMcpClientAccess) => ACCESS_LEVELS.indexO
 export function healthTone(health: PeerLinkHealth): string {
   if (health.kind === "expired" || health.kind === "failing") return "text-destructive";
   if (health.kind === "unreachable") return "text-muted-foreground";
-  return health.expiresInDays === null ? "text-foreground/70" : "text-warning";
+  return health.expiresInDays === null ? "text-foreground/85" : "text-warning";
 }
 
 export function healthLabel(health: PeerLinkHealth, gt: GT): string {
@@ -159,7 +159,7 @@ export function FleetDetails(props: FleetDetailsProps) {
       tabIndex={-1}
       role="group"
       aria-label={gt("Details")}
-      className="min-h-20 border-t border-border/60 text-xs outline-none"
+      className="min-h-20 border-t border-border/80 text-xs outline-none"
       onKeyDown={(event) => {
         if (event.key !== "Escape" || selection === null || event.target !== panel.current) return;
         // Base UI's dialog closes on a document Esc listener.
@@ -169,7 +169,7 @@ export function FleetDetails(props: FleetDetailsProps) {
       }}
     >
       {connectProblem ? (
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-border/60 px-3 py-2 sm:px-4">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-border/80 px-3 py-2 sm:px-4">
           <p className="min-w-0 flex-1 text-muted-foreground">
             <span className="font-medium text-destructive">
               <T>Could not load T3 Connect environments</T>
@@ -302,7 +302,7 @@ function LinkButton({
         <span className="truncate text-foreground/80">
           {m(accessConfig[edge.link.access].label)}
         </span>
-        <span className="hidden truncate font-mono text-2xs text-muted-foreground lg:block">
+        <span className="hidden truncate tabular-nums text-2xs text-muted-foreground lg:block">
           {edge.link.urls[0]}
         </span>
         <span
@@ -521,7 +521,7 @@ function MemberButton({
     >
       <span className="truncate font-medium text-foreground">{member.label}</span>
       <span className="truncate text-foreground/80">{member.detail}</span>
-      <span className="hidden truncate font-mono text-2xs text-muted-foreground lg:block">
+      <span className="hidden truncate tabular-nums text-2xs text-muted-foreground lg:block">
         {member.address}
       </span>
       {worst === null ? (
@@ -687,7 +687,7 @@ function NodeDetails({
     return (
       <>
         {renderConnectMachine(node.environmentId)}
-        <div className={cn(SECTION, "space-y-3 border-t border-border/60")}>
+        <div className={cn(SECTION, "space-y-3 border-t border-border/80")}>
           <p className="max-w-2xl text-muted-foreground">
             {gt("Add {label} to this app to connect to it.", { label: node.label })}
           </p>
@@ -751,7 +751,7 @@ function NodeDetails({
             }
           />
         ) : null)}
-      <div className={cn(SECTION, "space-y-3 border-t border-border/60")}>
+      <div className={cn(SECTION, "space-y-3 border-t border-border/80")}>
         {environment && saved !== null ? <Reconnect environment={environment} /> : null}
         {note ? <p className="max-w-2xl text-muted-foreground">{note}</p> : null}
         <LinkList
@@ -870,7 +870,7 @@ function LinkDetails({
         </dt>
         <dd className="text-foreground">{when(link.expiresAt)}</dd>
         <dt className={term}>{gt("Addresses")}</dt>
-        <dd className="min-w-0 font-mono text-2xs break-all text-foreground">
+        <dd className="min-w-0 tabular-nums text-2xs break-all text-foreground">
           {link.urls.map((url) => (
             <span key={url} className="block">
               {url}

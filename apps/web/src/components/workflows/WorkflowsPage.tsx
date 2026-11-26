@@ -202,7 +202,7 @@ export function WorkflowsPage() {
                   </WorkspaceBreadcrumbSeparator>
                   <WorkspaceBreadcrumbItem current className="min-w-10 flex-1">
                     <h1 className="min-w-0" onContextMenu={showFileMenu}>
-                      <WorkspaceBreadcrumbText className="font-mono">
+                      <WorkspaceBreadcrumbText className="tabular-nums">
                         {search.file}
                       </WorkspaceBreadcrumbText>
                     </h1>

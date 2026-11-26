@@ -188,7 +188,7 @@ function PendingSecretRequestForm(props: {
   return (
     <form
       data-v2-item-type={item.type}
-      className="flex min-w-0 flex-col gap-3 rounded-xl border border-border/60 bg-card p-4"
+      className="flex min-w-0 flex-col gap-3 rounded-xl border border-border/80 bg-card p-4"
       onSubmit={onSubmit}
       autoComplete="off"
       // On click, not pointerdown: the mousedown that follows a pointerdown
@@ -228,7 +228,7 @@ function PendingSecretRequestForm(props: {
           </Button>
           {/* A link found in the reason is already shown there. */}
           {item.url !== undefined ? (
-            <p className="font-mono text-xs wrap-anywhere text-muted-foreground">{item.url}</p>
+            <p className="tabular-nums text-xs wrap-anywhere text-muted-foreground">{item.url}</p>
           ) : null}
         </div>
       ) : null}

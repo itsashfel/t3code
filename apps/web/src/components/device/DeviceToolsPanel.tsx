@@ -136,7 +136,7 @@ export function DeviceToolsPanel(props: {
 
         <Section title={gt("App", { $context: "section heading for the foreground app" })}>
           <Row label={gt("Foreground", { $context: "the app currently in the foreground" })}>
-            <span className="truncate font-mono text-xs">{foregroundApp?.id ?? "-"}</span>
+            <span className="truncate tabular-nums text-xs">{foregroundApp?.id ?? "-"}</span>
           </Row>
           {foregroundApp ? (
             <div className="flex gap-1.5">

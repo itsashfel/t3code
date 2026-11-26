@@ -997,7 +997,7 @@ function PullRequestCodeTab({
     ) : null;
   const unstructured =
     rawSlices.length === 0 ? null : (
-      <div className="space-y-4 border-t border-border/60 px-4 py-5">
+      <div className="space-y-4 border-t border-border/80 px-4 py-5">
         {rawSlices.map((slice) => (
           <div key={`${slice.reason}:${slice.text.slice(0, 64)}`} className="space-y-2">
             <p className="text-xs text-muted-foreground">{messages(slice.reason)}</p>
@@ -1235,7 +1235,7 @@ function PullRequestCodeTab({
           <PullRequestDiffStat
             additions={additions}
             deletions={deletions}
-            className="font-mono text-2xs"
+            className="tabular-nums text-2xs"
           />
         }
       />
@@ -1465,7 +1465,7 @@ function PullRequestCodeTab({
     setSelectedLines(null);
   };
   const toolbar = (
-    <div className="@container flex h-10 min-h-10 shrink-0 items-center justify-between gap-2 border-b border-border/60 bg-background px-4 text-xs text-muted-foreground">
+    <div className="@container flex h-10 min-h-10 shrink-0 items-center justify-between gap-2 border-b border-border/80 bg-background px-4 text-xs text-muted-foreground">
       <div className="flex min-w-0 flex-1 items-center gap-3 overflow-x-clip">
         {orderedCommits.length > 0 ? (
           <DropdownMenu>
@@ -1478,7 +1478,7 @@ function PullRequestCodeTab({
                 {scopeLabel}
               </span>
               {selectedCommit ? (
-                <span className="truncate font-mono @xl:hidden">
+                <span className="truncate tabular-nums @xl:hidden">
                   {selectedCommit.oid.slice(0, 7)}
                 </span>
               ) : null}
@@ -1501,7 +1501,7 @@ function PullRequestCodeTab({
                         render={<span className="min-w-0 truncate">{entry.messageHeadline}</span>}
                         label={entry.messageHeadline}
                       />
-                      <span className="ml-auto shrink-0 font-mono text-xs text-muted-foreground">
+                      <span className="ml-auto shrink-0 tabular-nums text-xs text-muted-foreground">
                         {entry.oid.slice(0, 7)}
                       </span>
                     </span>
@@ -1534,7 +1534,7 @@ function PullRequestCodeTab({
             </span>
             {hiddenTestFilesLabel !== null && (files.length > 0 || nextCursor !== null) ? (
               <span className="hidden items-center gap-1.5 @2xl:flex">
-                <span aria-hidden className="text-muted-foreground/50">
+                <span aria-hidden className="text-muted-foreground/85">
                   ·
                 </span>
                 <Button
@@ -1971,7 +1971,7 @@ function PullRequestCodeTab({
     <div className="flex h-full min-h-0 flex-col">
       {toolbar}
       {orphanFiles.size > 0 ? (
-        <div className="shrink-0 border-b border-border/60">
+        <div className="shrink-0 border-b border-border/80">
           <Collapsible open={orphansOpen} onOpenChange={setOrphansOpen}>
             <h2>
               <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-4 py-2 text-left text-xs text-muted-foreground">
@@ -2094,7 +2094,7 @@ function PullRequestCodeTab({
               onSelectFile={revealFile}
               footer={
                 nextCursor === null ? null : (
-                  <div className="shrink-0 border-t border-border/60 p-2">
+                  <div className="shrink-0 border-t border-border/80 p-2">
                     <Button
                       type="button"
                       size="xs"

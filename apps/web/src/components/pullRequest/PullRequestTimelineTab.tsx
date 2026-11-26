@@ -534,7 +534,7 @@ function ReviewThreadEvent({
         ) : (
           <>
             <FileCode2Icon aria-hidden className="size-3 shrink-0" />
-            <span className="min-w-0 truncate font-mono">
+            <span className="min-w-0 truncate tabular-nums">
               {thread.line === null ? thread.path : `${thread.path}:${thread.line}`}
             </span>
           </>
@@ -595,7 +595,7 @@ function ReviewThreadEvent({
             }
           />
           {thread.replies.length > 0 ? (
-            <div className="ml-2 space-y-1 border-l border-border/60 pl-3">
+            <div className="ml-2 space-y-1 border-l border-border/80 pl-3">
               {thread.replies.map((reply) => (
                 <ConversationCard
                   key={reply.id}
@@ -656,7 +656,7 @@ function CommitEvent({
           <PullRequestDiffStat
             additions={event.additions}
             deletions={event.deletions}
-            className="ml-auto shrink-0 font-mono text-3xs"
+            className="ml-auto shrink-0 tabular-nums text-3xs"
           />
         ) : null}
       </div>

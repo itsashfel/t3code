@@ -4257,17 +4257,8 @@
   "2843ab5fd6d5d3e1": "{term, select, mr {Merge request} cr {Change request} other {Pull request}} #{number}, {state}",
   "d51ff529f508304a": "{term, select, mr {Merge request} cr {Change request} other {Pull request}} #{number}: {title}",
   "b51d5be25d79b06c": "{count, plural, one {{formatted} file} other {{formatted} files}}",
-  "2e034563c916f3eb": "Resolve",
   "abe37e21953338e6": "Preparing...",
-  "66d185fcf7d5f3e6": "Check the branch out and resolve the conflicts in a new thread",
-  "551ce3362d0307d4": "Resolve the conflicts in this thread",
-  "f70f754b79025c67": "Ready",
-  "763cb56e21879aad": "Marking...",
-  "422f32e5d25da2ae": "Mark this {term, select, mr {merge request} cr {change request} other {pull request}} as ready for review",
-  "9fe4c09b6a3ab4b4": "Fix",
-  "0e48be2053a4b817": "Preparing fix",
   "6f6c67fa4032196b": "Fix the failing checks in a new thread",
-  "024f959a15903d60": "Fix the failing checks in this thread",
   "be85261ec6428209": "Merging...",
   "087d8cedc3ea219d": "Stop watching #{number}",
   "636eb97a97862aef": [
@@ -5537,7 +5528,6 @@
   "e8c281b1a85ac547": "Add a comment…",
   "f2160b630793c7b4": "Comment on lines {rangeLabel}",
   "8d12e0769f6d5eb8": "Comment",
-  "40ef11933aa35e8e": "⌘/Ctrl Enter to send",
   "ee90d50efb2fe9fb": "Loading diff…",
   "1601d7e39a52c48f": "Retry loading diff",
   "b7b137472adb6989": "Partial diff preview",
@@ -13039,5 +13029,7 @@
   "176e9d4d4033aaf2": "Started in a terminal",
   "75fe9ced794c3f8c": "pid {pid}",
   "fd8a2ee54ce70eef": "Open files appear here",
-  "b98b77906deb7369": "Pick a file in the tree."
+  "b98b77906deb7369": "Pick a file in the tree.",
+  "a53f6826c4fb3da2": "Remove comment",
+  "9bfa1bcd11ba9012": "Fix checks"
 }

@@ -135,7 +135,7 @@ export function PairingRouteSurface({
         </div>
       </form>
 
-      <div className="mt-6 rounded-lg border border-border/70 bg-background/55 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
+      <div className="mt-6 rounded-lg border border-border/90 bg-background/55 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
         {describeSupportedMethods(auth.bootstrapMethods, messages)}
       </div>
     </StandalonePage>
@@ -238,10 +238,10 @@ export function HostedPairingRouteSurface() {
       />
 
       {request ? (
-        <div className="mt-5 rounded-lg border border-border/70 bg-background/55 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
+        <div className="mt-5 rounded-lg border border-border/90 bg-background/55 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
           <T>
             Host:{" "}
-            <span className="font-mono text-foreground/80">
+            <span className="tabular-nums text-foreground/80">
               <Var>{origin ?? request.host}</Var>
             </span>
           </T>

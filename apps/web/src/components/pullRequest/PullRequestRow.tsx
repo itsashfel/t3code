@@ -209,7 +209,7 @@ function PullRequestRowImpl({
                 }}
                 additions={entry.additions}
                 deletions={entry.deletions}
-                className="font-mono"
+                className="tabular-nums"
               />
             </>
           }
@@ -219,7 +219,7 @@ function PullRequestRowImpl({
               {matchedElsewhere ? (
                 <SharedTooltipTrigger
                   render={
-                    <span className="flex min-w-6 items-center gap-1 overflow-hidden rounded-full border border-border/60 px-1 text-3xs" />
+                    <span className="flex min-w-6 items-center gap-1 overflow-hidden rounded-full border border-border/80 px-1 text-3xs" />
                   }
                   label={
                     <>

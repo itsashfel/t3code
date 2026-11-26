@@ -76,7 +76,7 @@ function ArchivedThreadChunk(props: {
           { root: node.closest("[data-settings-page-scroll]"), rootMargin: "1200px 0px" },
         );
       }}
-      className="*:not-first:border-t *:not-first:border-border/50"
+      className="*:not-first:border-t *:not-first:border-border/80"
       style={view.near ? undefined : { height: view.rowHeight * rowCount }}
     >
       {view.near ? props.renderRows() : null}

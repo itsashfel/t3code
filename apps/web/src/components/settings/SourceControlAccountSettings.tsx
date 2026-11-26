@@ -27,9 +27,9 @@ function RedactedLogin(props: {
 }) {
   const gt = useGT();
   return props.revealed ? (
-    <span className="min-w-0 truncate font-mono text-2xs">{props.account}</span>
+    <span className="min-w-0 truncate tabular-nums text-2xs">{props.account}</span>
   ) : (
-    <span className="min-w-0 truncate font-mono text-2xs">
+    <span className="min-w-0 truncate tabular-nums text-2xs">
       <span className="select-none blur-xs" aria-hidden>
         {redactedPlaceholder(props.account)}
       </span>
@@ -245,7 +245,7 @@ export function SourceControlAccountSettings({
             {group.broken.map((entry) => (
               <p
                 key={entry.account}
-                className="flex min-w-0 flex-wrap items-center gap-1 text-xs text-muted-foreground/70"
+                className="flex min-w-0 flex-wrap items-center gap-1 text-xs text-muted-foreground/85"
               >
                 {entry.error ? (
                   <T>

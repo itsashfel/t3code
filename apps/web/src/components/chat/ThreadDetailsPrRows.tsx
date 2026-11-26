@@ -22,7 +22,6 @@ import {
   findProjectOnChangeRequestHost,
 } from "@t3tools/client-runtime/change-request-links";
 
-import type { ComposerThreadTarget } from "~/composerDraftStore";
 import { useProjects, useQuietThreadShell } from "~/state/entities";
 import { threadEnvironment } from "~/state/threads";
 import { useAtomCommand } from "~/state/use-atom-command";
@@ -40,16 +39,12 @@ function ThreadDetailsPrLinkRow({
   environmentId,
   link,
   onOpen,
-  onActed,
   onStopWatching,
-  composerTarget,
 }: {
   environmentId: EnvironmentId;
   link: ThreadPullRequestLink;
   onOpen: (event: ReactMouseEvent<HTMLElement>) => void;
-  onActed?: (() => void) | undefined;
   onStopWatching?: (() => void) | undefined;
-  composerTarget?: ComposerThreadTarget | undefined;
 }) {
   const m = useMessages();
   const projects = useProjects();
@@ -74,8 +69,6 @@ function ThreadDetailsPrLinkRow({
       label={`#${link.number}${link.snapshot === null ? "" : `: ${link.snapshot.title}`}`}
       onOpen={onOpen}
       onStopWatching={onStopWatching}
-      composerTarget={composerTarget}
-      {...(onActed ? { onActed } : {})}
     />
   );
 }
@@ -128,9 +121,7 @@ function ThreadDetailsPrRows({
               environmentId={row.environmentId}
               link={link}
               onOpen={(event) => onOpenLink(event, link.url)}
-              onActed={row.onActed}
               onStopWatching={stopWatching(link)}
-              composerTarget={row.composerTarget}
             />
           ))}
         </div>
@@ -150,15 +141,11 @@ export function ThreadDetailsThreadPrRows({
   project,
   branchPr = null,
   branchSourceControlProvider,
-  onActed,
-  composerTarget,
 }: {
   threadRef: ScopedThreadRef;
   project: EnvironmentProject | null;
   branchPr?: VcsStatusResult["pr"];
   branchSourceControlProvider?: VcsStatusResult["sourceControlProvider"];
-  onActed?: () => void;
-  composerTarget?: ComposerThreadTarget | undefined;
 }) {
   const thread = useQuietThreadShell(threadRef);
   const displayed = useThreadDisplayedPullRequest(
@@ -197,8 +184,6 @@ export function ThreadDetailsThreadPrRows({
       project={rowProject}
       label={`#${number}${pr?.title.trim() ? `: ${pr.title}` : ""}`}
       onOpen={(event) => openPrLink(event, url)}
-      composerTarget={composerTarget}
-      {...(onActed ? { onActed } : {})}
     />
   );
 }

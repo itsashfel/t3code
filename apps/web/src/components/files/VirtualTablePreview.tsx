@@ -147,7 +147,7 @@ export default function VirtualTablePreview(props: {
                     <div
                       role="columnheader"
                       aria-colindex={column + 1}
-                      className="shrink-0 overflow-hidden border-r border-border/40 px-3 py-1.5 text-ellipsis whitespace-pre"
+                      className="shrink-0 overflow-hidden border-r border-border/80 px-3 py-1.5 text-ellipsis whitespace-pre"
                       style={{ width: sizes[column] }}
                     >
                       {props.header?.[column] ?? columnLabel(column)}
@@ -210,7 +210,7 @@ function RowPage(
             className={
               props.source
                 ? `flex min-h-[29px] font-mono ${props.revealLine != null && Math.min(props.count, Math.max(1, props.revealLine)) === index + 1 ? "bg-primary/10" : ""}`
-                : `flex min-h-[29px] border-b border-border/60 ${(index - (props.header ? 1 : 0)) % 2 ? "bg-muted/30" : ""}`
+                : `flex min-h-[29px] border-b border-border/80 ${(index - (props.header ? 1 : 0)) % 2 ? "bg-muted/30" : ""}`
             }
             style={rowMinHeight ? { minHeight: rowMinHeight } : undefined}
             data-preview-reveal={
@@ -246,7 +246,7 @@ function RowPage(
                 className={
                   props.source
                     ? `min-w-0 flex-1 px-3 py-1 ${props.wrap ? "whitespace-pre-wrap break-words" : "whitespace-pre"}`
-                    : "shrink-0 border-r border-border/40 px-3 py-1.5 whitespace-pre-wrap break-words tabular-nums"
+                    : "shrink-0 border-r border-border/80 px-3 py-1.5 whitespace-pre-wrap break-words tabular-nums"
                 }
                 style={props.source ? undefined : { width: props.sizes[column] }}
               >

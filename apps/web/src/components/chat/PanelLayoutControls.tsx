@@ -231,7 +231,11 @@ export function WorkspaceTitlebarControls(props: {
     <div
       ref={controlsRef}
       className={cn(
-        "pointer-events-none fixed top-[var(--workspace-controls-top)] right-[var(--workspace-controls-right)] z-50 mr-px flex h-[var(--workspace-topbar-height)] items-center gap-1 [-webkit-app-region:no-drag]",
+        "pointer-events-none fixed top-[var(--workspace-controls-top)] right-[var(--workspace-controls-right)] z-50 mr-px flex items-center gap-1 [-webkit-app-region:no-drag]",
+        // Over a docked right panel, center in its compact tab bar (see RightPanelTabs).
+        rightPanelOpen && !maximized
+          ? "h-10 wco:h-[var(--workspace-topbar-height)]"
+          : "h-[var(--workspace-topbar-height)]",
         mobileSidebarSheetMounted && "hidden",
       )}
       data-workspace-titlebar-controls

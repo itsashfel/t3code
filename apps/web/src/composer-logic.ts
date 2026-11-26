@@ -10,6 +10,7 @@ import {
   serializeAssistantCitation,
   withAssistantCitationComment,
 } from "@t3tools/shared/assistantCitations";
+import { collectComposerContextReferences } from "@t3tools/shared/composerContextReferences";
 import {
   detectComposerPullRequestTrigger,
   isCurrencyAmountQuery,
@@ -56,12 +57,19 @@ export function formatAssistantCitationForComposer(citation: AssistantCitation, 
   return `${serializeAssistantCitation(withAssistantCitationComment(citation, comment))}\n`;
 }
 
-/** Where the next quote goes: after the quotes that already open the prompt. */
-export function leadingAssistantCitationsEnd(prompt: string): number {
+/**
+ * Where the next quote or code comment goes: after the quotes and code comments that already
+ * open the prompt. Both show as strips stacked above the message.
+ */
+export function leadingComposerStripsEnd(prompt: string): number {
+  const strips = [
+    ...collectAssistantCitations(prompt),
+    ...collectComposerContextReferences(prompt).filter((entry) => entry.kind === "review-comment"),
+  ].toSorted((left, right) => left.start - right.start);
   let end = 0;
-  for (const { start, end: citationEnd } of collectAssistantCitations(prompt)) {
-    if (start !== end) break;
-    end = prompt[citationEnd] === "\n" ? citationEnd + 1 : citationEnd;
+  for (const strip of strips) {
+    if (strip.start !== end) break;
+    end = prompt[strip.end] === "\n" ? strip.end + 1 : strip.end;
   }
   return end;
 }

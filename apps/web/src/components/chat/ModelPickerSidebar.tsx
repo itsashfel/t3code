@@ -138,7 +138,7 @@ export const ModelPickerSidebar = memo(function ModelPickerSidebar(props: {
                   </TooltipPopup>
                 </Tooltip>
               </div>
-              <div className="border-b border-border/70" aria-hidden="true" />
+              <div className="border-b border-border/90" aria-hidden="true" />
             </>
           ) : null}
 

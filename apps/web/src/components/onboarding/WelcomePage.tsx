@@ -291,7 +291,7 @@ export function WelcomePage({
                 .
               </T>
             </p>
-            <div className="mt-10 border-t border-border/60">
+            <div className="mt-10 border-t border-border/80">
               <AgentsSection
                 environmentId={environmentId}
                 label={label}
@@ -347,7 +347,7 @@ function TelemetryNotice({ environmentId }: { readonly environmentId: Environmen
   const messages = useMessages();
   const telemetryOff = managedTelemetryOffMessage(useManagedPolicy(environmentId), messages);
   return (
-    <p className="mt-auto pt-12 text-2xs leading-relaxed text-muted-foreground/70">
+    <p className="mt-auto pt-12 text-2xs leading-relaxed text-muted-foreground/85">
       {telemetryOff === undefined ? (
         <T>
           T3 Code collects anonymous usage data to improve the app. To opt out, see the{" "}
@@ -391,7 +391,7 @@ function WelcomeSection({
   readonly children: ReactNode;
 }) {
   return (
-    <section className="grid gap-x-10 border-b border-border/60 py-4 sm:grid-cols-[6rem_minmax(0,1fr)]">
+    <section className="grid gap-x-10 border-b border-border/80 py-4 sm:grid-cols-[6rem_minmax(0,1fr)]">
       <h2 className="text-sm leading-10 text-muted-foreground">{title}</h2>
       <div className="min-w-0">{children}</div>
     </section>
@@ -1406,9 +1406,9 @@ function AgentInstallTerminal({
   return (
     <div
       data-thread-terminal-drawer
-      className="mt-4 overflow-hidden rounded-lg border border-border/70 bg-background text-foreground"
+      className="mt-4 overflow-hidden rounded-lg border border-border/90 bg-background text-foreground"
     >
-      <div className="flex items-center justify-between border-b border-border/60 bg-background/60 px-3 py-1.5">
+      <div className="flex items-center justify-between border-b border-border/80 bg-background/60 px-3 py-1.5">
         <span className="text-2xs font-medium text-muted-foreground">
           {!canOperateTerminal ? (
             gt("This connection cannot control terminals.")
@@ -1892,7 +1892,7 @@ function ProjectPathText({
 }) {
   const { name, parent } = splitOnboardingProjectPath(path);
   return (
-    <span className={cn("flex min-w-0 items-baseline font-mono", className)}>
+    <span className={cn("flex min-w-0 items-baseline tabular-nums", className)}>
       {parent.length > 0 ? <span className="truncate">{parent}</span> : null}
       <span className="max-w-full shrink-0 truncate">{name}</span>
     </span>

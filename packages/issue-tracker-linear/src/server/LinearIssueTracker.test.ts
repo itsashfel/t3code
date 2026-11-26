@@ -79,6 +79,7 @@ function fakeLinear(
 ) {
   const requests: Array<{
     readonly authorization: string | undefined;
+    readonly fileUrlsExpireIn: string | undefined;
     readonly operation: string;
     readonly query: string;
   }> = [];
@@ -93,6 +94,7 @@ function fakeLinear(
         const operation = /^(?:query|mutation) (\w+)/.exec(parsed.query)?.[1] ?? "?";
         requests.push({
           authorization: request.headers.authorization,
+          fileUrlsExpireIn: request.headers["public-file-urls-expire-in"],
           operation,
           query: parsed.query,
         });
@@ -293,6 +295,8 @@ describe("LinearIssueTracker", () => {
       });
       // The stored key goes in as-is, not as a bearer token.
       expect(requests.map((request) => request.authorization)).toEqual(["lin_api_stored"]);
+      // Uploaded images in descriptions come back signed, so a client can show them.
+      expect(requests.map((request) => request.fileUrlsExpireIn)).toEqual(["3600"]);
       // Rows never show a body, so the listing leaves descriptions to the detail query.
       expect(requests[0]?.query).not.toMatch(/\bdescription\b/);
 

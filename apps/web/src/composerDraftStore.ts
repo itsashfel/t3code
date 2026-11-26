@@ -84,6 +84,7 @@ import {
 } from "./lib/composerContextReferences";
 import {
   fileContextReference,
+  isPullRequestSummaryContext,
   previewAnnotationContextId,
   previewAnnotationContextReference,
   reviewCommentContextId,
@@ -461,6 +462,8 @@ export interface ComposerContextAddOptions {
 
 export type ComposerContextInsertionHandler = (
   references: ReadonlyArray<ComposerContextReference>,
+  /** Strips (code comments) stack above the message instead of landing at the caret. */
+  placement?: "caret" | "strip",
 ) => boolean;
 const contextInsertionHandlers = new Map<string, ComposerContextInsertionHandler>();
 
@@ -4170,7 +4173,11 @@ const composerDraftStore = create<ComposerDraftStoreState>()(
           const placedAtCaret =
             shouldPlaceReference &&
             options?.insertAtCaret !== false &&
-            (contextInsertionHandlers.get(threadKey)?.([reference]) ?? false);
+            (contextInsertionHandlers.get(threadKey)?.(
+              [reference],
+              isPullRequestSummaryContext(comment) ? "caret" : "strip",
+            ) ??
+              false);
           set((state) => {
             const existing = state.draftsByThreadKey[threadKey] ?? createEmptyThreadDraft();
             const reviewComments = existing.reviewComments.filter(

@@ -182,7 +182,7 @@ function SegmentPopover({
           />
         ) : null}
       </div>
-      <div className="flex flex-col gap-1 border-t border-border/60 pt-2.5">
+      <div className="flex flex-col gap-1 border-t border-border/80 pt-2.5">
         {account.plan ? (
           <Row label={gt("Plan", { $context: "subscription plan" })}>{account.plan}</Row>
         ) : null}
@@ -198,7 +198,7 @@ function SegmentPopover({
           </Row>
         ) : null}
       </div>
-      <div className="flex flex-col gap-1 border-t border-border/60 pt-2.5">
+      <div className="flex flex-col gap-1 border-t border-border/80 pt-2.5">
         <Row label={gt("Left", { $context: "remaining usage" })}>{remaining}%</Row>
         {window.resetsAt ? (
           <Row label={gt("Resets", { $context: "when the usage window resets" })}>
@@ -216,7 +216,7 @@ function SegmentPopover({
         ) : null}
       </div>
       {choices.length > 0 && redeem ? (
-        <div className="flex flex-col gap-1.5 border-t border-border/60 pt-2.5 text-muted-foreground">
+        <div className="flex flex-col gap-1.5 border-t border-border/80 pt-2.5 text-muted-foreground">
           {choices.map((choice) => (
             <span key={choice.key} className="flex items-center gap-3">
               <span className="tabular-nums">{choice.summary}</span>
@@ -609,7 +609,7 @@ function PoolWindowCard({
   const m = useMessages();
   const nextRefill = pool.resets.find((reset) => reset.at > now && reset.restoresPercent > 0);
   return (
-    <div className="grid items-center gap-x-6 gap-y-3 rounded-lg border border-border/60 p-4 md:grid-cols-[11rem_minmax(0,1fr)]">
+    <div className="grid items-center gap-x-6 gap-y-3 rounded-lg border border-border/80 p-4 md:grid-cols-[11rem_minmax(0,1fr)]">
       <div className="flex flex-col gap-1">
         {label !== null ? (
           <span className="text-sm font-medium text-foreground">{label ?? pool.label}</span>

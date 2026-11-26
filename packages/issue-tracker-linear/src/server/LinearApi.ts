@@ -55,6 +55,7 @@ export type LinearHistoryEntry = IssueHistory;
 
 export const KIND = LINEAR_KIND;
 const DEFAULT_API_URL = "https://api.linear.app/graphql";
+const FILE_URL_TTL_SECONDS = "3600";
 
 const LinearApiConfig = Config.all({
   apiUrl: Config.String("T3CODE_LINEAR_API_URL").pipe(Config.withDefault(DEFAULT_API_URL)),
@@ -249,7 +250,13 @@ export const make = Effect.gen(function* () {
             Effect.gen(function* () {
               const token = yield* LinearToken;
               // A personal API key goes in as-is; `Bearer` is for OAuth tokens, which this is not.
-              return { ...request, headers: Headers.set(request.headers, "authorization", token) };
+              const headers = Headers.set(request.headers, "authorization", token);
+              // uploads.linear.app needs auth that an <img> can't send; Linear signs file URLs in
+              // the response instead. Clients refetch issues well within the hour.
+              return {
+                ...request,
+                headers: Headers.set(headers, "public-file-urls-expire-in", FILE_URL_TTL_SECONDS),
+              };
             }),
           ),
         ),

@@ -142,7 +142,7 @@ function UpdateEverythingDialogContent({
         <AlertDialogDescription>
           {version !== null ? (
             <>
-              T3 Code <span className="font-mono text-xs">{version}</span>
+              T3 Code <span className="tabular-nums text-xs">{version}</span>
             </>
           ) : null}
           {version !== null && providerCount > 0 ? " · " : null}
@@ -186,7 +186,7 @@ function UpdateEverythingDialogContent({
               <div
                 key={row.environmentId ?? "this-app"}
                 role="row"
-                className="col-span-full grid grid-cols-subgrid border-b border-border/50 py-1.5 last:border-b-0"
+                className="col-span-full grid grid-cols-subgrid border-b border-border/80 py-1.5 last:border-b-0"
               >
                 <span role="cell" className="max-w-32 min-w-0">
                   <span className="sr-only">{row.label}</span>

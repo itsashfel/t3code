@@ -267,11 +267,7 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
                       <BranchToolbar layout="panel" panelSection="branch" {...branchToolbarProps} />
                     ) : null}
                     {show.pullRequests ? (
-                      <ThreadDetailsThreadPrRows
-                        threadRef={activeThreadRef}
-                        project={project}
-                        composerTarget={props.composerDraftTarget}
-                      />
+                      <ThreadDetailsThreadPrRows threadRef={activeThreadRef} project={project} />
                     ) : null}
                     {show.git && props.gitCwd ? (
                       <GitActionsControl

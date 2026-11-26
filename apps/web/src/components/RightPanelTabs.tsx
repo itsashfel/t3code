@@ -138,6 +138,8 @@ export interface RightPanelTabsProps {
   terminalLabelsById: ReadonlyMap<string, string>;
   onActivate: (surface: RightPanelSurface) => void;
   onRenameDevice?: (surfaceId: string, title: string) => void;
+  /** Keeps a preview file tab, so the next opened file gets its own tab. */
+  onKeepFile?: (surfaceId: string) => void;
   onCloseSurface: (surface: RightPanelSurface) => void;
   /** Moves a subagent, side chat or linked thread tab to the main screen. */
   onOpenInMainView?: (
@@ -929,6 +931,7 @@ interface RightPanelTabHandlers {
   onContextMenu: (event: ReactMouseEvent, surface: RightPanelSurface) => void;
   onStartRename: (surfaceId: string) => void;
   onFinishRename: (surfaceId: string, title: string) => void;
+  onKeepFile: (surfaceId: string) => void;
 }
 
 // Chromium on Linux only suppresses primary-selection paste when mouseup is cancelled.
@@ -969,7 +972,9 @@ function RightPanelTab(
     onContextMenu,
     onStartRename,
     onFinishRename,
+    onKeepFile,
   } = props;
+  const previewFile = surface.kind === "file" && surface.preview === true;
   const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: surface.id,
     disabled: props.dragDisabled,
@@ -1009,7 +1014,7 @@ function RightPanelTab(
           render={
             <button
               type="button"
-              className="cursor-pointer flex size-4 shrink-0 items-center justify-center rounded-sm hover:bg-muted"
+              className="relative z-10 cursor-pointer flex size-4 shrink-0 items-center justify-center rounded-sm hover:bg-muted"
               aria-label={
                 audio === "muted" ? gt("Unmute {title}", { title }) : gt("Mute {title}", { title })
               }
@@ -1057,8 +1062,10 @@ function RightPanelTab(
               type="button"
               onDoubleClick={() => {
                 if (surface.kind === "device" && props.canRename) onStartRename(surface.id);
+                if (previewFile) onKeepFile(surface.id);
               }}
-              className="cursor-pointer flex min-w-0 flex-1 items-center group-hover/tab:tab-title-close-fade"
+              // Its hit area covers the whole tab, so the icon and padding activate it too.
+              className="cursor-pointer flex min-w-0 flex-1 items-center after:absolute after:inset-0 after:rounded-lg"
               aria-label={
                 sideChatState === null
                   ? undefined
@@ -1069,7 +1076,15 @@ function RightPanelTab(
               }
               onClick={() => onActivate(surface)}
             >
-              <span className="truncate">{title}</span>
+              {/* The fade sits on the text: a mask on the button would clip its tab-wide hit area. */}
+              <span
+                className={cn(
+                  "min-w-0 flex-1 truncate group-hover/tab:tab-title-close-fade",
+                  previewFile && "italic",
+                )}
+              >
+                {title}
+              </span>
             </button>
           }
           label={
@@ -1400,6 +1415,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
     },
   );
   const onStartRenameTab = useStableCallback((surfaceId: string) => setRenamingDevice(surfaceId));
+  const onKeepFileTab = useStableCallback((surfaceId: string) => props.onKeepFile?.(surfaceId));
   const onFinishRenameTab = useStableCallback((surfaceId: string, title: string) => {
     props.onRenameDevice?.(surfaceId, title);
     setRenamingDevice(null);
@@ -1480,7 +1496,12 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
     >
       <div
         className={cn(
-          "flex h-[var(--workspace-topbar-height)] min-h-[var(--workspace-topbar-height)] shrink-0 items-center gap-1 pl-2",
+          "flex shrink-0 items-center gap-1 border-b border-border pl-2",
+          // Docked beside the chat the bar is compact. Maximized, it holds the macOS traffic
+          // lights, and with window controls overlay the native buttons, so it keeps their height.
+          props.mode === "inline" && props.maximized
+            ? "h-[var(--workspace-topbar-height)] min-h-[var(--workspace-topbar-height)]"
+            : "h-10 min-h-10 wco:h-[var(--workspace-topbar-height)] wco:min-h-[var(--workspace-topbar-height)]",
           props.mode === "inline" && !props.layoutControls ? "pr-28" : "pr-3",
           ownsDesktopTitleBar && "drag-region",
           ownsDesktopTitleBar && "wco:pr-(--workspace-native-controls-inset)",
@@ -1541,6 +1562,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                     onContextMenu={onTabContextMenu}
                     onStartRename={onStartRenameTab}
                     onFinishRename={onFinishRenameTab}
+                    onKeepFile={onKeepFileTab}
                   />
                 );
               })}
@@ -1553,7 +1575,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                     <Button
                       aria-label={gt("Add panel surface")}
                       className="shrink-0"
-                      size="icon-xs"
+                      size="icon-sm"
                       variant="ghost-muted"
                     />
                   }
@@ -1634,7 +1656,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                     aria-label={gt("Scroll tabs left")}
                     disabled={!tabScrollState.canScrollLeft}
                     onClick={() => scrollTabs(-1)}
-                    size="icon-xs"
+                    size="icon-sm"
                     variant="ghost"
                   >
                     <ChevronLeft />
@@ -1654,7 +1676,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                     aria-label={gt("Scroll tabs right")}
                     disabled={!tabScrollState.canScrollRight}
                     onClick={() => scrollTabs(1)}
-                    size="icon-xs"
+                    size="icon-sm"
                     variant="ghost"
                   >
                     <ChevronRight />

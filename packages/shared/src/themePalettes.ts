@@ -1,4 +1,11 @@
-export const BUILT_IN_THEME_IDS = ["t3-chat", "grove", "ocean", "ember", "iris"] as const;
+export const BUILT_IN_THEME_IDS = [
+  "t3-chat",
+  "grove",
+  "ocean",
+  "ember",
+  "iris",
+  "charcoal",
+] as const;
 
 export const MOBILE_DEFAULT_THEME_ID = "t3-code";
 
@@ -910,12 +917,86 @@ export const IRIS_THEME: ThemeDefinition = {
   sidebarArtwork: true,
 };
 
+/** A soft charcoal dark theme with gray raised surfaces and a white accent. */
+const CHARCOAL_THEME: ThemeDefinition = {
+  id: "charcoal",
+  label: "Charcoal",
+  appearance: "dark",
+  colors: {
+    ...T3_CODE_DARK_THEME_COLORS,
+    searchMatchBackground: "#8c6c1f",
+    searchMatchForeground: "#f5f5f5",
+    searchMatchActiveBackground: "#eea52b",
+    searchMatchActiveForeground: "#21180a",
+    focus: "#bdbdbd",
+    accent: "#ffffff",
+    accentForeground: "#1a1a1a",
+    error: "#fb414a",
+    errorForeground: "#ff6467",
+    errorSurface: "#301214",
+    warning: "#fe9a00",
+    warningForeground: "#ffb900",
+    warningSurface: "#312108",
+    update: "#346bf1",
+    updateForeground: "#51a2ff",
+    updateSurface: "#121b34",
+    messageAction: "#ffffff",
+    messageActionForeground: "#1a1a1a",
+    messageActionHover: "#d4d4d4",
+    terminalCursor: "#b4cbff",
+    canvas: "#1a1a1a",
+    chrome: "#1a1a1a",
+    toolbar: "#1a1a1a",
+    toolbarForeground: "#ececec",
+    toolbarBorder: "#363636",
+    toolbarControl: "#262626",
+    toolbarControlForeground: "#ececec",
+    toolbarControlHover: "#2c2c2c",
+    surface: "#262626",
+    surfaceRaised: "#262626",
+    surfaceOverlay: "#262626",
+    text: "#ececec",
+    textMuted: "#a3a3a3",
+    border: "#363636",
+    input: "#3a3a3a",
+    secondary: "#252525",
+    secondaryForeground: "#ececec",
+    muted: "#252525",
+    mutedForeground: "#a3a3a3",
+    placeholder: "#8a8a8a",
+    secondaryLabel: "#9b9b9b",
+    iconMuted: "#a3a3a3",
+    accentSurface: "#2c2c2c",
+    accentSurfaceForeground: "#ececec",
+    messageSurface: "#2f2f2f",
+    messageForeground: "#ececec",
+    codeBackground: "#1a1a1a",
+    codeForeground: "#ececec",
+    sidebar: "#202020",
+    sidebarForeground: "#ececec",
+    sidebarMutedForeground: "#a3a3a3",
+    sidebarControlSurface: "#262626",
+    sidebarRowHover: "#2a2a2a",
+    sidebarRowActive: "#2c2c2c",
+    sidebarRowSelected: "#2c2c2c",
+    sidebarBorder: "#2a2a2a",
+    terminalBackground: "#1a1a1a",
+    terminalForeground: "#ececec",
+    terminalSelection: "#3a4150",
+    terminalScrollbar: "#3a3a3a",
+    terminalScrollbarHover: "#4a4a4a",
+  },
+  // Light mode keeps the standard light palette; the theme is about its dark canvas.
+  variants: { light: T3_CODE_LIGHT_THEME_COLORS },
+};
+
 export const BUILT_IN_THEMES: ReadonlyArray<ThemeDefinition> = [
   T3_CHAT_THEME,
   GROVE_THEME,
   OCEAN_THEME,
   EMBER_THEME,
   IRIS_THEME,
+  CHARCOAL_THEME,
 ];
 
 export function getThemeColorsForAppearance(

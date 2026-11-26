@@ -166,7 +166,7 @@ function ThemeColorPickerPanel({
 
   return (
     <div className="w-72">
-      <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border/90 px-4 py-3">
         <div className="min-w-0">
           <p className="truncate text-xs font-semibold text-foreground">{label}</p>
           <p className="text-2xs text-muted-foreground">
@@ -203,7 +203,7 @@ function ThemeColorPickerPanel({
               />
               <input
                 aria-label={gt("{label} picker hex value", { label })}
-                className="h-8 min-w-0 flex-1 bg-transparent font-mono text-xs text-foreground outline-none"
+                className="h-8 min-w-0 flex-1 bg-transparent tabular-nums text-xs text-foreground outline-none"
                 onBlur={() => {
                   setIsEditingText(false);
                   setHexDraft(currentColor);
@@ -225,7 +225,7 @@ function ThemeColorPickerPanel({
             <span className="flex min-w-0 items-center rounded-lg border border-input bg-background px-2 focus-within:border-ring">
               <input
                 aria-label={gt("{label} picker RGB value", { label })}
-                className="h-8 min-w-0 flex-1 bg-transparent font-mono text-xs text-foreground outline-none"
+                className="h-8 min-w-0 flex-1 bg-transparent tabular-nums text-xs text-foreground outline-none"
                 onBlur={() => {
                   setIsEditingText(false);
                   setHexDraft(currentColor);

@@ -100,7 +100,7 @@ export function GuideFileDiff({
     loadDiffFiles,
   };
   return (
-    <div className="border-t border-border/60">
+    <div className="border-t border-border/80">
       <FileDiff<FileAnnotation>
         fileDiff={expandable}
         options={options}

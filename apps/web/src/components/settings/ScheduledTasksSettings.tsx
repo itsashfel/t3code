@@ -606,7 +606,7 @@ function ScheduledTaskEnvironmentList({
       {populated.map(({ environment, tasks, timeZone }) => {
         const { primary, secondary } = settingsScopeEnvironmentLabels(environment, environments);
         return (
-          <div key={environment.environmentId} className="divide-y divide-border/50">
+          <div key={environment.environmentId} className="divide-y divide-border/80">
             <EnvironmentRow
               kind={resolveEnvironmentMachineKind(environment.serverConfig)}
               label={primary}

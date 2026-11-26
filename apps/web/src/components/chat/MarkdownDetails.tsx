@@ -46,7 +46,7 @@ export function MarkdownDetails({
   // Most details stay closed: mount Base UI on hover or focus, before the first click.
   if (!armed && !expanded && !searching) {
     return (
-      <div className="my-2 border-y border-border/60" dir={dir}>
+      <div className="my-2 border-y border-border/80" dir={dir}>
         <div data-slot="collapsible" data-markdown-details="" data-markdown-details-open="false">
           <button
             type="button"
@@ -74,7 +74,7 @@ export function MarkdownDetails({
   }
 
   return (
-    <div className="my-2 border-y border-border/60" dir={dir}>
+    <div className="my-2 border-y border-border/80" dir={dir}>
       <Collapsible
         open={expanded}
         onOpenChange={setIsOpen}

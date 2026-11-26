@@ -178,14 +178,14 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
 
 @theme inline {
   /* Two steps below Tailwind's text-xs (12px) for dense UI: metadata rows,
-     badges, counters, keyboard hints and diagnostics tables. 2xs is 11px,
-     3xs is 10px. Provider icon overlays use 4xs (8px) and 5xs (7px) to fit
-     their smaller badges. Registered with tailwind-merge in
-     lib/utils.ts so cn() treats them as font sizes, not colours. */
-  --text-2xs: 0.6875rem;
-  --text-2xs--line-height: calc(1 / 0.6875);
-  --text-3xs: 0.625rem;
-  --text-3xs--line-height: calc(0.875 / 0.625);
+     badges, counters, keyboard hints and diagnostics tables. 2xs is 11.5px,
+     3xs is 10.5px, a half step above their old sizes so dense text stays readable.
+     Provider icon overlays use 4xs (8px) and 5xs (7px) to fit their smaller badges.
+     Registered with tailwind-merge in lib/utils.ts so cn() treats them as font sizes. */
+  --text-2xs: 0.71875rem;
+  --text-2xs--line-height: calc(1 / 0.71875);
+  --text-3xs: 0.65625rem;
+  --text-3xs--line-height: calc(0.875 / 0.65625);
   --text-4xs: 0.5rem;
   --text-4xs--line-height: 1;
   --text-5xs: 0.4375rem;
@@ -476,6 +476,13 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
   @variant dark {
     background: color-mix(in srgb, var(--background) 64%, transparent);
   }
+}
+
+/* A neutral checkerboard behind previewed images, so dark artwork with transparency stays visible. */
+@utility transparency-checker {
+  background-color: #8c8c8c;
+  background-image: conic-gradient(#808080 25%, transparent 0 50%, #808080 0 75%, transparent 0);
+  background-size: 16px 16px;
 }
 
 /* A panel tab's title fades out under the close button that floats over its end on hover. */
@@ -976,13 +983,6 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
      focus outline takes over, so exactly one indicator shows at a time. */
   [data-settings-page-scroll] .settings-search-target-pulse:focus {
     outline: none;
-  }
-
-  [data-preview-panel-mode="inline"] [data-right-panel-surface-content] [data-surface-subheader] {
-    height: calc(var(--spacing) * 7);
-    min-height: calc(var(--spacing) * 7);
-    margin-bottom: calc(var(--spacing) * 3);
-    border-bottom-color: transparent;
   }
 
   .chat-content-lane {
@@ -1818,9 +1818,12 @@ body {
   background-size: var(--surface-grain-size);
 }
 
-pre,
-code {
-  font-family: var(--font-mono);
+/* In the base layer so a font utility (font-sans on a branch name) can override it. */
+@layer base {
+  pre,
+  code {
+    font-family: var(--font-mono);
+  }
 }
 
 /* Code blocks in chat carry the size preference. Scoped to chat markdown
@@ -1952,6 +1955,27 @@ code {
 
 :is(.chat-markdown, .composer-tiptap) h6 {
   color: var(--contrast-muted-foreground);
+}
+
+/* Commands in table cells read as plain code; row dividers already group them, and a chip per
+   wrapped line made one command look like several. */
+.chat-markdown :is(td, th):has(code) {
+  line-height: 1.5;
+}
+
+.chat-markdown :is(td, th) code:not(pre > code) {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* A PR body sits under the PR title, so its headings stay a step below it. */
+[data-pr-markdown] .chat-markdown :is(h1, h2) {
+  font-size: 1rem;
+}
+
+[data-pr-markdown] .chat-markdown h3 {
+  font-size: 0.9375rem;
 }
 
 :is(.chat-markdown, .composer-tiptap) ul {

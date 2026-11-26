@@ -323,7 +323,7 @@ function SidebarThreadTooltip({
         title={thread.title}
         footer={
           supportsMultiplePullRequests && thread.pullRequests.length > 0 ? (
-            <div className="border-t border-border/60 pt-2 pl-0.5 text-xs text-muted-foreground">
+            <div className="border-t border-border/80 pt-2 pl-0.5 text-xs text-muted-foreground">
               <ThreadPullRequestsMiniList pullRequests={thread.pullRequests} />
             </div>
           ) : null
@@ -332,7 +332,7 @@ function SidebarThreadTooltip({
         {projectDisplayName ? (
           <div className="flex min-w-0 items-center gap-2">
             {project ? <ProjectFavicon project={project} className="size-3 shrink-0" /> : null}
-            <div className="min-w-0 truncate text-foreground/75">{projectDisplayName}</div>
+            <div className="min-w-0 truncate text-foreground/85">{projectDisplayName}</div>
           </div>
         ) : null}
         {environmentLabel ? (
@@ -341,7 +341,7 @@ function SidebarThreadTooltip({
               kind={environmentMachine}
               className="size-3 shrink-0 stroke-muted-foreground"
             />
-            <div className="min-w-0 truncate text-foreground/75">{environmentLabel}</div>
+            <div className="min-w-0 truncate text-foreground/85">{environmentLabel}</div>
           </div>
         ) : null}
         {thread.branch ? (
@@ -379,7 +379,7 @@ function SidebarThreadTooltip({
               badgeClassName="h-2 min-w-2 px-0"
               iconClassName="size-3 shrink-0 opacity-60"
             />
-            <div className="min-w-0 truncate text-foreground/75">
+            <div className="min-w-0 truncate text-foreground/85">
               {showInstanceBadge && providerEntry
                 ? `${modelLabel} · ${providerEntry.displayName}`
                 : modelLabel}
@@ -389,7 +389,7 @@ function SidebarThreadTooltip({
         {previousProviderNames.length > 0 ? (
           <div className="flex min-w-0 items-center gap-2">
             <ArrowRightLeftIcon className="size-3 shrink-0 stroke-muted-foreground" />
-            <div className="min-w-0 truncate text-foreground/75">
+            <div className="min-w-0 truncate text-foreground/85">
               <T>
                 Handed off from <Var>{previousProviderNames.join(", ")}</Var>
               </T>
@@ -402,7 +402,7 @@ function SidebarThreadTooltip({
               aria-hidden
               className={cn("size-3 shrink-0", terminalStatus.colorClass)}
             />
-            <div className="min-w-0 truncate text-foreground/75">
+            <div className="min-w-0 truncate text-foreground/85">
               {terminalProcessLabel(terminalProcessCount, m)}
             </div>
           </div>
@@ -832,64 +832,64 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                 ? gt("Goal", { $context: "thread status: working on a goal" })
                 : gt("Working", { $context: "thread status" }),
           icon: "working" as const,
-          className: "text-info-foreground",
-          pillClassName: "bg-info/14",
+          className: "text-info-foreground dark:text-blue-300",
+          pillClassName: "bg-info/22",
         }
       : status === "waiting"
         ? {
             label: gt("Waiting", { $context: "thread status" }),
             icon: "waiting" as const,
             className: "text-muted-foreground",
-            pillClassName: "bg-muted-foreground/14",
+            pillClassName: "bg-muted-foreground/22",
           }
         : status === "approval"
           ? {
               label: gt("Approval", { $context: "thread status: needs approval" }),
               icon: "approval" as const,
               className: "text-warning-foreground",
-              pillClassName: "bg-warning/14",
+              pillClassName: "bg-warning/22",
             }
           : status === "input"
             ? {
                 label: gt("Input", { $context: "thread status: needs user input" }),
                 icon: "input" as const,
                 className: "text-indigo-600 dark:text-indigo-300",
-                pillClassName: "bg-indigo-500/14 dark:bg-indigo-400/14",
+                pillClassName: "bg-indigo-500/14 dark:bg-indigo-400/22",
               }
             : status === "request"
               ? {
                   label: gt("Request", { $context: "thread status: guest request" }),
                   icon: "request" as const,
                   className: "text-guest-foreground",
-                  pillClassName: "bg-guest/14",
+                  pillClassName: "bg-guest/22",
                 }
               : status === "limited"
                 ? {
                     label: gt("Limited", { $context: "thread status: usage limited" }),
                     icon: "failed" as const,
                     className: "text-warning-foreground",
-                    pillClassName: "bg-warning/14",
+                    pillClassName: "bg-warning/22",
                   }
                 : status === "failed"
                   ? {
                       label: gt("Failed", { $context: "thread status" }),
                       icon: "failed" as const,
                       className: "text-error-foreground",
-                      pillClassName: "bg-error/14",
+                      pillClassName: "bg-error/22",
                     }
                   : isWoke
                     ? {
                         label: gt("Woke", { $context: "thread status: woke from snooze" }),
                         icon: "woke" as const,
                         className: "text-warning-foreground",
-                        pillClassName: "bg-warning/14",
+                        pillClassName: "bg-warning/22",
                       }
                     : isUnread
                       ? {
                           label: gt("Done", { $context: "thread status" }),
                           icon: "done" as const,
                           className: "text-success-foreground",
-                          pillClassName: "bg-success/14",
+                          pillClassName: "bg-success/22",
                         }
                       : null;
   const isWokeStatus = topStatus?.icon === "woke";
@@ -1060,7 +1060,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
     "group/sidebar-row relative w-full cursor-pointer overflow-hidden rounded-md text-left outline-none select-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
     variantAction === "unsettle" &&
       !props.isActive &&
-      "[&:not(:hover):not(:focus-within)_*:not(.live-activity-focus_*)]:text-secondary-label",
+      "[&:not(:hover):not(:focus-within)_*:not(.live-activity-focus_*)]:text-foreground/72",
     props.isActive
       ? "bg-sidebar-row-active text-sidebar-foreground light:ring-1 light:ring-inset light:ring-sidebar-border/70"
       : isSelected || props.sweepAction !== null
@@ -1136,7 +1136,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
             ? cn(
                 "truncate",
                 shouldRecede
-                  ? "text-foreground/75 group-hover/sidebar-row:text-foreground group-focus-visible/sidebar-row:text-foreground"
+                  ? "text-foreground/85 group-hover/sidebar-row:text-foreground group-focus-visible/sidebar-row:text-foreground"
                   : status === "failed" && !isUnread && !isWoke
                     ? "text-foreground/95"
                     : "text-foreground",
@@ -1144,12 +1144,12 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
             : cn(
                 "truncate group-focus-within/sidebar-row:text-foreground group-hover/sidebar-row:text-foreground",
                 shouldRecede
-                  ? "text-secondary-label"
+                  ? "text-foreground/75"
                   : props.isActive || isWoke || status === "input" || status === "request"
                     ? "text-foreground"
                     : isUnread
                       ? "text-muted-foreground"
-                      : "text-secondary-label/70",
+                      : "text-secondary-label",
               ),
       )}
       dir={textDirection(thread.title)}
@@ -1269,7 +1269,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
             type="button"
             aria-label={gt("Unpin thread")}
             onClick={handleUnpinClick}
-            className="group/unpin inline-flex cursor-pointer items-center rounded-sm text-muted-foreground/65 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+            className="group/unpin inline-flex cursor-pointer items-center rounded-sm text-muted-foreground/85 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
           />
         }
         label={
@@ -1291,7 +1291,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
       <PinIcon
         aria-label={gt("Pinned")}
         role="img"
-        className="size-3 shrink-0 text-muted-foreground/65"
+        className="size-3 shrink-0 text-muted-foreground/85"
       />
     )
   ) : null;
@@ -1322,7 +1322,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
       {prBadge}
       {issueBadge}
       {diff ? (
-        <span className="shrink-0 font-mono">
+        <span className="shrink-0 tabular-nums">
           <span className="text-diff-addition-foreground">+{formatDiffCount(diff.insertions)}</span>{" "}
           <span className="text-diff-deletion-foreground">−{formatDiffCount(diff.deletions)}</span>
         </span>
@@ -1400,7 +1400,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                 className={cn(
                   "flex shrink-0 items-center transition-opacity",
                   (!props.isActive || variantAction === "unsettle") &&
-                    "opacity-40 grayscale group-focus-within/sidebar-row:opacity-100 group-focus-within/sidebar-row:grayscale-0 group-hover/sidebar-row:opacity-100 group-hover/sidebar-row:grayscale-0",
+                    "opacity-90 grayscale group-focus-within/sidebar-row:opacity-100 group-focus-within/sidebar-row:grayscale-0 group-hover/sidebar-row:opacity-100 group-hover/sidebar-row:grayscale-0",
                 )}
               >
                 {props.project ? (
@@ -1984,7 +1984,7 @@ export const SidebarSearchResultRow = memo(function SidebarSearchResultRow(props
                 isRegeneratingTitle
                   ? "relative text-muted-foreground"
                   : props.isSettled && !props.isHighlighted && !props.isRouteActive
-                    ? "text-secondary-label/70 group-hover/sidebar-row:text-foreground"
+                    ? "text-secondary-label group-hover/sidebar-row:text-foreground"
                     : "text-foreground",
               )}
             >
@@ -2001,7 +2001,7 @@ export const SidebarSearchResultRow = memo(function SidebarSearchResultRow(props
                 settled={props.isSettled}
               />
             </span>
-            <span className="min-w-8 shrink-0 text-right text-xs text-muted-foreground/55 tabular-nums">
+            <span className="min-w-8 shrink-0 text-right text-xs text-muted-foreground/85 tabular-nums">
               <RelativeTimeLabel timestamp={resolveThreadActivityTimestamp(thread)} />
             </span>
           </span>

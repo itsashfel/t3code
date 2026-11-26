@@ -57,7 +57,7 @@ export function GuestMessageAttachments(props: {
                     />
                   </button>
                 ) : (
-                  <div className="flex size-full items-center justify-center px-2 text-center text-2xs text-muted-foreground/70">
+                  <div className="flex size-full items-center justify-center px-2 text-center text-2xs text-muted-foreground/85">
                     {image.name}
                   </div>
                 )}

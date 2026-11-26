@@ -686,7 +686,7 @@ function TextGeneratorModelList({
           }}
         />
       ) : null}
-      <div className="max-h-80 overflow-y-auto rounded-lg border divide-y divide-border/60">
+      <div className="max-h-80 overflow-y-auto rounded-lg border divide-y divide-border/80">
         {shown.length === 0 ? (
           <p className="px-3 py-2 text-sm text-muted-foreground">
             <T>No models match.</T>
@@ -700,7 +700,7 @@ function TextGeneratorModelList({
                   <span className="grid min-w-0 flex-1">
                     <span className="truncate">{model.name}</span>
                     {model.name !== model.id ? (
-                      <span className="truncate font-mono text-xs text-muted-foreground">
+                      <span className="truncate tabular-nums text-xs text-muted-foreground">
                         {model.id}
                       </span>
                     ) : null}

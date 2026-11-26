@@ -4285,6 +4285,9 @@ export default function ChatView(props: ChatViewProps) {
             if (activeThreadRef)
               useRightPanelStore.getState().renameDevice(activeThreadRef, surfaceId, title);
           }}
+          onKeepFile={(surfaceId) => {
+            if (activeThreadRef) useRightPanelStore.getState().keepFile(activeThreadRef, surfaceId);
+          }}
           onCloseOtherSurfaces={closeOtherRightPanelSurfacesStable}
           onCloseSurfacesToRight={closeRightPanelSurfacesToRightStable}
           onCloseAllSurfaces={closeAllRightPanelSurfacesStable}

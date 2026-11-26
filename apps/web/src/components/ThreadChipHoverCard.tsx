@@ -46,7 +46,7 @@ export function ThreadChipHoverCard(props: {
       title={props.title}
       footer={
         supportsMultiplePullRequests && shell && shell.pullRequests.length > 0 ? (
-          <div className="border-t border-border/60 pt-2 pl-0.5 text-xs text-muted-foreground">
+          <div className="border-t border-border/80 pt-2 pl-0.5 text-xs text-muted-foreground">
             <ThreadPullRequestsMiniList pullRequests={shell.pullRequests} />
           </div>
         ) : null
@@ -55,7 +55,7 @@ export function ThreadChipHoverCard(props: {
       {props.project ? (
         <div className="flex min-w-0 items-center gap-2">
           <ProjectFavicon project={props.project} className="size-3 shrink-0" />
-          <div className="min-w-0 truncate text-foreground/75">{props.project.title}</div>
+          <div className="min-w-0 truncate text-foreground/85">{props.project.title}</div>
         </div>
       ) : null}
       {shell?.branch ? (
@@ -72,7 +72,7 @@ export function ThreadChipHoverCard(props: {
             acpRegistryIconUrl={provider.iconUrl}
             iconClassName="size-3 shrink-0 opacity-60"
           />
-          <div className="min-w-0 truncate text-foreground/75">{modelLabel}</div>
+          <div className="min-w-0 truncate text-foreground/85">{modelLabel}</div>
         </div>
       ) : null}
       {props.unreadable ? (

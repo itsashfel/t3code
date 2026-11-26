@@ -255,7 +255,7 @@ export const ComposerStashMenu = memo(function ComposerStashMenu(props: {
                           src={attachment.dataUrl}
                           alt=""
                           aria-hidden="true"
-                          className="size-4 rounded border border-border/70 object-cover"
+                          className="size-4 rounded border border-border/90 object-cover"
                         />
                       ))}
                     </span>

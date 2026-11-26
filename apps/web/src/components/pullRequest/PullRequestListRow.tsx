@@ -19,8 +19,7 @@ import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 export const PULL_REQUEST_ROW_CLASS =
   "group/pr-row flex w-full items-center gap-2 rounded-md py-1 pr-1 text-left";
 
-export const PULL_REQUEST_ROW_NUMBER_CLASS =
-  "shrink-0 font-mono text-xs tabular-nums text-muted-foreground";
+export const PULL_REQUEST_ROW_NUMBER_CLASS = "shrink-0 text-xs tabular-nums text-muted-foreground";
 
 export function PullRequestRowGlyph({
   state,
@@ -126,7 +125,7 @@ export function PullRequestRowAuthor({
 
 export function PullRequestRowBranches({ head, base }: { head: string; base: string }) {
   return (
-    <span className="flex min-w-0 items-center gap-1 font-mono">
+    <span className="flex min-w-0 items-center gap-1 tabular-nums">
       <MiddleTruncate value={head} />
       <span className="shrink-0">→</span>
       <MiddleTruncate value={base} className="max-w-[45%] shrink-0" />

@@ -366,7 +366,7 @@ export function WorkingTimelineRow({ row }: { row: Extract<TimelineRow, { kind: 
     <T>Working...</T>
   );
   return (
-    <div className="border-b border-border/60 pb-2 pt-1">
+    <div className="border-b border-border/80 pb-2 pt-1">
       <div className="flex h-6 min-w-0 items-baseline gap-2 px-1 text-sm leading-relaxed text-muted-foreground tabular-nums">
         <span
           ref={shimmer ? observeVisibleAnimation : undefined}

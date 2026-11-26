@@ -518,6 +518,32 @@ describe("rightPanelStore", () => {
     expect(selectThreadRightPanelState(migrated.byThreadKey, refA).maximized).toBe(true);
   });
 
+  it("restores a saved preview file tab and drops a malformed preview flag", () => {
+    const file = (path: string) => ({
+      id: `file:${path}`,
+      kind: "file",
+      relativePath: path,
+      revealLine: null,
+      revealRequestId: 1,
+    });
+    const migrated = migratePersistedRightPanelState({
+      byThreadKey: {
+        "env-1:thread-A": {
+          isOpen: true,
+          activeSurfaceId: "file:a.ts",
+          surfaces: [
+            { ...file("a.ts"), preview: true },
+            { ...file("b.ts"), preview: "yes" },
+          ],
+        },
+      },
+    });
+    expect(selectThreadRightPanelState(migrated.byThreadKey, refA).surfaces).toEqual([
+      { ...file("a.ts"), preview: true },
+      file("b.ts"),
+    ]);
+  });
+
   it("opens a linked thread once per thread and environment it is read through", () => {
     const store = useRightPanelStore.getState();
     const target = {
@@ -871,6 +897,7 @@ describe("rightPanelStore", () => {
     const state = () =>
       selectThreadRightPanelState(useRightPanelStore.getState().byThreadKey, refA);
     store.openFile(refA, "README.md");
+    store.keepFile(refA, "file:README.md");
     store.openFile(refA, "apps/web/src");
 
     store.navigateFolder(refA, "file:apps/web/src", "apps", "apps/web/src");
@@ -906,6 +933,7 @@ describe("rightPanelStore", () => {
   it("switches to a tab that already shows the folder instead of replacing it", () => {
     const store = useRightPanelStore.getState();
     store.openFile(refA, "apps");
+    store.keepFile(refA, "file:apps");
     store.openFile(refA, "apps/web/src", 12);
 
     store.navigateFolder(refA, "file:apps/web/src", "apps", "apps/web/src");
@@ -931,6 +959,7 @@ describe("rightPanelStore", () => {
         relativePath: "src/app.ts",
         revealLine: 40,
         revealRequestId: 1,
+        preview: true,
       },
       expect.objectContaining({ id: "file:src", folderTrail: "src/app.ts" }),
     ]);
@@ -944,6 +973,7 @@ describe("rightPanelStore", () => {
         relativePath: "src/app.ts",
         revealLine: 40,
         revealRequestId: 1,
+        preview: true,
       },
     ]);
   });
@@ -963,6 +993,7 @@ describe("rightPanelStore", () => {
     useRightPanelStore.getState().open(refA, "files");
     useRightPanelStore.getState().openFile(refA, "src/index.ts");
     useRightPanelStore.getState().openFile(refA, "src/index.ts");
+    useRightPanelStore.getState().keepFile(refA, "file:src/index.ts");
     useRightPanelStore.getState().openFile(refA, "README.md");
 
     expect(selectThreadRightPanelState(useRightPanelStore.getState().byThreadKey, refA)).toEqual({
@@ -982,6 +1013,7 @@ describe("rightPanelStore", () => {
           relativePath: "README.md",
           revealLine: null,
           revealRequestId: 1,
+          preview: true,
         },
       ],
     });
@@ -993,6 +1025,7 @@ describe("rightPanelStore", () => {
     [" notes/meeting", "notes/meeting"],
   ])("keeps %j and %j in separate file tabs", (firstPath, secondPath) => {
     useRightPanelStore.getState().openFile(refA, firstPath);
+    useRightPanelStore.getState().keepFile(refA, `file:${firstPath}`);
     useRightPanelStore.getState().openFile(refA, secondPath);
 
     expect(
@@ -1020,6 +1053,41 @@ describe("rightPanelStore", () => {
     ).toEqual(["file:attachment:shared-id", "attachment:shared-id"]);
   });
 
+  it("opens files into one preview tab until the user keeps it", () => {
+    const store = useRightPanelStore.getState();
+    const ids = () =>
+      selectThreadRightPanelState(useRightPanelStore.getState().byThreadKey, refA).surfaces.map(
+        (surface) => [surface.id, surface.kind === "file" && surface.preview === true],
+      );
+    store.open(refA, "diff");
+    store.openFile(refA, "a.ts");
+    store.openFile(refA, "b.ts");
+    // A glance replaces the previous glance in place, after tabs the user already had.
+    expect(ids()).toEqual([
+      ["diff", false],
+      ["file:b.ts", true],
+    ]);
+
+    store.keepFile(refA, "file:b.ts");
+    store.openFile(refA, "c.ts");
+    expect(ids()).toEqual([
+      ["diff", false],
+      ["file:b.ts", false],
+      ["file:c.ts", true],
+    ]);
+
+    // Reopening a kept file focuses it and leaves it kept.
+    store.openFile(refA, "b.ts", 3);
+    expect(ids()).toEqual([
+      ["diff", false],
+      ["file:b.ts", false],
+      ["file:c.ts", true],
+    ]);
+    expect(
+      selectThreadRightPanelState(useRightPanelStore.getState().byThreadKey, refA).activeSurfaceId,
+    ).toBe("file:b.ts");
+  });
+
   it("updates line reveal requests when reopening a file surface", () => {
     useRightPanelStore.getState().openFile(refA, "src/index.ts", 42);
     useRightPanelStore.getState().openFile(refA, "src/index.ts", 87);
@@ -1034,6 +1102,7 @@ describe("rightPanelStore", () => {
           relativePath: "src/index.ts",
           revealLine: 87,
           revealRequestId: 2,
+          preview: true,
         },
       ],
     });
@@ -1050,6 +1119,7 @@ describe("rightPanelStore", () => {
           relativePath: "src/index.ts",
           revealLine: null,
           revealRequestId: 3,
+          preview: true,
         },
       ],
     });

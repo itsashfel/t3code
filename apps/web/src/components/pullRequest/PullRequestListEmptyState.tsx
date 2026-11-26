@@ -13,7 +13,7 @@ function BranchMark({ joined }: { joined: boolean }) {
     <svg
       aria-hidden
       viewBox="0 0 120 72"
-      className="h-20 w-32 text-muted-foreground/60"
+      className="h-20 w-32 text-muted-foreground/85"
       fill="none"
       stroke="currentColor"
       strokeWidth={2}
@@ -31,7 +31,7 @@ function BranchMark({ joined }: { joined: boolean }) {
           <path
             d="M90 58c0-18-8-26-24-26h-4"
             strokeDasharray="2 7"
-            className="text-muted-foreground/50"
+            className="text-muted-foreground/85"
           />
         </>
       )}

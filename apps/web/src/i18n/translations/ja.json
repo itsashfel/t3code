@@ -4245,17 +4245,8 @@
   "2843ab5fd6d5d3e1": "{term, select, mr {マージリクエスト} cr {変更リクエスト} other {プルリクエスト}} #{number}、{state}",
   "d51ff529f508304a": "{term, select, mr {マージリクエスト} cr {変更リクエスト} other {プルリクエスト}} #{number}: {title}",
   "b51d5be25d79b06c": "{count, plural, other {{formatted} 個のファイル}}",
-  "2e034563c916f3eb": "解決",
   "abe37e21953338e6": "準備しています...",
-  "66d185fcf7d5f3e6": "ブランチをチェックアウトし、新しいスレッドで競合を解決",
-  "551ce3362d0307d4": "このスレッドで競合を解決",
-  "f70f754b79025c67": "レビュー可能にする",
-  "763cb56e21879aad": "設定しています...",
-  "422f32e5d25da2ae": "{term, select, mr {このマージリクエストをレビュー可能にする} cr {この変更リクエストをレビュー可能にする} other {このプルリクエストをレビュー可能にする}}",
-  "9fe4c09b6a3ab4b4": "修正",
-  "0e48be2053a4b817": "修正を準備中",
   "6f6c67fa4032196b": "新しいスレッドで失敗したチェックを修正",
-  "024f959a15903d60": "このスレッドで失敗したチェックを修正",
   "be85261ec6428209": "マージしています...",
   "087d8cedc3ea219d": "#{number} の監視を停止",
   "636eb97a97862aef": [
@@ -5518,7 +5509,6 @@
   "e8c281b1a85ac547": "コメントを追加…",
   "f2160b630793c7b4": "{rangeLabel} 行にコメント",
   "8d12e0769f6d5eb8": "コメント",
-  "40ef11933aa35e8e": "⌘/Ctrl Enter で送信",
   "ee90d50efb2fe9fb": "差分を読み込んでいます…",
   "1601d7e39a52c48f": "差分の読み込みを再試行",
   "b7b137472adb6989": "差分の部分プレビュー",
@@ -12966,5 +12956,7 @@
   "176e9d4d4033aaf2": "Started in a terminal",
   "75fe9ced794c3f8c": "pid {pid}",
   "fd8a2ee54ce70eef": "Open files appear here",
-  "b98b77906deb7369": "Pick a file in the tree."
+  "b98b77906deb7369": "Pick a file in the tree.",
+  "a53f6826c4fb3da2": "Remove comment",
+  "9bfa1bcd11ba9012": "Fix checks"
 }

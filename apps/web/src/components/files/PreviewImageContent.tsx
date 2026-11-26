@@ -47,7 +47,7 @@ export default function PreviewImageContent(props: {
   if (failed) return <FileSurfaceFailure message={gt("Unable to load image.")} />;
   return (
     <>
-      <div className="flex min-h-10 shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border/60 px-3 py-1 text-xs text-muted-foreground">
+      <div className="flex min-h-10 shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border/80 px-3 py-1 text-xs text-muted-foreground">
         <span className="tabular-nums">
           {natural.width
             ? `${natural.width.toLocaleString()} × ${natural.height.toLocaleString()}`
@@ -104,7 +104,7 @@ export default function PreviewImageContent(props: {
               mimeType={props.mimeType}
               src={props.src}
               alt={props.name}
-              className="block max-w-none"
+              className="block max-w-none transparency-checker"
               // A cached image has its natural size before onLoad runs, so it stays at 0x0 until the
               // fit scale is known instead of painting at full size for a frame.
               style={

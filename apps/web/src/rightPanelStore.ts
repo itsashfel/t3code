@@ -72,6 +72,8 @@ export type RightPanelSurface =
       attachment?: ChatFileAttachment;
       /** Deepest workspace path retained for navigating back down after moving up. */
       folderTrail?: string;
+      /** A tab opened by a glance: the next opened file replaces it until the user keeps it. */
+      preview?: true;
     }
   | {
       id: `pull-request:${string}`;
@@ -199,6 +201,8 @@ interface RightPanelStoreState {
   renameDevice: (ref: ScopedThreadRef, surfaceId: string, title: string) => void;
   openBrowser: (ref: ScopedThreadRef, tabId: string | null) => void;
   openFile: (ref: ScopedThreadRef, relativePath: string, line?: number) => void;
+  /** Turns a preview file tab into a kept one, so the next opened file gets its own tab. */
+  keepFile: (ref: ScopedThreadRef, surfaceId: string) => void;
   /** Moves in place; "" opens the root explorer. folderTrail keeps the return path; keepSource opens beside the source. */
   navigateFolder: (
     ref: ScopedThreadRef,
@@ -311,7 +315,7 @@ const fileSurface = (
   relativePath: string,
   revealLine: number | null,
   revealRequestId: number,
-): RightPanelSurface => ({
+): Extract<RightPanelSurface, { kind: "file" }> => ({
   id: `file:${relativePath}`,
   kind: "file",
   relativePath,
@@ -629,6 +633,7 @@ export function migratePersistedRightPanelState(persistedState: unknown): {
                       surface = rest;
                     }
                     if (surface.kind === "file") {
+                      const { preview, ...file } = surface;
                       const revealLine =
                         typeof surface.revealLine === "number" &&
                         Number.isFinite(surface.revealLine)
@@ -640,7 +645,14 @@ export function migratePersistedRightPanelState(persistedState: unknown): {
                         surface.revealRequestId >= 0
                           ? surface.revealRequestId
                           : 0;
-                      return [{ ...surface, revealLine, revealRequestId }];
+                      return [
+                        {
+                          ...file,
+                          revealLine,
+                          revealRequestId,
+                          ...(preview === true ? { preview } : {}),
+                        },
+                      ];
                     }
                     if (surface.kind === "pull-request") {
                       if (
@@ -1021,11 +1033,20 @@ export const useRightPanelStore = create<RightPanelStoreState>()(
               (surface): surface is Extract<RightPanelSurface, { kind: "file" }> =>
                 surface.id === surfaceId && surface.kind === "file",
             );
-            const surface = fileSurface(
-              relativePath,
-              normalizeRevealLine(line),
-              (existing?.revealRequestId ?? 0) + 1,
-            );
+            const surface = {
+              ...fileSurface(
+                relativePath,
+                normalizeRevealLine(line),
+                (existing?.revealRequestId ?? 0) + 1,
+              ),
+              ...(existing === undefined || existing.preview ? { preview: true as const } : {}),
+            };
+            // Like an editor's preview tab: a new file takes the place of the one not yet kept.
+            const previewIndex = existing
+              ? -1
+              : withoutStandaloneExplorer.findIndex(
+                  (entry) => entry.kind === "file" && entry.preview === true,
+                );
             return {
               ...current,
               isOpen: true,
@@ -1034,8 +1055,24 @@ export const useRightPanelStore = create<RightPanelStoreState>()(
                 ? withoutStandaloneExplorer.map((entry) =>
                     entry.id === surface.id ? surface : entry,
                   )
-                : [...withoutStandaloneExplorer, surface],
+                : previewIndex >= 0
+                  ? withoutStandaloneExplorer.with(previewIndex, surface)
+                  : [...withoutStandaloneExplorer, surface],
             };
+          }),
+        ),
+      keepFile: (ref, surfaceId) =>
+        set((state) =>
+          userAction(state, scopedThreadKey(ref), (current) => {
+            const index = current.surfaces.findIndex(
+              (surface) => surface.id === surfaceId && surface.kind === "file" && surface.preview,
+            );
+            if (index < 0) return current;
+            const { preview: _kept, ...kept } = current.surfaces[index] as Extract<
+              RightPanelSurface,
+              { kind: "file" }
+            >;
+            return { ...current, surfaces: current.surfaces.with(index, kept) };
           }),
         ),
       navigateFolder: (ref, surfaceId, relativePath, folderTrail, keepSource = false) =>

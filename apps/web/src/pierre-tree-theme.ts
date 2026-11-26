@@ -14,15 +14,20 @@ export const PIERRE_TREE_UNSAFE_CSS = `
   button[data-type='item'], button[data-type='item']::before { border-radius: var(--radius-md); }
   /* Change status reads from the colored letter at the row's end; names and icons stay neutral. */
   button[data-item-git-status] > [data-item-section='content'] { color: var(--trees-fg); }
+  button[data-item-git-status] > [data-item-section='git'] { font-weight: 500; }
   button[data-item-git-status] > [data-item-section='icon'] > :not([data-icon-token]):not([data-icon-name='file-tree-icon-chevron']) { color: var(--trees-fg-muted); }
-  /* A light chevron and resting indent guides keep nesting readable without heavy marks. */
+  /* A light chevron keeps nesting readable without a heavy mark. */
   svg[data-icon-name='file-tree-icon-chevron'] { width: 10px; height: 10px; color: var(--trees-fg-muted); }
-  [data-item-section='spacing-item'] { opacity: 0.5; }
   svg[data-icon-name='t3-tree-icon-loading'] { opacity: 0.6; }
   @media (prefers-reduced-motion: no-preference) {
     svg[data-icon-name='t3-tree-icon-loading'] { animation: t3-tree-spin 1s linear infinite; }
   }
   @keyframes t3-tree-spin { to { transform: rotate(360deg); } }
+`;
+
+/** In a diff the change letters lead, so file-type icons step back. */
+export const DIFF_FILE_TREE_UNSAFE_CSS = `${PIERRE_TREE_UNSAFE_CSS}
+  [data-item-section='icon'] > svg:not([data-icon-name='file-tree-icon-chevron']) { opacity: 0.6; }
 `;
 
 export function pierreTreeStyle(colorScheme: "light" | "dark"): CSSProperties {

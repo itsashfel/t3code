@@ -2507,7 +2507,7 @@ function OpenCommandPaletteDialog(props: {
             ...(option.environmentId === newProjectFlow.environmentId
               ? {
                   titleTrailingContent: (
-                    <CheckIcon className="ms-auto size-4 shrink-0 text-muted-foreground/70" />
+                    <CheckIcon className="ms-auto size-4 shrink-0 text-muted-foreground/85" />
                   ),
                 }
               : {}),
@@ -2528,7 +2528,7 @@ function OpenCommandPaletteDialog(props: {
               description: gt("Open a folder or clone a repository"),
               icon: <FolderPlusIcon className={ITEM_ICON_CLASS} />,
               titleTrailingContent: (
-                <ChevronRightIcon className="-me-0.5 ms-auto size-4 shrink-0 text-muted-foreground/70" />
+                <ChevronRightIcon className="-me-0.5 ms-auto size-4 shrink-0 text-muted-foreground/85" />
               ),
               keepOpen: true,
               run: async () => {

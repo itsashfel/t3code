@@ -26,6 +26,7 @@ const THEME_NAMES: Readonly<Record<string, string>> = {
   ocean: msg("Ocean", { $context: "color theme name" }),
   ember: msg("Ember", { $context: "color theme name" }),
   iris: msg("Iris", { $context: "color theme name" }),
+  charcoal: msg("Charcoal", { $context: "color theme name" }),
 };
 
 function themeName(

@@ -186,7 +186,7 @@ function CommentLocation({
   const label = `${path}${thread?.line ? `:${thread.line}` : ""}`;
   return (
     <div className="mt-2 flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
-      <SharedTooltipTrigger render={<span className="truncate font-mono" />} label={label}>
+      <SharedTooltipTrigger render={<span className="truncate tabular-nums" />} label={label}>
         {label}
       </SharedTooltipTrigger>
       {thread?.isOutdated ? (
@@ -331,7 +331,7 @@ function CollapsedComment({
   const statusTriggerRef = useRef<HTMLButtonElement>(null);
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <article className="group rounded-lg border border-border/60 [contain-intrinsic-block-size:44px] [content-visibility:auto]">
+      <article className="group rounded-lg border border-border/80 [contain-intrinsic-block-size:44px] [content-visibility:auto]">
         <div className="p-3">
           <div className="flex flex-wrap items-baseline gap-2">
             <CommentIdentity comment={comment} detail={detail} threadRef={editing.threadRef} />
@@ -460,14 +460,14 @@ export function PullRequestSection({
     >
       <div
         ref={headingRef}
-        className="sticky top-0 z-10 flex w-full items-center bg-background pr-4"
+        className="sticky top-0 z-10 flex w-full items-center bg-background pr-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-3 after:bg-linear-to-b after:from-background after:to-transparent"
       >
         <CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-1.5 px-4 py-3 text-left text-xs font-medium text-muted-foreground hover:text-foreground">
           <span>{title}</span>
           <ChevronRightIcon
             aria-hidden
             className={cn(
-              "size-3.5 text-muted-foreground/60 transition-transform",
+              "size-3.5 text-muted-foreground/85 transition-transform",
               open && "rotate-90",
             )}
           />
@@ -836,7 +836,7 @@ export const PullRequestSummaryTab = memo(function PullRequestSummaryTab({
     return (
       <article
         key={`${detail.url}:${comment.id}`}
-        className="group rounded-lg border border-border/60 bg-background [contain-intrinsic-block-size:160px] [content-visibility:auto]"
+        className="group rounded-lg border border-border/80 bg-background [contain-intrinsic-block-size:160px] [content-visibility:auto]"
       >
         <div className="flex flex-wrap items-baseline gap-2 rounded-t-lg bg-muted/25 px-3 py-2.5">
           <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-2 text-xs text-muted-foreground">
@@ -888,7 +888,7 @@ export const PullRequestSummaryTab = memo(function PullRequestSummaryTab({
     const thread = item.kind === "thread" ? item.thread : undefined;
     const replies =
       item.kind === "thread" && item.replies.length > 0 ? (
-        <div className="ml-4 space-y-2 border-l-2 border-border/60 pl-3">
+        <div className="ml-4 space-y-2 border-l-2 border-border/80 pl-3">
           {item.replies.map((reply) => renderCommentCard(reply, undefined, { reply: true }))}
         </div>
       ) : null;
@@ -941,7 +941,8 @@ export const PullRequestSummaryTab = memo(function PullRequestSummaryTab({
       }}
       tabIndex={-1}
       data-workspace-focus-default
-      className="h-full overflow-y-auto outline-none"
+      // The bottom padding keeps the floating comment composer from covering the last content.
+      className="h-full overflow-y-auto pb-16 outline-none"
       data-pull-request-summary-scroll
     >
       <section className="px-4 pt-2.5 pb-1">

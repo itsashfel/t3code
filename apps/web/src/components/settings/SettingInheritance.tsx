@@ -305,7 +305,7 @@ export function SettingInheritance({
         />
       </SharedTooltipTrigger>
       <PopoverPopup align="start" width="md" padding="none">
-        <div className="divide-y divide-border/60">
+        <div className="divide-y divide-border/80">
           {groups.map((members) => {
             const first = members[0];
             if (!first) return null;
@@ -335,7 +335,7 @@ export function SettingInheritance({
                           ? "text-foreground"
                           : layer.set
                             ? "text-muted-foreground"
-                            : "text-muted-foreground/60",
+                            : "text-muted-foreground/85",
                       )}
                     >
                       <span className="max-w-32 truncate">{layer.value}</span>
@@ -486,7 +486,7 @@ export function SettingInheritance({
                     </ul>
                   );
                   return (
-                    <div className="mt-2 border-t border-border/60 pt-2">
+                    <div className="mt-2 border-t border-border/80 pt-2">
                       {foldOverrides ? (
                         <Collapsible>
                           {header}

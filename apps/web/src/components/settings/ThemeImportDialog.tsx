@@ -499,7 +499,7 @@ function ThemeImportBody({
         if (conflicts) {
           return (
             <div className="space-y-3">
-              <div className="rounded-xl border border-border/70 bg-muted/20 p-3">
+              <div className="rounded-xl border border-border/90 bg-muted/20 p-3">
                 <p className="text-sm font-medium">
                   <T>Already installed</T>
                 </p>

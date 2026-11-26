@@ -11,7 +11,7 @@ import type {
 } from "@t3tools/contracts";
 import { formatAttachmentSize } from "@t3tools/client-runtime/state/attachments";
 import { videoMimeType } from "@t3tools/shared/video";
-import { MessageCircleIcon, MousePointerClickIcon } from "lucide-react";
+import { MessageCircleIcon, MousePointerClickIcon, XIcon } from "lucide-react";
 import { createContext, type ReactElement, type ReactNode, use } from "react";
 import { msg, T, useGT, useMessages } from "gt-react";
 import type { MessageResolver } from "../i18n/messages";
@@ -53,6 +53,7 @@ import {
   type ContextPresentationCapability,
 } from "./contextPresentationRegistry";
 import type { ContextChipKind } from "./ContextChip";
+import { Button } from "./ui/button";
 import {
   ContextChipPopover,
   ContextChipShell,
@@ -414,7 +415,7 @@ function previewAnnotationTooltip(
 function ComposerReviewCommentDetails({ comment }: { comment: ReviewCommentContext }) {
   const messages = useMessages();
   return (
-    <div className="space-y-2 overflow-hidden rounded-lg border border-border/70 bg-background/70 p-3">
+    <div className="space-y-2 overflow-hidden rounded-lg border border-border/90 bg-background/70 p-3">
       <div className="space-y-1">
         <div className="truncate text-xs font-medium text-foreground">{comment.filePath}</div>
         <div className="text-secondary-label text-2xs">
@@ -467,15 +468,15 @@ function ComposerPreviewAnnotationDetails({
   const summary = previewAnnotationTooltip(annotation, m);
   const screenshotUrl = annotation.screenshot?.dataUrl || screenshot?.previewUrl;
   return (
-    <div className="overflow-hidden rounded-lg border border-border/70 bg-background/70">
+    <div className="overflow-hidden rounded-lg border border-border/90 bg-background/70">
       {screenshotUrl ? (
         <img
           src={screenshotUrl}
           alt={gt("Annotated preview crop")}
-          className="max-h-64 w-full border-border/70 border-b bg-muted object-contain"
+          className="max-h-64 w-full border-border/90 border-b bg-muted object-contain"
         />
       ) : (
-        <div className="border-border/70 border-b bg-muted/40 px-3 py-2 text-secondary-label text-xs">
+        <div className="border-border/90 border-b bg-muted/40 px-3 py-2 text-secondary-label text-xs">
           <T>Screenshot unavailable</T>
         </div>
       )}
@@ -627,6 +628,53 @@ const composerContextPresentationRegistry = createContextPresentationRegistry<
   ],
   fallback: (_kind, _entry, context) => <UnresolvedContextChip label={context.label} />,
 });
+
+/** A code comment the composer shows as a strip, or null for references that stay inline chips. */
+export function useComposerCodeComment(
+  kind: string,
+  contextId: string,
+): ReviewCommentContext | null {
+  const entry = use(ComposerContextRecordsContext).get(contextId);
+  if (kind !== "review-comment" || entry?.kind !== "review-comment") return null;
+  return isPullRequestSummaryContext(entry.record) ? null : entry.record;
+}
+
+export function ComposerCodeCommentStrip(props: {
+  comment: ReviewCommentContext;
+  onRemove?: (() => void) | undefined;
+}) {
+  const gt = useGT();
+  const messages = useMessages();
+  const { comment } = props;
+  return (
+    <span className="flex w-full min-w-0 items-start gap-2 rounded-lg bg-muted/72 py-1.5 ps-2.5 pe-1 text-sm leading-snug dark:bg-muted/48">
+      <span aria-hidden="true" className="w-0.5 self-stretch rounded-full bg-muted-foreground/40" />
+      <span className="min-w-0 flex-1">
+        <span className="flex min-w-0 items-center gap-1.5 text-2xs text-muted-foreground">
+          <span className="truncate font-medium text-foreground/80">
+            {comment.filePath.slice(comment.filePath.lastIndexOf("/") + 1)}
+          </span>
+          <span className="shrink-0 tabular-nums">
+            {reviewCommentRangeText(comment.rangeLabel, messages)}
+          </span>
+        </span>
+        <span className="line-clamp-2 text-foreground/90" dir="auto">
+          {comment.text}
+        </span>
+      </span>
+      {props.onRemove ? (
+        <Button
+          size="icon-xs"
+          variant="ghost-muted"
+          aria-label={gt("Remove comment")}
+          onClick={props.onRemove}
+        >
+          <XIcon aria-hidden="true" strokeWidth={1.5} />
+        </Button>
+      ) : null}
+    </span>
+  );
+}
 
 export function ComposerContextReferenceChip(props: {
   kind: string;

@@ -594,18 +594,18 @@ const ProviderModelRow = memo(function ProviderModelRow({
         >
           <span className={cn(nameClassName, "max-w-full shrink-0 truncate")}>{model.name}</span>
           {model.name !== model.slug ? (
-            <code className="truncate font-mono text-2xs text-muted-foreground/70">
+            <code className="truncate font-mono text-2xs text-muted-foreground/85">
               {model.slug}
             </code>
           ) : null}
         </SharedTooltipTrigger>
         {model.isCustom ? (
-          <span className="shrink-0 text-2xs text-muted-foreground/70">
+          <span className="shrink-0 text-2xs text-muted-foreground/85">
             {gt("custom", { $context: "badge, user-added model" })}
           </span>
         ) : null}
       </span>
-      <span className="text-2xs text-muted-foreground/70">
+      <span className="text-2xs text-muted-foreground/85">
         {capLabels.length > 0 ? (
           <span className="hidden sm:inline">{capLabels.join(" · ")}</span>
         ) : null}

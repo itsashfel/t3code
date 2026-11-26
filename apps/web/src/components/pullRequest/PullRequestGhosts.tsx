@@ -150,7 +150,7 @@ export function PullRequestDetailGhost({
         !seed && "motion-safe:animate-skeleton",
       )}
     >
-      <div className="@container/pr-header grid min-w-0 shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 border-b border-border/60">
+      <div className="@container/pr-header grid min-w-0 shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 border-b border-border/80">
         <div className="pl-4 grid h-7 min-w-0 items-center overflow-hidden">
           <div className="flex min-w-0 items-center gap-1 text-sm text-muted-foreground sm:text-xs">
             {onBack ? (
@@ -276,7 +276,7 @@ export function PullRequestDetailGhost({
                     }}
                     copyLabel={gt("Copy checkout command")}
                     copiedLabel={gt("Checkout command copied")}
-                    className="ml-auto font-mono"
+                    className="ml-auto tabular-nums"
                     tooltipSide="bottom"
                     {...(onCheckoutError ? { onError: onCheckoutError } : {})}
                   />
@@ -285,7 +285,7 @@ export function PullRequestDetailGhost({
               base={
                 <span className="inline-flex min-w-0 max-w-[40%] shrink-0 items-center gap-1">
                   {seed ? (
-                    <code className="flex min-w-0">
+                    <code className="flex min-w-0 font-sans">
                       <MiddleTruncate value={seed.baseBranch} />
                     </code>
                   ) : (
@@ -298,6 +298,7 @@ export function PullRequestDetailGhost({
                   <PullRequestCopyableCode
                     key={seed.headBranch}
                     value={seed.headBranch}
+                    text="label"
                     target={{
                       target: "branch name",
                       unavailableMessage: msg(
@@ -310,7 +311,7 @@ export function PullRequestDetailGhost({
                       { term: changeRequestTermKind(terminology) },
                     )}
                     copiedLabel={gt("Branch name copied")}
-                    className="min-w-0 font-mono"
+                    className="min-w-0 tabular-nums"
                   />
                 ) : (
                   <GhostBar className="h-3 w-32 flex-1" />
@@ -331,7 +332,7 @@ export function PullRequestDetailGhost({
                   <PullRequestDiffStat
                     additions={seed.additions ?? 0}
                     deletions={seed.deletions ?? 0}
-                    className="shrink-0 font-mono text-xs"
+                    className="shrink-0 tabular-nums text-xs"
                   />
                 ) : (
                   <GhostBar className="h-3 w-20" />
@@ -424,7 +425,7 @@ export function PullRequestDetailGhost({
               </span>
               <ChevronRightIcon
                 aria-hidden
-                className="size-3.5 rotate-90 text-muted-foreground/60"
+                className="size-3.5 rotate-90 text-muted-foreground/85"
               />
             </div>
           </div>
@@ -469,7 +470,7 @@ export function PullRequestTimelineGhost({ rows = 6 }: { rows?: number }) {
       aria-label={gt("Loading timeline")}
       className="motion-safe:animate-skeleton px-4 py-5"
     >
-      <div className="relative ml-2 border-l border-border/70 pl-5">
+      <div className="relative ml-2 border-l border-border/90 pl-5">
         {Array.from({ length: rows }, (_, index) => (
           <div key={index} className="relative pb-5">
             <GhostBar className="absolute -left-[1.55rem] top-1 size-2 rounded-full" />

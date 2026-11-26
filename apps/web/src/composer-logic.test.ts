@@ -1,3 +1,5 @@
+import { formatInlineContextReference } from "./lib/composerContextReferences";
+import { reviewCommentContextId } from "./lib/composerContextRecords";
 import { threadPullRequestKeyOf } from "@t3tools/client-runtime/thread-pull-requests";
 import { filterComposerPullRequestMatches } from "@t3tools/shared/composerPullRequestMatches";
 import { EnvironmentId, MessageId, ThreadId, type AssistantCitation } from "@t3tools/contracts";
@@ -22,7 +24,7 @@ import {
   expandCollapsedComposerCursor,
   extendReplacementRangeForTrailingSpace,
   formatAssistantCitationForComposer,
-  leadingAssistantCitationsEnd,
+  leadingComposerStripsEnd,
   isPathSuggestionCurrent,
   replaceTextRange,
 } from "./composer-logic";
@@ -96,20 +98,31 @@ describe("formatAssistantCitationForComposer", () => {
   });
 });
 
-describe("leadingAssistantCitationsEnd", () => {
+describe("leadingComposerStripsEnd", () => {
   const quote = formatAssistantCitationForComposer(citation);
 
   it("places a quote at the start of a prompt without quotes", () => {
-    expect(leadingAssistantCitationsEnd("")).toBe(0);
-    expect(leadingAssistantCitationsEnd("fix this")).toBe(0);
+    expect(leadingComposerStripsEnd("")).toBe(0);
+    expect(leadingComposerStripsEnd("fix this")).toBe(0);
   });
 
   it("places a quote after the quotes that open the prompt", () => {
-    expect(leadingAssistantCitationsEnd(`${quote}${quote}fix this`)).toBe(quote.length * 2);
+    expect(leadingComposerStripsEnd(`${quote}${quote}fix this`)).toBe(quote.length * 2);
   });
 
   it("ignores a quote that sits inside the message", () => {
-    expect(leadingAssistantCitationsEnd(`fix ${quote}this`)).toBe(0);
+    expect(leadingComposerStripsEnd(`fix ${quote}this`)).toBe(0);
+  });
+
+  it("stacks code comments with the quotes above the message", () => {
+    const comment = `${formatInlineContextReference({
+      kind: "review-comment",
+      contextId: reviewCommentContextId("comment-1"),
+      label: "App.tsx L3",
+    })}\n`;
+    expect(leadingComposerStripsEnd(`${quote}${comment}fix this`)).toBe(
+      quote.length + comment.length,
+    );
   });
 });
 

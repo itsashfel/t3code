@@ -799,7 +799,7 @@ function ManagedCodexSetup({
     ) : null;
   const callbackHelpContent =
     callbackCompletion && callbackHelpOpen ? (
-      <div id={callbackHelpId} className="w-full border-t border-border/50 pt-3">
+      <div id={callbackHelpId} className="w-full border-t border-border/80 pt-3">
         {callbackCompletion}
       </div>
     ) : null;
@@ -977,7 +977,7 @@ function ManagedCodexSetup({
   }
 
   return (
-    <section aria-label={gt("Codex setup")} className="divide-y divide-border/50">
+    <section aria-label={gt("Codex setup")} className="divide-y divide-border/80">
       {accountPicker}
       <SettingsRow
         title={gt("ChatGPT account")}

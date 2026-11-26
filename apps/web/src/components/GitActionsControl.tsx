@@ -720,7 +720,7 @@ export function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                 <T>Repository</T>
               </label>
               <div className="flex items-stretch overflow-hidden rounded-md border border-input bg-background focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-ring">
-                <span className="flex shrink-0 items-center gap-1.5 border-r border-input bg-muted/50 px-2.5 font-mono text-xs text-muted-foreground">
+                <span className="flex shrink-0 items-center gap-1.5 border-r border-input bg-muted/50 px-2.5 tabular-nums text-xs text-muted-foreground">
                   <currentPublishProvider.Icon className="size-3.5" />
                   {publishHost}/
                 </span>
@@ -743,7 +743,7 @@ export function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                   }}
                   placeholder={publishPathPlaceholder}
                   disabled={publishRepositoryAction.isPending}
-                  className="w-full bg-transparent px-3 py-2 font-mono text-sm placeholder:text-muted-foreground/60 focus:outline-none"
+                  className="w-full bg-transparent px-3 py-2 tabular-nums text-sm placeholder:text-muted-foreground/85 focus:outline-none"
                 />
               </div>
             </div>
@@ -912,7 +912,7 @@ export function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                 </div>
                 <div className="flex items-center gap-2 rounded-lg border border-input bg-muted/40 px-3 py-2 dark:border-transparent dark:bg-white/[0.035]">
                   <currentPublishProvider.Icon className="size-3.5 shrink-0 text-muted-foreground" />
-                  <span className="min-w-0 flex-1 truncate font-mono text-xs text-foreground">
+                  <span className="min-w-0 flex-1 truncate tabular-nums text-xs text-foreground">
                     {publishResult.repository.nameWithOwner}
                   </span>
                 </div>
@@ -1715,7 +1715,7 @@ function CheckoutGitActionsControl({
               <span className="shrink-0">
                 <T>Changes</T>
               </span>
-              <span className="ml-auto flex shrink-0 items-baseline gap-2 ps-2 font-mono tabular-nums">
+              <span className="ml-auto flex shrink-0 items-baseline gap-2 ps-2 tabular-nums">
                 <span
                   className={
                     changesTotals.insertions
@@ -1851,7 +1851,7 @@ function CheckoutGitActionsControl({
                             return (
                               <div
                                 key={file.path}
-                                className="flex w-full items-center gap-2 rounded-md px-2 py-1 font-mono hover:bg-accent/50"
+                                className="flex w-full items-center gap-2 rounded-md px-2 py-1 tabular-nums hover:bg-accent/50"
                               >
                                 {isEditingFiles && (
                                   <Checkbox
@@ -1905,7 +1905,7 @@ function CheckoutGitActionsControl({
                         </div>
                       </ScrollArea>
                     </div>
-                    <div className="flex justify-end font-mono">
+                    <div className="flex justify-end tabular-nums">
                       <span className="text-diff-addition">
                         +{formatDiffCount(selectedFiles.reduce((sum, f) => sum + f.insertions, 0))}
                       </span>

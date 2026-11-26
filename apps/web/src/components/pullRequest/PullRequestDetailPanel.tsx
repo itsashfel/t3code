@@ -38,15 +38,7 @@ import {
   PanelRightIcon,
   TriangleAlertIcon,
 } from "lucide-react";
-import {
-  lazy,
-  Suspense,
-  useEffect,
-  useEffectEvent,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { lazy, Suspense, useEffect, useEffectEvent, useRef, useState } from "react";
 import { msg, T, useGT, useMessages, Var } from "gt-react";
 
 import { m } from "~/i18n/messages";
@@ -109,6 +101,7 @@ import {
   PullRequestApproveWorkflowsButton,
   PullRequestCheckoutMenu,
   PullRequestPrimaryAction,
+  PullRequestFixChecksButton,
   PullRequestResolveConflictsButton,
 } from "./PullRequestDetailActions";
 import { PullRequestBaseBranch } from "./PullRequestBaseBranch";
@@ -353,7 +346,6 @@ function linkedTab(anchor: PullRequestAnchor | null): PullRequestDetailTab | nul
 
 // The Summary restores its scroll on remount; a header left expanded would condense over the
 // restored position and its scroll compensation would move the view.
-const summaryCondensedByScopeKey = new Map<string, boolean>();
 
 export function PullRequestDetailPanel({
   environmentId,
@@ -556,11 +548,8 @@ export function PullRequestDetailPanel({
       ? pullRequestEnvironment.diff({ environmentId, input: { ...reference } })
       : null,
   );
-  // Each tab restores the condensed state its own scrolling left behind.
-  const [condensedByTab, setCondensedByTab] = useState<
-    Partial<Record<PullRequestDetailTab, boolean>>
-  >(() => ({ summary: summaryCondensedByScopeKey.get(tabScopeKey) ?? false }));
-  const condensed = condensedByTab[tab] ?? false;
+  // The header always shows in full; it no longer condenses as the body scrolls.
+  const condensed = false;
   const scrollerByTab = useRef<Partial<Record<PullRequestDetailTab, HTMLElement | null>>>({});
   // Fresh ref callbacks would detach and reattach every scroller on each render.
   const [scrollerRefs] = useState(() => ({
@@ -576,26 +565,6 @@ export function PullRequestDetailPanel({
   }));
   const foldRef = useRef<HTMLDivElement | null>(null);
   const condensedRowRef = useRef<HTMLDivElement | null>(null);
-  // Save the target before collapse: the browser may clamp scrollTop as the viewport grows,
-  // so applying a delta afterward would compensate twice.
-  const compensationRef = useRef<{
-    tab: PullRequestDetailTab;
-    scroller: HTMLElement;
-    target: number;
-  } | null>(null);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- restores the scroller's scrollTop before paint after the header condenses
-  useLayoutEffect(() => {
-    const compensation = compensationRef.current;
-    if (compensation === null) return;
-    compensationRef.current = null;
-    if (
-      !condensed ||
-      compensation.tab !== tab ||
-      scrollerByTab.current[tab] !== compensation.scroller
-    )
-      return;
-    compensation.scroller.scrollTop = Math.max(0, compensation.target);
-  }, [condensed, tab]);
   const lastSelectedMergeMethod = useUiStateStore((state) => state.pullRequestMergeMethod);
   const setLastSelectedMergeMethod = useUiStateStore((state) => state.setPullRequestMergeMethod);
   const resolveProjectDefaultMergeMethod = usePullRequestDefaultMergeMethodResolver(
@@ -1587,8 +1556,8 @@ export function PullRequestDetailPanel({
       ) : null}
       <div
         className={cn(
-          "@container/pr-header grid min-w-0 shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2",
-          detail && "border-b border-border/60",
+          "@container/pr-header grid min-w-0 shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 pt-2.5",
+          detail && "border-b border-border/80",
           !detail && !onClose && "hidden",
         )}
       >
@@ -1645,6 +1614,9 @@ export function PullRequestDetailPanel({
                     onActed?.();
                   }}
                 />
+              ) : null}
+              {detail.state === "open" && checksState === "failing" && canFixFindings ? (
+                <PullRequestFixChecksButton handoff={handoff} onFix={startFixFindings} />
               ) : null}
               <PullRequestPrimaryAction
                 mergeBlockedReason={mergeBlockedReason}
@@ -1761,7 +1733,7 @@ export function PullRequestDetailPanel({
                     </span>
                   </span>
                   <span aria-hidden className="h-3 w-px shrink-0 bg-border/70" />
-                  <span className="flex min-w-0 flex-1 items-center gap-1.5 font-mono text-2xs text-muted-foreground/65">
+                  <span className="flex min-w-0 flex-1 items-center gap-1.5 text-xs text-foreground/80">
                     <PullRequestBaseBranch
                       baseBranch={detail.baseBranch}
                       freshness={freshness}
@@ -1779,7 +1751,7 @@ export function PullRequestDetailPanel({
                     />
                     <SharedTooltipTrigger
                       render={
-                        <code className="flex min-w-0 flex-1">
+                        <code className="flex min-w-0 flex-1 font-sans">
                           <MiddleTruncate value={detail.headBranch} showTitle={false} />
                         </code>
                       }
@@ -1805,7 +1777,7 @@ export function PullRequestDetailPanel({
                       reference={reference}
                       additions={detail.additions}
                       deletions={detail.deletions}
-                      className="shrink-0 font-mono text-2xs"
+                      className="shrink-0 tabular-nums text-2xs"
                       eager
                     />
                   </span>
@@ -1880,7 +1852,7 @@ export function PullRequestDetailPanel({
                       }}
                       copyLabel={gt("Copy checkout command")}
                       copiedLabel={gt("Checkout command copied")}
-                      className="ml-auto font-mono"
+                      className="ml-auto tabular-nums"
                       tooltipSide="bottom"
                       onError={reportCheckoutCommandError}
                     />
@@ -1899,6 +1871,7 @@ export function PullRequestDetailPanel({
                   <PullRequestCopyableCode
                     key={detail.headBranch}
                     value={detail.headBranch}
+                    text="label"
                     target={{
                       target: "branch name",
                       unavailableMessage: msg(
@@ -1923,7 +1896,7 @@ export function PullRequestDetailPanel({
                     reference={reference}
                     additions={detail.additions}
                     deletions={detail.deletions}
-                    className="shrink-0 font-mono text-xs"
+                    className="shrink-0 tabular-nums text-xs"
                     eager
                   />
                 }
@@ -2094,29 +2067,9 @@ export function PullRequestDetailPanel({
         provider={detail?.provider ?? repositoryIdentity?.provider}
         host={reference.host}
         repository={reference.repository}
-        className="border-b border-border/60"
+        className="border-b border-border/80"
       />
-      <div
-        className="relative flex min-h-0 flex-1 flex-col overflow-hidden"
-        onScrollCapture={(event) => {
-          const scroller = scrollerByTab.current[tab];
-          if (event.target !== scroller || scroller === null || scroller === undefined) return;
-          const top = scroller.scrollTop;
-          const previous = condensedByTab[tab] ?? false;
-          const foldHeight = foldRef.current?.scrollHeight ?? 0;
-          let next = previous;
-          if (previous) {
-            if (top < 4 && foldHeight > 0) next = false;
-          } else if (foldHeight > 0 && top > foldHeight + 32) {
-            const chromeDelta = foldHeight - (condensedRowRef.current?.scrollHeight ?? 0);
-            compensationRef.current = { tab, scroller, target: top - chromeDelta };
-            next = true;
-          }
-          if (next === previous) return;
-          if (tab === "summary") summaryCondensedByScopeKey.set(tabScopeKey, next);
-          setCondensedByTab({ ...condensedByTab, [tab]: next });
-        }}
-      >
+      <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
         {detailQuery.error && !detail ? (
           <PullRequestsUnavailableState
             {...(isPullRequestNotFound(detailQuery.failure)

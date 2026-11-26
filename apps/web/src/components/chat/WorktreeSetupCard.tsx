@@ -138,7 +138,7 @@ function SetupHeaderRow({ snapshot }: { snapshot: WorktreeSetupSnapshot }) {
       ? "text-warning-foreground"
       : "text-muted-foreground";
   return (
-    <div className="border-b border-border/60 pb-2 pt-1">
+    <div className="border-b border-border/80 pb-2 pt-1">
       <div
         className={cn(
           "flex h-6 min-w-0 items-baseline gap-2 px-1 text-sm leading-relaxed tabular-nums",
@@ -259,7 +259,7 @@ function SetupDetails({ snapshot }: { snapshot: WorktreeSetupSnapshot }) {
           <dt className="text-foreground/80">
             <T>Branch</T>
           </dt>
-          <dd className="min-w-0 font-mono">
+          <dd className="min-w-0 tabular-nums">
             <MiddleTruncate value={snapshot.branch} className="flex" />
           </dd>
         </>
@@ -269,7 +269,7 @@ function SetupDetails({ snapshot }: { snapshot: WorktreeSetupSnapshot }) {
           <dt className="text-foreground/80">
             <T context="git base branch">Base</T>
           </dt>
-          <dd className="min-w-0 font-mono">
+          <dd className="min-w-0 tabular-nums">
             <MiddleTruncate value={snapshot.baseRef} className="flex" />
           </dd>
         </>
@@ -279,7 +279,7 @@ function SetupDetails({ snapshot }: { snapshot: WorktreeSetupSnapshot }) {
           <dt className="text-foreground/80">
             <T>Path</T>
           </dt>
-          <dd className="min-w-0 font-mono">
+          <dd className="min-w-0 tabular-nums">
             <MiddleTruncate value={snapshot.worktreePath} className="flex" />
           </dd>
         </>

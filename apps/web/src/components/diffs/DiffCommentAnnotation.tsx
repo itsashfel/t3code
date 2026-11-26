@@ -1,7 +1,7 @@
 import type { EnvironmentId, ProjectId } from "@t3tools/contracts";
 import { T, useGT, useMessages } from "gt-react";
 import { reviewCommentRangeText } from "~/lib/composerContextRecords";
-import { MessageCircle, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { Button } from "~/components/ui/button";
@@ -16,7 +16,12 @@ import {
 } from "~/speech/useTextFieldSpeech";
 import { textDirection } from "~/textDirection";
 
+import { cn } from "~/lib/utils";
+
 import { isCommentSubmitShortcut } from "./commentSubmitShortcut";
+
+const COMMENT_CARD_CLASS =
+  "my-1.5 ms-1 me-3 min-w-0 rounded-xl border bg-card font-sans text-foreground shadow-xs selection:bg-primary selection:text-primary-foreground";
 
 interface DiffCommentSecondaryAction {
   readonly label: string;
@@ -80,33 +85,41 @@ export function DiffCommentAnnotation({
     return () => window.cancelAnimationFrame(frame);
   }, [focusOnMount, kind]);
 
+  const rangeTag = (
+    <span className="shrink-0 rounded-md bg-muted px-1.5 py-0.5 text-2xs font-medium text-foreground/85 tabular-nums">
+      {reviewCommentRangeText(rangeLabel, messages)}
+    </span>
+  );
+
   if (kind === "comment") {
     return (
       <div
         data-diff-comment-annotation
-        className="group/comment flex min-w-0 items-start gap-2.5 border-s-2 border-primary/55 bg-primary/[0.045] px-3 py-2.5 font-sans text-foreground selection:bg-primary selection:text-primary-foreground"
+        className={cn(COMMENT_CARD_CLASS, "group/comment")}
         contentEditable={false}
         onPointerDown={(event) => event.stopPropagation()}
       >
-        <MessageCircle className="size-3.5 h-5 shrink-0 text-primary/70" aria-hidden="true" />
         <p
-          className="min-w-0 flex-1 whitespace-pre-wrap text-sm leading-5"
+          className="whitespace-pre-wrap px-2.5 pt-1 text-sm leading-5"
           dir={textDirection(displayedText)}
         >
           {displayedText}
         </p>
-        {onDelete ? (
-          <span className="-my-1 -mr-1 flex shrink-0 opacity-0 transition-opacity group-hover/comment:opacity-100 focus-within:opacity-100 max-sm:opacity-100">
-            <Button
-              variant="ghost-muted"
-              size="icon-xs"
-              aria-label={gt("Delete comment")}
-              onClick={onDelete}
-            >
-              <Trash2 className="size-3" />
-            </Button>
-          </span>
-        ) : null}
+        <div className="flex h-10 items-center gap-1 px-2">
+          {rangeTag}
+          {onDelete ? (
+            <span className="ms-auto flex shrink-0 opacity-0 transition-opacity group-hover/comment:opacity-100 focus-within:opacity-100 max-sm:opacity-100">
+              <Button
+                variant="ghost-muted"
+                size="icon-xs"
+                aria-label={gt("Delete comment")}
+                onClick={onDelete}
+              >
+                <Trash2 className="size-3" />
+              </Button>
+            </span>
+          ) : null}
+        </div>
       </div>
     );
   }
@@ -127,7 +140,10 @@ export function DiffCommentAnnotation({
   const renderDraft = (speech?: TextFieldSpeech) => (
     <div
       data-diff-comment-annotation
-      className="px-3 py-2 font-sans text-foreground caret-foreground selection:bg-primary selection:text-primary-foreground"
+      className={cn(
+        COMMENT_CARD_CLASS,
+        "caret-foreground transition-colors focus-within:border-foreground/24",
+      )}
       contentEditable={false}
       onPointerDown={(event) => event.stopPropagation()}
     >
@@ -136,7 +152,10 @@ export function DiffCommentAnnotation({
         completionScope={completionScope}
         readOnly={speech?.freezesEditor}
         autoFocus={focusOnMount}
+        unstyled
         size="sm"
+        rows={2}
+        style={{ resize: "none", minHeight: "calc(2lh + 0.375rem)" }}
         value={displayedText}
         dir={textDirection(displayedText)}
         placeholder={placeholder ?? gt("Add a comment…")}
@@ -166,10 +185,8 @@ export function DiffCommentAnnotation({
           }
         }}
       />
-      <div className="mt-1.5 flex flex-wrap items-center gap-1">
-        <span className="mr-auto text-3xs text-muted-foreground/70">
-          <T>⌘/Ctrl Enter to send</T>
-        </span>
+      <div className="flex min-h-10 flex-wrap items-center gap-1 px-2">
+        <span className="me-auto">{rangeTag}</span>
         {speech ? <TextFieldSpeechControls speech={speech} disabled={pending} /> : null}
         <Button variant="ghost-muted" size="xs" onClick={onCancel}>
           <T>Cancel</T>

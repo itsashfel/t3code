@@ -23,7 +23,7 @@ export function ProjectMonogram({
       <svg
         viewBox="0 0 16 16"
         className={cn(
-          "size-full overflow-hidden rounded-[25%] font-mono select-none",
+          "size-full overflow-hidden rounded-[25%] tabular-nums select-none",
           projectIconColorClassName(color),
         )}
         style={{
@@ -32,11 +32,11 @@ export function ProjectMonogram({
       >
         <text
           x="8"
-          y="10.8"
+          y="11.1"
           textAnchor="middle"
           fill="currentColor"
-          className="font-mono"
-          fontSize="8.25"
+          className="tabular-nums"
+          fontSize="9"
           fontWeight="700"
           textLength={Array.from(monogramSegmenter.segment(text)).length === 1 ? 6 : 12}
           lengthAdjust="spacingAndGlyphs"

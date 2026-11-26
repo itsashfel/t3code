@@ -162,7 +162,7 @@ export function ConnectionDiagnosisPanel({
       ),
   });
   return (
-    <div className="mt-2 grid gap-3 border-t border-border/50 pt-2 text-xs">
+    <div className="mt-2 grid gap-3 border-t border-border/80 pt-2 text-xs">
       <ol className="grid gap-0.5">
         {diagnosis.hops.map((hop) => (
           <li
@@ -200,7 +200,7 @@ export function ConnectionDiagnosisPanel({
           </a>
         ) : null}
       </div>
-      <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 font-mono text-muted-foreground">
+      <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 tabular-nums text-muted-foreground">
         {diagnosis.facts.map(([label, value]) => (
           <div key={label} className="contents">
             <dt>{label}</dt>

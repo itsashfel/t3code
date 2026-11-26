@@ -243,7 +243,7 @@ function LinkRowImpl({
               <PullRequestDiffStat
                 additions={snapshot?.additions ?? 0}
                 deletions={snapshot?.deletions ?? 0}
-                className="font-mono"
+                className="tabular-nums"
               />
             ) : (
               <PullRequestChangeBreakdownStat
@@ -256,7 +256,7 @@ function LinkRowImpl({
                 }}
                 additions={snapshot?.additions ?? 0}
                 deletions={snapshot?.deletions ?? 0}
-                className="font-mono"
+                className="tabular-nums"
               />
             )
           }
@@ -265,7 +265,7 @@ function LinkRowImpl({
               {stack ? (
                 <SharedTooltipTrigger
                   render={
-                    <span className="inline-flex shrink-0 items-center gap-0.5 text-foreground/70" />
+                    <span className="inline-flex shrink-0 items-center gap-0.5 text-foreground/85" />
                   }
                   label={
                     stack.kind === "native"
@@ -296,7 +296,7 @@ function LinkRowImpl({
               {snapshot !== null ? (
                 <>
                   <SharedTooltipTrigger
-                    render={<span className="flex min-w-0 max-w-32 font-mono" />}
+                    render={<span className="flex min-w-0 max-w-32 tabular-nums" />}
                     label={link.repository}
                   >
                     <MiddleTruncate value={link.repository} showTitle={false} />
@@ -304,7 +304,7 @@ function LinkRowImpl({
                   <PullRequestRowBranches head={snapshot.headBranch} base={snapshot.baseBranch} />
                 </>
               ) : (
-                <span className="truncate font-mono">
+                <span className="truncate tabular-nums">
                   {link.host}/{link.repository}
                 </span>
               )}
@@ -515,7 +515,7 @@ function EnabledThreadPullRequestsPanel({ threadRef }: { threadRef: ScopedThread
   if (linkCount === 0 && issues.length === 0) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
-        <PullRequestGlyph.link aria-hidden className="size-6 text-muted-foreground/60" />
+        <PullRequestGlyph.link aria-hidden className="size-6 text-muted-foreground/85" />
         <p className="text-sm font-medium">
           <T>No linked pull requests</T>
         </p>
@@ -557,7 +557,7 @@ function EnabledThreadPullRequestsPanel({ threadRef }: { threadRef: ScopedThread
                   />
                 </section>
                 {linkCount > 0 ? (
-                  <h2 className="mt-2 border-t border-border/60 px-3 pt-2 pb-1 text-xs font-medium text-muted-foreground">
+                  <h2 className="mt-2 border-t border-border/80 px-3 pt-2 pb-1 text-xs font-medium text-muted-foreground">
                     <T>Pull requests</T>
                   </h2>
                 ) : null}
@@ -586,7 +586,7 @@ function EnabledThreadPullRequestsPanel({ threadRef }: { threadRef: ScopedThread
           drawDistance={440}
           className="min-h-0 flex-1 overscroll-contain p-1.5"
         />
-        <footer className="flex items-center justify-between border-t border-border/60 px-2 py-1.5 text-2xs text-muted-foreground">
+        <footer className="flex items-center justify-between border-t border-border/80 px-2 py-1.5 text-2xs text-muted-foreground">
           <span>
             {linkCount > 0
               ? gt(

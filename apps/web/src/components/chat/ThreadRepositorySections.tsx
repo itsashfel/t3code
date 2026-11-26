@@ -122,7 +122,7 @@ const RepositorySection = memo(function RepositorySection(props: {
                 : (summary.branch ?? gt("Detached HEAD"))}
           </span>
           {summary?.isRepository ? (
-            <span className="ml-auto flex shrink-0 items-baseline gap-2 ps-2 font-mono tabular-nums">
+            <span className="ml-auto flex shrink-0 items-baseline gap-2 ps-2 tabular-nums">
               {summary.pullRequest ? (
                 <span className="font-sans font-normal text-muted-foreground">
                   #{summary.pullRequest.number}
@@ -320,7 +320,6 @@ export function ThreadRepositorySections(props: ThreadRepositorySectionsProps) {
           size="sm"
           variant="ghost"
           part="row"
-          tone="muted"
           aria-expanded={showAll}
           onClick={() => setShowAll((current) => !current)}
         >

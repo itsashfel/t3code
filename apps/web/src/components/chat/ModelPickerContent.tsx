@@ -225,7 +225,7 @@ function ModelPickerProviderNotices({
   return (
     <>
       {setupEntries.length > 0 ? (
-        <div className="max-h-44 shrink-0 overflow-y-auto border-t border-border/70 p-2">
+        <div className="max-h-44 shrink-0 overflow-y-auto border-t border-border/90 p-2">
           {setupEntries.map((entry) => (
             <div key={entry.instanceId} className="px-1 py-1.5 text-xs leading-snug">
               <p className="line-clamp-3 text-muted-foreground">
@@ -251,7 +251,7 @@ function ModelPickerProviderNotices({
       {updateRequiredNotices.map(({ instanceId, notice, canUpdateInSettings }) => (
         <p
           key={instanceId}
-          className="shrink-0 border-t border-border/70 px-3 py-2 text-xs leading-snug text-muted-foreground"
+          className="shrink-0 border-t border-border/90 px-3 py-2 text-xs leading-snug text-muted-foreground"
         >
           {notice}
           {canUpdateInSettings ? (
@@ -1045,7 +1045,7 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
           <div
             className={cn(
               "flex min-h-0 flex-1 flex-col overflow-hidden bg-muted/40",
-              showSidebar && "border-l border-border/70",
+              showSidebar && "border-l border-border/90",
             )}
           >
             <ComboboxSearchInput

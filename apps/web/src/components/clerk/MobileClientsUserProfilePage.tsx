@@ -51,7 +51,7 @@ function MobileClientRow({ device }: { readonly device: RelayClientDeviceRecord 
             {mobileClientPlatformLabel(device)}
           </p>
         </div>
-        <p className="shrink-0 text-2xs leading-4 text-muted-foreground/75">
+        <p className="shrink-0 text-2xs leading-4 text-muted-foreground/85">
           {mobileClientUpdatedAtLabel(device.updatedAt, m)}
         </p>
       </div>

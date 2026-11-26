@@ -609,7 +609,7 @@ export function IssueDetailPanel({
         )}
         data-pull-request-summary-scroll
       >
-        <div className="px-4 pb-1">
+        <div className="px-4 pt-2.5 pb-1">
           <PullRequestDetailTitleRow className="h-7 gap-1 text-sm sm:text-xs">
             <span className="min-w-0 truncate font-medium text-muted-foreground">
               {detail.scope}
@@ -907,7 +907,7 @@ export function IssueDetailPanel({
               item.kind === "comment" ? (
                 <article
                   key={`c:${item.comment.id}`}
-                  className="flex flex-col gap-2 rounded-lg border border-border/60 p-3"
+                  className="flex flex-col gap-2 rounded-lg border border-border/80 p-3"
                 >
                   <h3>
                     <PullRequestMetaLine className="text-xs text-muted-foreground">

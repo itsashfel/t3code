@@ -120,7 +120,7 @@ export function ModelMentionChip(props: {
       <div className="space-y-1 p-2 text-sm">
         <p className="font-medium">{presentation.label}</p>
         <p className="text-muted-foreground">{presentation.providerLabel}</p>
-        <p className="font-mono text-xs text-muted-foreground">{props.source}</p>
+        <p className="tabular-nums text-xs text-muted-foreground">{props.source}</p>
       </div>
     </ContextChipPopover>
   );

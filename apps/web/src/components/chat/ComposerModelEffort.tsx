@@ -226,7 +226,7 @@ function ColumnRow(props: {
           <CheckIcon aria-hidden="true" className="size-3.5" />
         </>
       ) : props.isDefault ? (
-        <span className="text-muted-foreground/70 text-xs">
+        <span className="text-muted-foreground/85 text-xs">
           {gt("Default", { $context: "marks the default option" })}
         </span>
       ) : null}
@@ -302,7 +302,7 @@ function EffortLevels(props: { traits: TraitsSelectionInput }) {
       {effort ? <EffortRows control={effort} traits={traits} locked={locked} /> : null}
       {others.length > 0 ? (
         <div
-          className={cn("flex flex-col gap-0.5", effort && "mt-1 border-t border-border/70 pt-1")}
+          className={cn("flex flex-col gap-0.5", effort && "mt-1 border-t border-border/90 pt-1")}
         >
           {others.map((control, index) =>
             control.kind === "boolean" ? (
@@ -485,7 +485,7 @@ function OptionMenuRow(props: {
                   ) : null}
                 </span>
                 {choice.isDefault ? (
-                  <span className="text-muted-foreground/70 text-xs">
+                  <span className="text-muted-foreground/85 text-xs">
                     {gt("Default", { $context: "marks the default option" })}
                   </span>
                 ) : null}
@@ -552,7 +552,7 @@ export function ComposerEffortColumn(props: { traits: TraitsSelectionInput | nul
     <>
       {/* Matches the search row's box, so one rule runs across the top of the popup. */}
       <div className="shrink-0 px-3 pt-2.5">
-        <div className="flex h-8.25 -translate-y-px items-center gap-2 border-b border-border/70 pb-1.5 text-sm">
+        <div className="flex h-8.25 -translate-y-px items-center gap-2 border-b border-border/90 pb-1.5 text-sm">
           <span className="text-muted-foreground">
             {controls?.effort?.descriptor.label ??
               (controls?.others.length
@@ -727,7 +727,7 @@ export function ComposerPickerFooter(props: {
   onRuntimeModeChange: (mode: RuntimeMode) => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2 border-t border-border/70 bg-muted/40 px-3 py-2">
+    <div className="flex flex-wrap items-center gap-2 border-t border-border/90 bg-muted/40 px-3 py-2">
       {props.traits ? <SpeedControl traits={props.traits} /> : null}
       {props.traits ? <UltracodeControl traits={props.traits} /> : null}
       <PermissionsMenu

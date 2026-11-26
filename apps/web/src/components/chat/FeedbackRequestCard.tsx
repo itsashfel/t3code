@@ -121,7 +121,7 @@ function PendingFeedbackRequest(props: {
     <section
       data-v2-item-type={props.item.type}
       aria-label={m(TITLE)}
-      className="flex min-w-0 flex-col gap-3 rounded-xl border border-border/60 bg-card p-4"
+      className="flex min-w-0 flex-col gap-3 rounded-xl border border-border/80 bg-card p-4"
     >
       <div className="flex min-w-0 flex-col gap-1">
         <h3 className="flex items-center gap-1.5 text-sm font-medium text-foreground">

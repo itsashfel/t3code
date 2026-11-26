@@ -929,7 +929,6 @@ export function BranchToolbarBranchSelector({
             project={activeProject}
             branchPr={branchPr}
             branchSourceControlProvider={branchStatusQuery.data?.sourceControlProvider}
-            onActed={() => branchStatusQuery.refresh()}
           />
         ) : null}
         {displayMode === "panel" ? (

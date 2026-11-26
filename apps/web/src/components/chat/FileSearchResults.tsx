@@ -65,7 +65,7 @@ function FilePath(props: { readonly path: string }) {
   return (
     <span className="min-w-0 truncate">
       {slash >= 0 ? (
-        <span className="text-muted-foreground/70">{props.path.slice(0, slash + 1)}</span>
+        <span className="text-muted-foreground/85">{props.path.slice(0, slash + 1)}</span>
       ) : null}
       <span className="text-foreground/90">{props.path.slice(slash + 1)}</span>
     </span>
@@ -80,7 +80,7 @@ export function FileSearchResults(props: {
   const gt = useGT();
   const matchers = patternMatchers(props.pattern);
   return (
-    <div className="max-h-96 divide-y divide-border/60 overflow-y-auto rounded-md border border-border/70 bg-muted/45 font-mono text-(length:--font-size-code,var(--text-2xs)) leading-relaxed select-text">
+    <div className="max-h-96 divide-y divide-border/80 overflow-y-auto rounded-md border border-border/90 bg-muted/45 font-mono text-(length:--font-size-code,var(--text-2xs)) leading-relaxed select-text">
       {groupFileSearchResults(props.results).map((group) => {
         const lines = group.results.filter((result) => result.line !== undefined);
         const notes = group.results.flatMap((result) =>
@@ -97,14 +97,14 @@ export function FileSearchResults(props: {
             <div className="flex min-w-0 items-baseline gap-2">
               <FilePath path={formatWorkspaceRelativePath(group.fileName, props.workspaceRoot)} />
               {lines.length > 1 ? (
-                <span className="shrink-0 text-muted-foreground/60 tabular-nums">
+                <span className="shrink-0 text-muted-foreground/85 tabular-nums">
                   {gt("{count, plural, one {{count} match} other {{count} matches}}", {
                     count: lines.length,
                   })}
                 </span>
               ) : null}
               {inlineNote ? (
-                <span className="shrink-0 text-muted-foreground/70">{firstNote}</span>
+                <span className="shrink-0 text-muted-foreground/85">{firstNote}</span>
               ) : null}
             </div>
             {lines.length > 0 ? (

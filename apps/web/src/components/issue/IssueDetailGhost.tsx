@@ -33,7 +33,7 @@ export function IssueDetailGhost({ seed }: { seed?: IssueListEntry | null }) {
         <>
           <PullRequestDetailTitleRow className="gap-2">
             <IssueStateGlyph state={seed.state} />
-            <span className="shrink-0 font-mono text-xs text-muted-foreground">
+            <span className="shrink-0 tabular-nums text-xs text-muted-foreground">
               {seed.displayKey}
             </span>
             <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
@@ -107,7 +107,7 @@ export function IssueDetailGhost({ seed }: { seed?: IssueListEntry | null }) {
         </>
       )}
       <div className={cn("flex flex-col gap-4", seed && "motion-safe:animate-skeleton")}>
-        <div className="flex flex-col gap-2.5 rounded-lg border border-border/60 p-3">
+        <div className="flex flex-col gap-2.5 rounded-lg border border-border/80 p-3">
           <GhostBar className="w-20" />
           <GhostBar className="h-3.5 w-full" />
           <GhostBar className="h-3.5 w-5/6" />

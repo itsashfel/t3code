@@ -4258,17 +4258,8 @@
   "2843ab5fd6d5d3e1": "{term, select, mr {Merge Request} cr {Änderungsanfrage} other {Pull Request}} #{number}, {state}",
   "d51ff529f508304a": "{term, select, mr {Merge Request} cr {Änderungsanfrage} other {Pull Request}} #{number}: {title}",
   "b51d5be25d79b06c": "{count, plural, one {{formatted} Datei} other {{formatted} Dateien}}",
-  "2e034563c916f3eb": "Auflösen",
   "abe37e21953338e6": "Wird vorbereitet...",
-  "66d185fcf7d5f3e6": "Branch auschecken und die Konflikte in einem neuen Thread auflösen",
-  "551ce3362d0307d4": "Die Konflikte in diesem Thread auflösen",
-  "f70f754b79025c67": "Als bereit markieren",
-  "763cb56e21879aad": "Wird markiert...",
-  "422f32e5d25da2ae": "{term, select, mr {Diesen Merge Request als bereit für Review markieren} cr {Diese Änderungsanfrage als bereit für Review markieren} other {Diesen Pull Request als bereit für Review markieren}}",
-  "9fe4c09b6a3ab4b4": "Beheben",
-  "0e48be2053a4b817": "Behebung wird vorbereitet",
   "6f6c67fa4032196b": "Die fehlgeschlagenen Checks in einem neuen Thread beheben",
-  "024f959a15903d60": "Die fehlgeschlagenen Checks in diesem Thread beheben",
   "be85261ec6428209": "Wird gemergt...",
   "087d8cedc3ea219d": "Beobachtung von #{number} beenden",
   "636eb97a97862aef": [
@@ -5536,7 +5527,6 @@
   "e8c281b1a85ac547": "Kommentar hinzufügen…",
   "f2160b630793c7b4": "Zeilen {rangeLabel} kommentieren",
   "8d12e0769f6d5eb8": "Kommentieren",
-  "40ef11933aa35e8e": "⌘/Ctrl Enter zum Senden",
   "ee90d50efb2fe9fb": "Diff wird geladen…",
   "1601d7e39a52c48f": "Laden des Diffs wiederholen",
   "b7b137472adb6989": "Teilweise Diff-Vorschau",
@@ -13030,5 +13020,7 @@
   "176e9d4d4033aaf2": "Started in a terminal",
   "75fe9ced794c3f8c": "pid {pid}",
   "fd8a2ee54ce70eef": "Open files appear here",
-  "b98b77906deb7369": "Pick a file in the tree."
+  "b98b77906deb7369": "Pick a file in the tree.",
+  "a53f6826c4fb3da2": "Remove comment",
+  "9bfa1bcd11ba9012": "Fix checks"
 }

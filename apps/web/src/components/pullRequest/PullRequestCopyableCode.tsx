@@ -12,6 +12,7 @@ export function PullRequestCopyableCode({
   copiedLabel,
   className,
   tooltipSide = "top",
+  text = "code",
   onError,
 }: {
   readonly value: string;
@@ -20,6 +21,8 @@ export function PullRequestCopyableCode({
   readonly copiedLabel: string;
   readonly className?: string;
   readonly tooltipSide?: "top" | "bottom";
+  /** A command reads in the code font; a name such as a branch reads in the UI font. */
+  readonly text?: "code" | "label";
   readonly onError?: (error: Error) => void;
 }) {
   const gt = useGT();
@@ -46,6 +49,7 @@ export function PullRequestCopyableCode({
         <code
           className={cn(
             "col-start-1 row-start-1 min-w-0 truncate transition-opacity duration-150 motion-reduce:transition-none",
+            text === "label" && "font-sans",
             isCopied ? "opacity-0" : "opacity-100",
           )}
         >

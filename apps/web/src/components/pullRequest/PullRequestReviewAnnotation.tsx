@@ -44,7 +44,7 @@ import {
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 
 const CARD_CLASS =
-  "mx-3 my-2 rounded-xl border border-border/70 bg-background p-3 text-sm shadow-sm";
+  "mx-3 my-2 rounded-xl border border-border/90 bg-background p-3 text-sm shadow-sm";
 
 function submitKeys(input: {
   readonly value: string;

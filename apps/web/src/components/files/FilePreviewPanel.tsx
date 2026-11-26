@@ -26,6 +26,7 @@ import {
 import { useAtomMount, useAtomValue } from "@effect/atom-react";
 import { Atom } from "effect/reactivity";
 import {
+  DEFAULT_VIRTUAL_FILE_METRICS,
   VirtualizedFile,
   type File as FileInstance,
   type FileContents,
@@ -39,6 +40,7 @@ import {
   type EditorOptions,
 } from "@pierre/diffs/edit";
 import { EditProvider, File, Virtualizer } from "@pierre/diffs/react";
+import { useRightPanelStore } from "~/rightPanelStore";
 import { DiffWorkerPoolProvider } from "../DiffWorkerPoolProvider";
 import { useEditableAfterHighlight } from "./useEditableAfterHighlight";
 import { useFilesystemReadAccess } from "~/state/filesystem";
@@ -57,6 +59,7 @@ import {
   useRef,
   useState,
   type ComponentProps,
+  type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type RefObject,
 } from "react";
@@ -609,6 +612,16 @@ function updateFileLinkReveal(fileContainer: HTMLElement, line: number | null): 
 const REVEAL_MAX_ATTEMPTS = 30;
 /** Hold the reveal target against late focus/restoration scroll resets. */
 const REVEAL_GUARD_FRAMES = 20;
+// The virtualizer estimates rows from metrics, so its line height must match the CSS one.
+const FILE_PREVIEW_LINE_HEIGHT = 22;
+const FILE_PREVIEW_METRICS = {
+  ...DEFAULT_VIRTUAL_FILE_METRICS,
+  lineHeight: FILE_PREVIEW_LINE_HEIGHT,
+};
+const FILE_PREVIEW_TEXT_STYLE = {
+  "--diffs-line-height": `${FILE_PREVIEW_LINE_HEIGHT}px`,
+  letterSpacing: "0.02em",
+} as CSSProperties;
 const REVEAL_GUARD_TOLERANCE_PX = 2;
 
 interface FileRevealState {
@@ -886,6 +899,8 @@ interface EditableFileSurfaceProps {
   onPostRender: FilePostRender;
   onPendingChange: (relativePath: string, pending: boolean) => void;
   onEditorChange: (editor: FileEditor | null) => void;
+  /** Editing or commenting keeps a preview tab, as in an editor. */
+  onKeep?: () => void;
 }
 
 interface FileSelectionOverride {
@@ -906,6 +921,7 @@ function EditableFileSurface({
   onPostRender,
   onPendingChange,
   onEditorChange,
+  onKeep,
 }: EditableFileSurfaceProps) {
   const messages = useMessages();
   const addReviewComment = useComposerDraftStore((store) => store.addReviewComment);
@@ -955,6 +971,7 @@ function EditableFileSurface({
     lineAnnotations: nextLineAnnotations,
   }: EditorChangeEvent<"file", FileCommentAnnotationGroup, undefined>) => {
     if (file.contents === getProjectFileContents(environmentId, cwd, relativePath)) return;
+    onKeep?.();
     setEditedContents(file.contents);
     setProjectFileQueryData(environmentId, cwd, relativePath, file.contents);
     changeFileSaveSession(saveTarget, file.contents);
@@ -1024,6 +1041,7 @@ function EditableFileSurface({
   };
 
   const beginComment = (range: SelectedLineRange) => {
+    onKeep?.();
     editorRef.current?.setSelections([]);
     editorRef.current?.blur();
     const { startLine, endLine } = normalizeFileCommentRange(range);
@@ -1101,7 +1119,7 @@ function EditableFileSurface({
 
   return (
     <EditProvider createEditor={createFileEditor}>
-      <div ref={surfaceRef} className="flex min-h-0 flex-1">
+      <div ref={surfaceRef} className="flex min-h-0 flex-1" style={FILE_PREVIEW_TEXT_STYLE}>
         <Virtualizer
           className="file-preview-virtualizer min-h-0 flex-1 overflow-auto"
           config={{
@@ -1111,6 +1129,7 @@ function EditableFileSurface({
         >
           <File<FileCommentAnnotationGroup>
             file={externalFile}
+            metrics={FILE_PREVIEW_METRICS}
             edit={editable}
             editorOptions={editorOptions}
             onEditChange={handleEditChange}
@@ -1617,7 +1636,7 @@ export default function FilePreviewPanel({
             className="min-w-0 flex-1"
             data-file-breadcrumbs
           >
-            <div className="flex h-full w-max min-w-full items-center text-xs">
+            <div className="flex h-full w-max min-w-full items-center text-sm">
               <FileBreadcrumbs
                 cwd={cwd}
                 environmentId={environmentId}
@@ -1933,6 +1952,9 @@ export default function FilePreviewPanel({
                   onPostRender={fileLineReveal("virtualizer")}
                   onPendingChange={onPendingChange}
                   onEditorChange={handleEditorChangeStable}
+                  onKeep={() =>
+                    useRightPanelStore.getState().keepFile(threadRef, `file:${requestedPath}`)
+                  }
                 />
               </DiffWorkerPoolProvider>
             )
