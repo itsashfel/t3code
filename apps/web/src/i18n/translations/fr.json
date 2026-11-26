@@ -3223,7 +3223,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "sur l’ordinateur qui a ouvert cette page"]
+      "c": [
+        " ",
+        "sur l’ordinateur qui a ouvert cette page"
+      ]
     }
   ],
   "b2d53b4d1d48fbef": [
@@ -3235,7 +3238,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "· quiconque l’exécute obtient cet accès"]
+      "c": [
+        " ",
+        "· quiconque l’exécute obtient cet accès"
+      ]
     }
   ],
   "c54cc9c75db9dc58": "N’approuvez qu’une connexion que vous venez de lancer.",
@@ -3324,9 +3330,7 @@
   "a1b2db80983184df": "Le texte cité a changé",
   "c6a4cb25e4dca706": "Affichage de la réponse source. La citation enregistrée n’a pas changé.",
   "65d4ba7177bca2bf": "Sélection trop longue pour être citée",
-  "3390f0b2396998c0": "Citer la sélection dans la zone de saisie",
   "e5dc8d61a6d178ed": "Raccourcir la sélection",
-  "a5b06aaaba1d742f": "Citer",
   "b1d8a5a24bd684e3": "sous-agent",
   "5a805b37d8940816": "commande",
   "da2da87e78bd6b11": "moniteur",
@@ -4263,12 +4267,8 @@
   "0e48be2053a4b817": "Préparation du correctif",
   "6f6c67fa4032196b": "Corriger les checks en échec dans un nouveau fil",
   "024f959a15903d60": "Corriger les checks en échec dans ce fil",
-  "276c29ef2d344c50": "Fusionner",
   "be85261ec6428209": "Fusion...",
-  "981f06e0ae41a346": "Fusionner cette {term, select, mr {merge request} cr {demande de modification} other {pull request}} ({method, select, merge {merge} squash {squash} rebase {rebase} fastForward {fast-forward} other {merge}})",
   "087d8cedc3ea219d": "Arrêter de surveiller #{number}",
-  "f3ae1947e800fdb2": "Fusionner la {term, select, mr {merge request} cr {demande de modification} other {pull request}} ?",
-  "1567df8ab4aaac42": "Cette action fusionne #{number} avec {method, select, merge {merge} squash {squash} rebase {rebase} fastForward {fast-forward} other {merge}}.",
   "636eb97a97862aef": [
     "Conflits de fusion avec ",
     {
@@ -4278,7 +4278,6 @@
     }
   ],
   "159ddd0d146a0f22": "Surveillance : l’agent se réveille quand les checks se terminent, que quelqu’un commente ou que la branche entre en conflit. Cliquez pour arrêter.",
-  "1cbc8b5db51b4c77": "Fusionner",
   "a3d040c4ef4fc6e9": "En avance sur le rythme",
   "b16fdf56b16d99c9": "Dans le rythme",
   "90f977e97ae8b6c6": "En dessous du rythme",
@@ -4409,8 +4408,6 @@
   "0ccd37739f9cf2b6": "Impossible d’arrêter le serveur",
   "a610a81c4061bb4c": "Serveurs",
   "253bc8b5e99002dc": "Redirigé vers :{port}",
-  "bd1ca8ccb6d0b87c": "Agent",
-  "e25e045607262b40": "Terminal",
   "194a9791a83d3f79": "Arrêter de rediriger localhost:{port}",
   "95bbbac2f2e17273": "Rediriger localhost:{port} vers cette machine",
   "95b263aa683271cc": "Arrêter localhost:{port}",
@@ -13018,5 +13015,20 @@
       "v": "v"
     },
     " de plus dans Éléments associés"
-  ]
+  ],
+  "e1da841f066004de": "Quoting",
+  "3f0490b459e9e79d": "Remove quote",
+  "a3f488b311b42bbf": "Selection actions",
+  "10f1cd6123dcb73b": "Quote selection in composer",
+  "1dad084c33093a20": "Quote",
+  "1ff41c0f37644b86": "Ask in side chat",
+  "34983001700ae8c6": "Question for the side chat",
+  "1433fa22d38f29ec": "Ask about this selection…",
+  "f97ecfb899dc6ede": "Start side chat",
+  "40da3578256381b4": "Usage and context",
+  "a7b6f00cff32a311": "Started by the agent",
+  "176e9d4d4033aaf2": "Started in a terminal",
+  "75fe9ced794c3f8c": "pid {pid}",
+  "fd8a2ee54ce70eef": "Open files appear here",
+  "b98b77906deb7369": "Pick a file in the tree."
 }

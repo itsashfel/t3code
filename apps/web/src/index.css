@@ -478,6 +478,15 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
   }
 }
 
+/* A panel tab's title fades out under the close button that floats over its end on hover. */
+@utility tab-title-close-fade {
+  mask-image: linear-gradient(
+    to right,
+    black calc(100% - 1.75rem),
+    transparent calc(100% - 0.75rem)
+  );
+}
+
 @utility dropdown-glass {
   background: color-mix(
     in srgb,

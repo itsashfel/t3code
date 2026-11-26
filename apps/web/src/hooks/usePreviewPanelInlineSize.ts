@@ -16,6 +16,8 @@ const PREVIEW_PANEL_MAX_WIDTH_FRACTION = 0.7;
 /** Below this, the sibling chat column's composer overflows. */
 const SIBLING_COLUMN_MIN_WIDTH = 360;
 const PREVIEW_PANEL_DEFAULT_WIDTH = 540;
+/** Until the user drags it, the panel takes this share of the row it splits with the chat. */
+const PREVIEW_PANEL_DEFAULT_ROW_FRACTION = 0.5;
 
 export function usePreviewPanelInlineSize(
   options: {
@@ -30,9 +32,10 @@ export function usePreviewPanelInlineSize(
   const [maxWidth, setMaxWidth] = useState(() =>
     getPreviewPanelMaxWidth(typeof window === "undefined" ? 1280 : window.innerWidth),
   );
+  const [rowDefaultWidth, setRowDefaultWidth] = useState(PREVIEW_PANEL_DEFAULT_WIDTH);
   const { width, handlers } = useResizableWidth({
     storageKey: options.widthStorageKey ?? PREVIEW_PANEL_WIDTH_STORAGE_KEY,
-    defaultWidth: options.defaultWidth ?? PREVIEW_PANEL_DEFAULT_WIDTH,
+    defaultWidth: options.defaultWidth ?? rowDefaultWidth,
     minWidth: PREVIEW_PANEL_MIN_WIDTH,
     maxWidth,
     edge: "left",
@@ -40,10 +43,13 @@ export function usePreviewPanelInlineSize(
   const observeRow = (host: HTMLElement) => {
     const row = container ?? (enabled ? host.parentElement : null) ?? null;
     // Ref callbacks run before paint, so the width is clamped without an over-wide
-    // flash on mount. Only the derived cap is stored: the row resizes every frame
-    // of a sidebar drag, but an unchanged cap skips re-rendering the owner.
+    // flash on mount. Only derived sizes are stored: the row resizes every frame
+    // of a sidebar drag, but unchanged values skip re-rendering the owner.
     const measure = () => {
       setMaxWidth(getPreviewPanelMaxWidth(window.innerWidth, row?.clientWidth));
+      if (row) {
+        setRowDefaultWidth(Math.round(row.clientWidth * PREVIEW_PANEL_DEFAULT_ROW_FRACTION));
+      }
     };
     measure();
     let frame = 0;

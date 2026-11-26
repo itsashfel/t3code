@@ -5,55 +5,105 @@ import {
   type ScopedThreadRef,
 } from "@t3tools/contracts";
 import { useGT } from "gt-react";
-import { QuoteIcon } from "lucide-react";
+import { ArrowUpIcon, MessageCircleIcon, TextQuoteIcon } from "lucide-react";
 import { use, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   captureAssistantTextSelection,
   type AssistantCitationSourceAnchor,
 } from "~/lib/assistantTextSelection";
-import {
-  isSelectionRectVisible,
-  observeSelectionActions,
-  resolveSelectionActionPosition,
-  type SelectionActionPoint,
-} from "~/lib/selectionActions";
+import { isSelectionRectVisible, observeSelectionActions } from "~/lib/selectionActions";
+import { cn } from "~/lib/utils";
 import { Button } from "../ui/button";
 import { BackgroundThreadContext } from "./backgroundThread";
+
+type Box = { left: number; right: number; top: number; bottom: number };
+type ToolbarAnchor = { first: Box; last: Box; bounds: Box };
+
+const TOOLBAR_GAP = 8;
+
+/**
+ * The selected text's lines. Element boxes are skipped, so a fully selected list item or
+ * paragraph measures by its text rather than its whole width.
+ */
+function selectionTextLines(range: Range): Box[] {
+  const lines: Box[] = [];
+  const common = range.commonAncestorContainer;
+  const walker = document.createTreeWalker(common, NodeFilter.SHOW_TEXT);
+  let node = common.nodeType === Node.TEXT_NODE ? common : walker.nextNode();
+  for (; node; node = walker.nextNode()) {
+    if (!range.intersectsNode(node)) continue;
+    const fragment = document.createRange();
+    fragment.selectNodeContents(node);
+    if (node === range.startContainer) fragment.setStart(node, range.startOffset);
+    if (node === range.endContainer) fragment.setEnd(node, range.endOffset);
+    if (!fragment.toString().trim()) continue;
+    for (const rect of fragment.getClientRects()) {
+      if (rect.width <= 0 || rect.height <= 0) continue;
+      const middle = (rect.top + rect.bottom) / 2;
+      const line = lines.find((box) => middle > box.top && middle < box.bottom);
+      if (line) {
+        line.left = Math.min(line.left, rect.left);
+        line.right = Math.max(line.right, rect.right);
+        line.top = Math.min(line.top, rect.top);
+        line.bottom = Math.max(line.bottom, rect.bottom);
+      } else {
+        lines.push({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom });
+      }
+    }
+  }
+  return lines.toSorted((a, b) => a.top - b.top);
+}
+
+/** Centers the toolbar above the first line, or below the last when the top has no room. */
+function placeToolbar(toolbar: HTMLElement, anchor: ToolbarAnchor) {
+  const { width, height } = toolbar.getBoundingClientRect();
+  const above = anchor.first.top - TOOLBAR_GAP - height;
+  const below = anchor.last.bottom + TOOLBAR_GAP;
+  const useAbove = above >= anchor.bounds.top || below + height > anchor.bounds.bottom;
+  const line = useAbove ? anchor.first : anchor.last;
+  const left = (line.left + line.right) / 2 - width / 2;
+  const top = useAbove ? above : below;
+  toolbar.style.left = `${Math.max(8, Math.min(left, window.innerWidth - width - 8))}px`;
+  toolbar.style.top = `${Math.max(8, Math.min(top, window.innerHeight - height - 8))}px`;
+}
 
 export function AssistantSelectionToolbar({
   viewport,
   threadRef,
   onCite,
+  onAskInSideChat,
 }: {
   viewport: HTMLElement | null;
   threadRef: ScopedThreadRef;
   onCite: (citation: AssistantCitation, sourceAnchor: AssistantCitationSourceAnchor) => boolean;
+  /** Absent where side chats are not offered. */
+  onAskInSideChat?: ((citation: AssistantCitation, question: string) => void) | undefined;
 }) {
   const [selection, setSelection] = useState<{
     citation: AssistantCitation;
-    position: SelectionActionPoint;
+    anchor: ToolbarAnchor;
     sourceAnchor: AssistantCitationSourceAnchor;
   } | null>(null);
-  const toolbarRef = useRef<HTMLButtonElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const [question, setQuestion] = useState<string | null>(null);
   const actionsRef = useRef<ReturnType<typeof observeSelectionActions> | null>(null);
   const backgroundThread = use(BackgroundThreadContext);
   const gt = useGT();
 
   // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- measures the toolbar DOM node and clamps its position inside the window before paint
   useLayoutEffect(() => {
-    const toolbar = toolbarRef.current;
-    if (!toolbar || !selection) return;
-    const rect = toolbar.getBoundingClientRect();
-    toolbar.style.left = `${Math.max(8, Math.min(selection.position.x, window.innerWidth - rect.width - 8))}px`;
-    toolbar.style.top = `${Math.max(8, Math.min(selection.position.y, window.innerHeight - rect.height - 8))}px`;
+    if (toolbarRef.current && selection) placeToolbar(toolbarRef.current, selection.anchor);
   }, [selection]);
 
   // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- subscribes to document selectionchange and keydown to track text selections in the viewport
   useEffect(() => {
     if (!viewport) return;
-    const clear = () => setSelection(null);
-    const update = (pointer: SelectionActionPoint | null) => {
+    const clear = () => {
+      setSelection(null);
+      setQuestion(null);
+    };
+    const update = () => {
       const nativeSelection = window.getSelection();
       const captured = captureAssistantTextSelection(viewport, nativeSelection);
       const messageId = captured?.source.dataset.assistantCitationSource;
@@ -113,16 +163,9 @@ export function AssistantSelectionToolbar({
         clear();
         return;
       }
-      const rects = captured.range.getClientRects();
-      const pointerOnText =
-        pointer !== null &&
-        Array.from(rects).some(
-          (line) =>
-            pointer.x >= line.left - 8 &&
-            pointer.x <= line.right + 8 &&
-            pointer.y >= line.top - 8 &&
-            pointer.y <= line.bottom + 8,
-        );
+      const lines = selectionTextLines(captured.range);
+      const first = lines[0] ?? rect;
+      const last = lines.at(-1) ?? rect;
       setSelection({
         sourceAnchor: { source: captured.source, range: captured.range, viewport },
         citation: {
@@ -131,12 +174,7 @@ export function AssistantSelectionToolbar({
           messageId: MessageId.make(messageId),
           ...captured.selector,
         },
-        position: resolveSelectionActionPosition({
-          bounds: viewportRect,
-          selectionRect: rects.item(rects.length - 1) ?? rect,
-          pointer: pointerOnText ? pointer : null,
-          viewport: { width: window.innerWidth, height: window.innerHeight },
-        }),
+        anchor: { first, last, bounds: viewportRect },
       });
     };
     const actions = observeSelectionActions({
@@ -163,10 +201,11 @@ export function AssistantSelectionToolbar({
       ) {
         return;
       }
-      if (toolbar.disabled) return;
+      const first = toolbar.querySelector<HTMLElement>("button:enabled, input");
+      if (!first) return;
       event.preventDefault();
       event.stopPropagation();
-      toolbar.focus({ preventScroll: true });
+      first.focus({ preventScroll: true });
     };
     // Tab belongs to the foreground chat; a background timeline only follows its selection.
     if (!backgroundThread) document.addEventListener("keydown", focusActions, true);
@@ -184,6 +223,7 @@ export function AssistantSelectionToolbar({
   const dismiss = () => {
     actionsRef.current?.cancel();
     setSelection(null);
+    setQuestion(null);
   };
   const cite = () => {
     if (tooLong || !onCite(selection.citation, selection.sourceAnchor)) return false;
@@ -191,18 +231,27 @@ export function AssistantSelectionToolbar({
     dismiss();
     return true;
   };
+  const ask = () => {
+    const text = question?.trim() ?? "";
+    if (tooLong || !onAskInSideChat || text.length === 0) return;
+    onAskInSideChat(selection.citation, text);
+    window.getSelection()?.removeAllRanges();
+    dismiss();
+  };
+  const separator = <span aria-hidden="true" className="mx-0.5 h-4 w-px bg-border" />;
   return createPortal(
-    <Button
+    <div
       ref={toolbarRef}
-      type="button"
-      size="xs"
-      variant="glass"
-      disabled={tooLong}
-      aria-label={tooLong ? gt("Selection is too long to cite") : gt("Cite selection in composer")}
-      className="fixed z-50 max-w-[calc(100vw-1rem)]"
-      style={{ left: selection.position.x, top: selection.position.y }}
-      onPointerDown={(event) => event.preventDefault()}
-      onClick={cite}
+      role="toolbar"
+      aria-label={gt("Selection actions")}
+      className={cn(
+        "fixed z-50 flex max-w-[calc(100vw-1rem)] items-center gap-0.5 rounded-xl border bg-message p-0.5 text-message-foreground shadow-lg",
+        question !== null && "w-80",
+      )}
+      style={{ left: selection.anchor.first.left, top: selection.anchor.first.top }}
+      onPointerDown={(event) => {
+        if (!(event.target instanceof HTMLInputElement)) event.preventDefault();
+      }}
       onKeyDown={(event) => {
         event.stopPropagation();
         if (event.key === "Escape" && !event.nativeEvent.isComposing) {
@@ -211,11 +260,69 @@ export function AssistantSelectionToolbar({
         }
       }}
     >
-      <QuoteIcon aria-hidden="true" className="size-3.5" />
-      {tooLong
-        ? gt("Shorten selection")
-        : gt("Cite", { $context: "verb, button that quotes the selected text" })}
-    </Button>,
+      {question === null ? (
+        <>
+          <Button
+            type="button"
+            size="compact"
+            variant="ghost"
+            disabled={tooLong}
+            aria-label={
+              tooLong ? gt("Selection is too long to cite") : gt("Quote selection in composer")
+            }
+            onClick={cite}
+          >
+            <TextQuoteIcon aria-hidden="true" strokeWidth={1.5} />
+            {tooLong
+              ? gt("Shorten selection")
+              : gt("Quote", { $context: "verb, button that quotes the selected text" })}
+          </Button>
+          {onAskInSideChat && !tooLong ? (
+            <>
+              {separator}
+              <Button type="button" size="compact" variant="ghost" onClick={() => setQuestion("")}>
+                <MessageCircleIcon aria-hidden="true" strokeWidth={1.5} />
+                {gt("Ask in side chat")}
+              </Button>
+            </>
+          ) : null}
+        </>
+      ) : (
+        <form
+          // The ask field is wider than the buttons it replaces, so it is clamped again.
+          ref={(form) => {
+            if (form && toolbarRef.current) placeToolbar(toolbarRef.current, selection.anchor);
+          }}
+          className="flex min-w-0 flex-1 items-center gap-1.5 ps-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            ask();
+          }}
+        >
+          <MessageCircleIcon
+            aria-hidden="true"
+            strokeWidth={1.5}
+            className="size-3.5 shrink-0 text-muted-foreground"
+          />
+          <input
+            autoFocus
+            aria-label={gt("Question for the side chat")}
+            placeholder={gt("Ask about this selection…")}
+            className="h-7 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            value={question}
+            onChange={(event) => setQuestion(event.currentTarget.value)}
+          />
+          <Button
+            type="submit"
+            size="icon-xs"
+            disabled={question.trim().length === 0}
+            aria-label={gt("Start side chat")}
+          >
+            <ArrowUpIcon aria-hidden="true" />
+          </Button>
+        </form>
+      )}
+    </div>,
     document.body,
   );
 }

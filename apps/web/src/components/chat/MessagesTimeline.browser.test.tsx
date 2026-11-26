@@ -1483,7 +1483,7 @@ const CITATION_REQUEST = {
 } satisfies NonNullable<TimelineProps["citationRequest"]>;
 
 describe("MessagesTimeline citations", () => {
-  it("offers Cite for text an agent sent with send_to_user", async () => {
+  it("offers Quote for text an agent sent with send_to_user", async () => {
     const text = "The draft the next question refers to";
     await using screen = await renderTimeline(
       [
@@ -1500,7 +1500,7 @@ describe("MessagesTimeline citations", () => {
     await expect.element(screen.getByText(text)).toHaveStyle({ pointerEvents: "auto" });
     await userEvent.tripleClick(screen.getByText(text));
     await expect
-      .element(page.getByRole("button", { name: "Cite selection in composer" }))
+      .element(page.getByRole("button", { name: "Quote selection in composer" }))
       .toBeVisible();
   });
 

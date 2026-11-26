@@ -513,16 +513,26 @@ function ComposerCitationNodeView({ node, editor, getPos }: NodeViewProps) {
   };
 
   const removeOnCancel = commentTarget?.removeOnCancel;
-  const onRemove = () => {
-    if (!removeOnCancel) return;
+  const removeCitation = (spaces: CitationInsertedSpaces | undefined) => {
     const pos = nodePos();
     if (pos === null) return;
     const { doc } = editor.state;
     const current = doc.nodeAt(pos);
     if (!current) return;
+    const $pos = doc.resolve(pos);
     const end = pos + current.nodeSize;
-    const from = removeOnCancel.before && doc.textBetween(pos - 1, pos) === " " ? pos - 1 : pos;
-    const to = removeOnCancel.after && doc.textBetween(end, end + 1) === " " ? end + 1 : end;
+    // A quote on its own line takes the line with it.
+    const ownLine = $pos.parent.type.name === "paragraph" && $pos.parent.childCount === 1;
+    const from = ownLine
+      ? $pos.before()
+      : spaces?.before && doc.textBetween(pos - 1, pos) === " "
+        ? pos - 1
+        : pos;
+    const to = ownLine
+      ? $pos.after()
+      : spaces?.after && doc.textBetween(end, end + 1) === " "
+        ? end + 1
+        : end;
     // A read-only composer (dictation) can still receive a new citation, so Cancel must undo it.
     const chain = editor.chain();
     (editor.isEditable ? chain.focus() : chain).deleteRange({ from, to }).run();
@@ -539,13 +549,15 @@ function ComposerCitationNodeView({ node, editor, getPos }: NodeViewProps) {
       if (sent) editor.view.focus();
       return;
     }
+    const $pos = editor.state.doc.resolve(pos);
+    const ownLine = $pos.parent.childCount === 1 && $pos.after() < editor.state.doc.content.size;
     // Cite ends the text with a space after the chip; typing before it glues the words to the citation.
     // Mid-text, skipping the space would glue them to the next word instead.
     const end = pos + current.nodeSize;
     const { doc } = editor.state;
     const trailingSpace =
       doc.textBetween(end, end + 1) === " " && doc.resolve(end).end() === end + 1;
-    const caret = trailingSpace ? end + 1 : end;
+    const caret = ownLine ? $pos.after() + 1 : trailingSpace ? end + 1 : end;
     // The send's controlled rewrite may still be pending; emitting this caret move would restore the old prompt.
     editor.chain().setMeta(SILENT_SELECTION_META, sent).focus(caret).run();
   };
@@ -553,7 +565,7 @@ function ComposerCitationNodeView({ node, editor, getPos }: NodeViewProps) {
   return (
     <NodeViewWrapper
       as="span"
-      className={CHIP_NODE_SELECTION_CLASS_NAME}
+      className={cn(CHIP_NODE_SELECTION_CLASS_NAME, "flex w-full py-0.5")}
       contentEditable={false}
       spellCheck={false}
       data-composer-citation-chip="true"
@@ -576,6 +588,9 @@ function ComposerCitationNodeView({ node, editor, getPos }: NodeViewProps) {
     >
       <AssistantCitationChip
         citation={citation}
+        onRemove={() => {
+          if (editor.isEditable) removeCitation(undefined);
+        }}
         commentEditor={{
           open: commentTarget !== null,
           sourceAnchor: commentTarget?.sourceAnchor,
@@ -583,7 +598,7 @@ function ComposerCitationNodeView({ node, editor, getPos }: NodeViewProps) {
             if (open && !editor.isEditable) return;
             commentContext.onOpenChange(citeKey, open);
           },
-          ...(removeOnCancel ? { onCancel: onRemove } : {}),
+          ...(removeOnCancel ? { onCancel: () => removeCitation(removeOnCancel) } : {}),
           onSave: onSaveComment,
           onDraftChange: (comment) => commentContext.onDraftChange(citeKey, comment),
           onSaveAndSend: (comment) => {

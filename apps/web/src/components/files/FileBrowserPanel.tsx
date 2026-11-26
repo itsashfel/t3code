@@ -320,6 +320,8 @@ export default function FileBrowserPanel({
     },
     dragAndDrop: { canDrop: () => false },
     density: "compact",
+    // Matches the 14px tree font; the virtualizer reads this, not CSS.
+    itemHeight: 28,
     fileTreeSearchMode: "hide-non-matches",
     flattenEmptyDirectories: true,
     initialExpansion: "closed",

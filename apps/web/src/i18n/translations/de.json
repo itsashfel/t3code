@@ -3224,7 +3224,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "auf dem Computer, der diese Seite geöffnet hat"]
+      "c": [
+        " ",
+        "auf dem Computer, der diese Seite geöffnet hat"
+      ]
     }
   ],
   "b2d53b4d1d48fbef": [
@@ -3236,7 +3239,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "· wer es ausführt, erhält diesen Zugriff"]
+      "c": [
+        " ",
+        "· wer es ausführt, erhält diesen Zugriff"
+      ]
     }
   ],
   "c54cc9c75db9dc58": "Genehmige nur eine Anmeldung, die du gerade selbst gestartet hast.",
@@ -3325,9 +3331,7 @@
   "a1b2db80983184df": "Der zitierte Text hat sich geändert",
   "c6a4cb25e4dca706": "Die Quellantwort wird angezeigt. Das gespeicherte Zitat bleibt unverändert.",
   "65d4ba7177bca2bf": "Die Auswahl ist zu lang zum Zitieren",
-  "3390f0b2396998c0": "Auswahl im Eingabefeld zitieren",
   "e5dc8d61a6d178ed": "Auswahl kürzen",
-  "a5b06aaaba1d742f": "Zitieren",
   "b1d8a5a24bd684e3": "Subagent",
   "5a805b37d8940816": "Befehl",
   "da2da87e78bd6b11": "Monitor",
@@ -4265,12 +4269,8 @@
   "0e48be2053a4b817": "Behebung wird vorbereitet",
   "6f6c67fa4032196b": "Die fehlgeschlagenen Checks in einem neuen Thread beheben",
   "024f959a15903d60": "Die fehlgeschlagenen Checks in diesem Thread beheben",
-  "276c29ef2d344c50": "Mergen",
   "be85261ec6428209": "Wird gemergt...",
-  "981f06e0ae41a346": "{term, select, mr {Diesen Merge Request mergen ({method, select, merge {Merge} squash {Squash} rebase {Rebase} fastForward {Fast-Forward} other {Merge}})} cr {Diese Änderungsanfrage mergen ({method, select, merge {Merge} squash {Squash} rebase {Rebase} fastForward {Fast-Forward} other {Merge}})} other {Diesen Pull Request mergen ({method, select, merge {Merge} squash {Squash} rebase {Rebase} fastForward {Fast-Forward} other {Merge}})}}",
   "087d8cedc3ea219d": "Beobachtung von #{number} beenden",
-  "f3ae1947e800fdb2": "{term, select, mr {Merge Request mergen?} cr {Änderungsanfrage mergen?} other {Pull Request mergen?}}",
-  "1567df8ab4aaac42": "Dadurch wird #{number} per {method, select, merge {Merge} squash {Squash} rebase {Rebase} fastForward {Fast-Forward} other {Merge}} zusammengeführt.",
   "636eb97a97862aef": [
     "Merge-Konflikte mit ",
     {
@@ -4280,7 +4280,6 @@
     }
   ],
   "159ddd0d146a0f22": "Beobachtet: Der Agent wird geweckt, wenn Checks fertig sind, jemand kommentiert oder der Branch Konflikte hat. Klicke zum Beenden.",
-  "1cbc8b5db51b4c77": "Mergen",
   "a3d040c4ef4fc6e9": "Über dem Tempo",
   "b16fdf56b16d99c9": "Im Tempo",
   "90f977e97ae8b6c6": "Unter dem Tempo",
@@ -4411,8 +4410,6 @@
   "0ccd37739f9cf2b6": "Server konnte nicht gestoppt werden",
   "a610a81c4061bb4c": "Server",
   "253bc8b5e99002dc": "Weitergeleitet an :{port}",
-  "bd1ca8ccb6d0b87c": "Agent",
-  "e25e045607262b40": "Terminal",
   "194a9791a83d3f79": "Weiterleitung von localhost:{port} beenden",
   "95bbbac2f2e17273": "localhost:{port} an diesen Rechner weiterleiten",
   "95b263aa683271cc": "localhost:{port} stoppen",
@@ -13018,5 +13015,20 @@
       "v": "v"
     },
     " weitere unter Verknüpfte Elemente"
-  ]
+  ],
+  "e1da841f066004de": "Quoting",
+  "3f0490b459e9e79d": "Remove quote",
+  "a3f488b311b42bbf": "Selection actions",
+  "10f1cd6123dcb73b": "Quote selection in composer",
+  "1dad084c33093a20": "Quote",
+  "1ff41c0f37644b86": "Ask in side chat",
+  "34983001700ae8c6": "Question for the side chat",
+  "1433fa22d38f29ec": "Ask about this selection…",
+  "f97ecfb899dc6ede": "Start side chat",
+  "40da3578256381b4": "Usage and context",
+  "a7b6f00cff32a311": "Started by the agent",
+  "176e9d4d4033aaf2": "Started in a terminal",
+  "75fe9ced794c3f8c": "pid {pid}",
+  "fd8a2ee54ce70eef": "Open files appear here",
+  "b98b77906deb7369": "Pick a file in the tree."
 }

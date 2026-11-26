@@ -988,7 +988,7 @@ function RightPanelTab(
   const sideChatState = sideChatTabState(sideChatShell);
   const content = (
     <>
-      <PanelTabCloseButton label={gt("Close {title}", { title })} onClick={() => onClose(surface)}>
+      <span className="relative flex shrink-0 items-center">
         <SurfaceIcon
           surface={surface}
           previewUrl={props.previewUrl}
@@ -1003,7 +1003,7 @@ function RightPanelTab(
             aria-hidden
           />
         ) : null}
-      </PanelTabCloseButton>
+      </span>
       {audio === "none" || !audioRuntimeTabId ? null : (
         <SharedTooltipTrigger
           render={
@@ -1058,7 +1058,7 @@ function RightPanelTab(
               onDoubleClick={() => {
                 if (surface.kind === "device" && props.canRename) onStartRename(surface.id);
               }}
-              className="cursor-pointer flex min-w-0 items-center"
+              className="cursor-pointer flex min-w-0 flex-1 items-center group-hover/tab:tab-title-close-fade"
               aria-label={
                 sideChatState === null
                   ? undefined
@@ -1085,6 +1085,10 @@ function RightPanelTab(
           }
         />
       )}
+      <PanelTabCloseButton
+        label={gt("Close {title}", { title })}
+        onClick={() => onClose(surface)}
+      />
     </>
   );
   return (
@@ -1098,7 +1102,8 @@ function RightPanelTab(
       ref={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform), transition }}
       className={cn(
-        "cursor-pointer group/tab flex h-6 max-w-36 shrink-0 items-center gap-0.5 rounded-md pr-2 pl-1.5 text-xs",
+        // Tab icons are drawn at 12px across the app; the tab bar shows them a step larger.
+        "cursor-pointer group/tab relative flex h-8 max-w-48 min-w-20 shrink-0 items-center gap-1.5 rounded-lg pr-3 pl-2.5 text-sm [&_img]:size-3.5 [&_svg]:size-3.5",
         props.ownsDesktopTitleBar && "[-webkit-app-region:no-drag]",
         props.active
           ? "bg-accent text-foreground"

@@ -15,7 +15,15 @@ import {
 import { isLoopbackHost } from "@t3tools/shared/preview";
 import { T, useGT, Var } from "gt-react";
 import { m } from "~/i18n/messages";
-import { CableIcon, GlobeIcon, SquareIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import {
+  BotIcon,
+  CableIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  GlobeIcon,
+  SquareIcon,
+  SquareTerminalIcon,
+} from "lucide-react";
 import { type MouseEvent, useState } from "react";
 
 import {
@@ -45,7 +53,10 @@ import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 import { ThreadDetailsControl } from "./ThreadDetailsControl";
 import { ThreadDetailsSection } from "./ThreadDetailsSection";
-import { THREAD_DETAILS_PANEL_ICON_CLASS } from "./threadDetailsPanelStyles";
+import {
+  THREAD_DETAILS_PANEL_ICON_CLASS,
+  THREAD_DETAILS_PANEL_LABEL_CLASS,
+} from "./threadDetailsPanelStyles";
 
 const SERVER_PAGE_COUNT = 4;
 
@@ -184,6 +195,11 @@ function ThreadServersList(props: ThreadServersPanelProps) {
           const stoppable = canStop && supportsStop && server.pid !== null;
           const forward = findPortForward(forwards, props.environmentId, server.port);
           const actionCount = Number(stoppable) + Number(canForward);
+          const OriginIcon = server.terminal === null ? BotIcon : SquareTerminalIcon;
+          const origin =
+            server.terminal === null
+              ? gt("Started by the agent", { $context: "who started a dev server" })
+              : gt("Started in a terminal", { $context: "who started a dev server" });
           return (
             <li
               key={key}
@@ -198,7 +214,6 @@ function ThreadServersList(props: ThreadServersPanelProps) {
                       size="sm"
                       variant="ghost"
                       part="row"
-                      multiline
                       disabled={!canOpen}
                       onClick={(event) => void open(server, event)}
                       onAuxClick={(event) => void open(server, event)}
@@ -206,40 +221,47 @@ function ThreadServersList(props: ThreadServersPanelProps) {
                   }
                 >
                   <GlobeIcon aria-hidden className={THREAD_DETAILS_PANEL_ICON_CLASS} />
-                  {/* The end padding keeps text clear of the stop button. */}
+                  <span className={cn("min-w-0 flex-1 truncate", THREAD_DETAILS_PANEL_LABEL_CLASS)}>
+                    localhost
+                    <span className="font-normal text-muted-foreground">:{server.port}</span>
+                  </span>
+                  {/* The stop and forward buttons take this spot, so it reserves their width. */}
                   <span
                     className={cn(
-                      "flex min-w-0 flex-1 flex-col gap-0.5",
-                      actionCount === 1 && "pe-6",
-                      actionCount === 2 && "pe-12",
+                      "flex shrink-0 items-center justify-end gap-1.5 text-xs font-normal text-muted-foreground",
+                      actionCount === 1 && "min-w-6",
+                      actionCount === 2 && "min-w-12",
+                      forward
+                        ? "opacity-0"
+                        : actionCount > 0 &&
+                            "group-hover:opacity-0 group-focus-within:opacity-0 pointer-coarse:opacity-0 [@media(hover:none)]:opacity-0",
                     )}
                   >
-                    <span className="truncate text-sm font-medium leading-4 text-foreground/85">
-                      localhost:{server.port}
-                    </span>
-                    <span className="truncate text-2xs font-normal leading-4 text-muted-foreground">
+                    {server.processName}
+                    <OriginIcon aria-hidden className="size-3.5 shrink-0" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipPopup side="left">
+                  <div className="flex flex-col gap-0.5">
+                    <T>
+                      Open in the browser panel. <Var>{externalClickLabel}</Var> for your browser.
+                    </T>
+                    <span className="text-muted-foreground">
                       {[
-                        // First, so the narrow panel truncates the less useful parts.
+                        origin,
+                        server.processName,
+                        server.pid === null ? null : gt("pid {pid}", { pid: server.pid }),
                         forward
                           ? gt("Forwarded to :{port}", {
                               $context: "a remote dev server reachable on this machine's port",
                               port: forward.localPort,
                             })
                           : null,
-                        server.terminal === null
-                          ? gt("Agent", { $context: "who started a dev server" })
-                          : gt("Terminal", { $context: "who started a dev server" }),
-                        server.processName,
                       ]
                         .filter(Boolean)
                         .join(" · ")}
                     </span>
-                  </span>
-                </TooltipTrigger>
-                <TooltipPopup side="left">
-                  <T>
-                    Open in the browser panel. <Var>{externalClickLabel}</Var> for your browser.
-                  </T>
+                  </div>
                 </TooltipPopup>
               </Tooltip>
               {actionCount > 0 ? (

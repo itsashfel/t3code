@@ -6,7 +6,7 @@ import {
 } from "@t3tools/shared/assistantCitations";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useGT } from "gt-react";
-import { PencilIcon, QuoteIcon } from "lucide-react";
+import { PencilIcon, TextQuoteIcon, XIcon } from "lucide-react";
 import {
   useEffect,
   useEffectEvent,
@@ -25,7 +25,7 @@ import {
 } from "../../lib/assistantCitationNavigation";
 import { cn } from "~/lib/utils";
 import { useQuietThreadShell } from "~/state/entities";
-import { ContextChip, ContextChipAction, ContextChipLabel } from "../ContextChip";
+import { Button } from "../ui/button";
 import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import {
   AssistantCitationCommentEditor,
@@ -181,12 +181,14 @@ export function ResponseReplyCard({
   );
 }
 
-/** The citation chip in the composer, with its comment editor. */
+/** The quote strip in the composer, with its comment editor. */
 export function AssistantCitationChip({
   citation,
+  onRemove,
   commentEditor,
 }: {
   citation: AssistantCitation;
+  onRemove?: () => void;
   commentEditor?: {
     open: boolean;
     sourceAnchor?: AssistantCitationSourceAnchor | undefined;
@@ -266,26 +268,34 @@ export function AssistantCitationChip({
       }
     : undefined;
   const label = assistantCitationLabel(citation);
-  const composerSourceLink = (
-    <Link
-      {...sourceLinkProps}
-      className="inline-flex min-w-0 items-center gap-[0.2em] self-baseline text-inherit no-underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-current rounded-sm"
-      aria-label={gt("View cited assistant text: {label}", { label })}
-    >
-      <QuoteIcon aria-hidden="true" />
-      <ContextChipLabel className="max-w-[16em]" dir={textDirection(label)}>
-        {label}
-      </ContextChipLabel>
-    </Link>
-  );
   return (
-    <ContextChip
-      kind="citation"
-      contentEditable={false}
+    <span
       data-assistant-citation-chip="true"
       data-markdown-copy={serializeAssistantCitation(citation)}
+      className="flex w-full min-w-0 items-center gap-2 rounded-lg bg-muted/72 py-1.5 ps-2.5 pe-1 text-sm leading-snug dark:bg-muted/48"
     >
-      {composerSourceLink}
+      <span aria-hidden="true" className="w-0.5 self-stretch rounded-full bg-muted-foreground/40" />
+      <Link
+        {...sourceLinkProps}
+        className="min-w-0 flex-1 rounded-sm text-inherit no-underline focus-visible:outline-2 focus-visible:outline-ring"
+        aria-label={gt("View cited assistant text: {label}", { label })}
+      >
+        <span className="flex items-center gap-1 text-2xs text-muted-foreground">
+          <TextQuoteIcon aria-hidden="true" strokeWidth={1.5} className="size-3" />
+          {gt("Quoting", { $context: "label above a quote attached to the message" })}
+        </span>
+        <span className="block truncate text-foreground/90" dir={textDirection(citation.text)}>
+          {flat(citation.text)}
+        </span>
+        {citation.comment ? (
+          <span
+            className="block truncate text-xs text-muted-foreground"
+            dir={textDirection(citation.comment)}
+          >
+            {citation.comment}
+          </span>
+        ) : null}
+      </Link>
       {commentEditor ? (
         <Popover
           open={commentEditor.open && !voiceSetupOpen}
@@ -302,9 +312,9 @@ export function AssistantCitationChip({
               citation.comment ? gt("Edit citation comment") : gt("Add comment to citation")
             }
             data-citation-comment-trigger="true"
-            render={<ContextChipAction />}
+            render={<Button size="icon-xs" variant="ghost-muted" />}
           >
-            <PencilIcon aria-hidden="true" />
+            <PencilIcon aria-hidden="true" strokeWidth={1.5} />
           </PopoverTrigger>
           {commentEditor.open ? (
             <PopoverPopup
@@ -380,6 +390,17 @@ export function AssistantCitationChip({
           ) : null}
         </Popover>
       ) : null}
-    </ContextChip>
+      {onRemove ? (
+        <Button
+          size="icon-xs"
+          variant="ghost-muted"
+          aria-label={gt("Remove quote")}
+          onPointerDown={(event) => event.preventDefault()}
+          onClick={onRemove}
+        >
+          <XIcon aria-hidden="true" strokeWidth={1.5} />
+        </Button>
+      ) : null}
+    </span>
   );
 }

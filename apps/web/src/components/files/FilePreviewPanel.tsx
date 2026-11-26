@@ -47,7 +47,7 @@ import {
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
 import { mediaFileReference } from "@t3tools/client-runtime/media-reference";
-import { FolderTree, Globe2, WrapTextIcon } from "lucide-react";
+import { FolderIcon, FolderTree, Globe2, WrapTextIcon } from "lucide-react";
 import * as Schema from "effect/Schema";
 import {
   lazy,
@@ -1733,6 +1733,17 @@ export default function FilePreviewPanel({
         </div>
       ) : null}
       <div className="flex min-h-0 flex-1 overflow-hidden">
+        {previewPath === null && showExplorer ? (
+          <div className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 p-6 text-center">
+            <FolderIcon aria-hidden className="mb-2 size-5 text-muted-foreground" />
+            <p className="text-sm font-medium text-foreground/90">
+              <T>Open files appear here</T>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              <T>Pick a file in the tree.</T>
+            </p>
+          </div>
+        ) : null}
         <div
           className={cn("min-w-0 flex-1 flex-col overflow-hidden", previewPath ? "flex" : "hidden")}
         >
@@ -1928,7 +1939,7 @@ export default function FilePreviewPanel({
           ) : null}
         </div>
         {showExplorer ? (
-          <FileExplorerPane resizable={Boolean(previewPath)}>
+          <FileExplorerPane resizable>
             <div
               className="contents"
               onClick={focusEditorOnTreeRowClickOrEnter}

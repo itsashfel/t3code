@@ -1,4 +1,6 @@
 import { m } from "../i18n/messages";
+import { serializeAssistantCitation } from "@t3tools/shared/assistantCitations";
+import { deriveThreadTitleSeed } from "@t3tools/client-runtime/operations";
 import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
 import { useGT, useMessages } from "gt-react";
 import { ChildThreadApprovals } from "./chat/ChildThreadApprovals";
@@ -3062,6 +3064,14 @@ export default function ChatView(props: ChatViewProps) {
   const openSideChatStable = useStableCallback(() => void sideChat.open());
   const openSurfaceInMainView = useOpenSurfaceInMainView(activeThreadRef);
   const sendSideChatStable = useStableCallback(sideChat.open);
+  const askInSideChatStable = useStableCallback((citation: AssistantCitation, question: string) => {
+    const text = `${serializeAssistantCitation(citation)}\n${question}`;
+    void sideChat.open({
+      text,
+      attachments: [],
+      titleSeed: deriveThreadTitleSeed({ text, attachments: [] }, m),
+    });
+  });
   const { onConfirmRevertStable, onForkFromRunStable, onRevertTimelineTurnStable } =
     useTimelineRewind({
       environmentId,
@@ -3672,6 +3682,7 @@ export default function ChatView(props: ChatViewProps) {
                   citationRequest={citationRequest}
                   citationHistory={citationHistory}
                   onCiteAssistantText={citeAssistantTextStable}
+                  onAskInSideChat={sideChat.available ? askInSideChatStable : undefined}
                   onReplyToResponse={replyToResponseStable}
                   {...(activeProject && !runsOutsideHostCheckout
                     ? { onRunShellCommand: parentPanel?.runShellCommand ?? runShellCommandStable }

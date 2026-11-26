@@ -3223,7 +3223,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "on the computer that opened this page"]
+      "c": [
+        " ",
+        "on the computer that opened this page"
+      ]
     }
   ],
   "b2d53b4d1d48fbef": [
@@ -3235,7 +3238,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "· whoever runs it gets this access"]
+      "c": [
+        " ",
+        "· whoever runs it gets this access"
+      ]
     }
   ],
   "c54cc9c75db9dc58": "Only approve a sign-in you just started.",
@@ -3324,9 +3330,7 @@
   "a1b2db80983184df": "The quoted text has changed",
   "c6a4cb25e4dca706": "Showing the source response. The saved quote is unchanged.",
   "65d4ba7177bca2bf": "Selection is too long to cite",
-  "3390f0b2396998c0": "Cite selection in composer",
   "e5dc8d61a6d178ed": "Shorten selection",
-  "a5b06aaaba1d742f": "Cite",
   "b1d8a5a24bd684e3": "subagent",
   "5a805b37d8940816": "command",
   "da2da87e78bd6b11": "monitor",
@@ -4264,12 +4268,8 @@
   "0e48be2053a4b817": "Preparing fix",
   "6f6c67fa4032196b": "Fix the failing checks in a new thread",
   "024f959a15903d60": "Fix the failing checks in this thread",
-  "276c29ef2d344c50": "Merge",
   "be85261ec6428209": "Merging...",
-  "981f06e0ae41a346": "Merge this {term, select, mr {merge request} cr {change request} other {pull request}} ({method, select, merge {merge} squash {squash} rebase {rebase} fastForward {fast-forward} other {merge}})",
   "087d8cedc3ea219d": "Stop watching #{number}",
-  "f3ae1947e800fdb2": "Merge {term, select, mr {merge request} cr {change request} other {pull request}}?",
-  "1567df8ab4aaac42": "This merges #{number} using {method, select, merge {merge} squash {squash} rebase {rebase} fastForward {fast-forward} other {merge}}.",
   "636eb97a97862aef": [
     "Merge conflicts with ",
     {
@@ -4279,7 +4279,6 @@
     }
   ],
   "159ddd0d146a0f22": "Watching: the agent wakes when checks finish, someone comments, or the branch conflicts. Click to stop.",
-  "1cbc8b5db51b4c77": "Merge",
   "a3d040c4ef4fc6e9": "Ahead of pace",
   "b16fdf56b16d99c9": "On pace",
   "90f977e97ae8b6c6": "Under pace",
@@ -4410,8 +4409,6 @@
   "0ccd37739f9cf2b6": "Could not stop server",
   "a610a81c4061bb4c": "Servers",
   "253bc8b5e99002dc": "Forwarded to :{port}",
-  "bd1ca8ccb6d0b87c": "Agent",
-  "e25e045607262b40": "Terminal",
   "194a9791a83d3f79": "Stop forwarding localhost:{port}",
   "95bbbac2f2e17273": "Forward localhost:{port} to this machine",
   "95b263aa683271cc": "Stop localhost:{port}",
@@ -13027,5 +13024,20 @@
       "v": "v"
     },
     " more in Linked items"
-  ]
+  ],
+  "e1da841f066004de": "Quoting",
+  "3f0490b459e9e79d": "Remove quote",
+  "a3f488b311b42bbf": "Selection actions",
+  "10f1cd6123dcb73b": "Quote selection in composer",
+  "1dad084c33093a20": "Quote",
+  "1ff41c0f37644b86": "Ask in side chat",
+  "34983001700ae8c6": "Question for the side chat",
+  "1433fa22d38f29ec": "Ask about this selection…",
+  "f97ecfb899dc6ede": "Start side chat",
+  "40da3578256381b4": "Usage and context",
+  "a7b6f00cff32a311": "Started by the agent",
+  "176e9d4d4033aaf2": "Started in a terminal",
+  "75fe9ced794c3f8c": "pid {pid}",
+  "fd8a2ee54ce70eef": "Open files appear here",
+  "b98b77906deb7369": "Pick a file in the tree."
 }

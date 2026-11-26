@@ -6,6 +6,7 @@ import type {
 } from "@t3tools/contracts";
 import type { ComposerPathSearchTarget } from "@t3tools/client-runtime/state/threads";
 import {
+  collectAssistantCitations,
   serializeAssistantCitation,
   withAssistantCitationComment,
 } from "@t3tools/shared/assistantCitations";
@@ -50,8 +51,19 @@ export function isPathSuggestionCurrent(
   );
 }
 
+/** A quote sits on its own line, so the composer shows it as a strip above the message. */
 export function formatAssistantCitationForComposer(citation: AssistantCitation, comment = "") {
-  return `${serializeAssistantCitation(withAssistantCitationComment(citation, comment))} `;
+  return `${serializeAssistantCitation(withAssistantCitationComment(citation, comment))}\n`;
+}
+
+/** Where the next quote goes: after the quotes that already open the prompt. */
+export function leadingAssistantCitationsEnd(prompt: string): number {
+  let end = 0;
+  for (const { start, end: citationEnd } of collectAssistantCitations(prompt)) {
+    if (start !== end) break;
+    end = prompt[citationEnd] === "\n" ? citationEnd + 1 : citationEnd;
+  }
+  return end;
 }
 
 export function composerRequiresModifier(

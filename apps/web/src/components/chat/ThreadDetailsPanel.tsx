@@ -30,6 +30,7 @@ import { ThreadRepositorySections } from "./ThreadRepositorySections";
 import { ThreadServersPanel } from "./ThreadServersPanel";
 import {
   ThreadDetailsContext,
+  ThreadDetailsReadings,
   ThreadDetailsUsage,
   type ThreadDetailsUsageInput,
 } from "./ThreadDetailsUsage";
@@ -325,10 +326,13 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
                 />
               ) : null}
 
-              {visible.usage ? <ThreadDetailsUsage {...props.usage} /> : null}
-
-              {visible.context && props.usage.contextWindow ? (
-                <ThreadDetailsContext usage={props.usage.contextWindow} />
+              {visible.usage || (visible.context && props.usage.contextWindow) ? (
+                <ThreadDetailsReadings>
+                  {visible.usage ? <ThreadDetailsUsage {...props.usage} /> : null}
+                  {visible.context && props.usage.contextWindow ? (
+                    <ThreadDetailsContext usage={props.usage.contextWindow} />
+                  ) : null}
+                </ThreadDetailsReadings>
               ) : null}
 
               {/* Shown only when no section above has content, so an emptied card can be refilled. */}

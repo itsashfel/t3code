@@ -17,7 +17,7 @@ import {
   TriangleAlertIcon,
 } from "lucide-react";
 import { AsyncResult } from "effect/reactivity";
-import { useState, type MouseEvent as ReactMouseEvent } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 
 import type { ComposerThreadTarget } from "~/composerDraftStore";
 import { useLiveRefresh } from "~/hooks/useLiveRefresh";
@@ -25,7 +25,6 @@ import { usePullRequestChecksRefresh } from "~/hooks/usePullRequestChecksRefresh
 import { cn } from "~/lib/utils";
 import { useServerConfigs } from "~/state/entities";
 import { pullRequestEnvironment } from "~/state/pullRequests";
-import { useUiStateStore } from "~/uiStateStore";
 import {
   useEnvironmentQueryIsNewer,
   useEnvironmentQueryRefresh,
@@ -38,20 +37,18 @@ import {
   classifyPullRequestChecks,
   describePullRequestChecks,
   isPullRequestConflicting,
-  resolvePullRequestMergeMethod,
-  allowedPullRequestMergeMethods,
   resolveThreadPanelPullRequestAction,
 } from "../pullRequest/pullRequestDetail.logic";
 import { PullRequestChecksPopover } from "../pullRequest/PullRequestChecksPopover";
 import {
   pullRequestChecksState,
+  pullRequestChecksStatePresentation,
   PullRequestCheckStatusIcon,
   PullRequestDiffStat,
   resolvePullRequestState,
 } from "../pullRequest/pullRequestPresentation";
 import {
   usePullRequestActionRunner,
-  usePullRequestDefaultMergeMethodResolver,
   usePullRequestHandoffs,
   writeHandoffToComposer,
   type PullRequestThreadTask,
@@ -61,16 +58,6 @@ import {
   type PrStatusIndicator,
   type ThreadPr,
 } from "../ThreadStatusIndicators";
-import {
-  AlertDialog,
-  AlertDialogClose,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogPopup,
-  AlertDialogTitle,
-} from "../ui/alert-dialog";
-import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { toastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
@@ -166,12 +153,10 @@ export function ThreadDetailsPrRow({
     checks: detail?.checks ?? [],
   });
 
-  const [armedMergeHead, setArmedMergeHead] = useState<string>();
   const { actionPending, pendingAction, perform } = usePullRequestActionRunner({
     environmentId,
     reference,
-    // The row shows no diff, so a merge lands the head it had when the confirmation opened.
-    headSha: armedMergeHead ?? detail?.headSha,
+    headSha: detail?.headSha,
     terminology,
     onSuccess: () => {
       checksQuery.refresh();
@@ -181,31 +166,13 @@ export function ThreadDetailsPrRow({
     onFailure: () => detailQuery.refresh(),
   });
   const { handoff, startHandoff } = usePullRequestHandoffs({ environmentId, detail });
-  const lastSelectedMergeMethod = useUiStateStore((state) => state.pullRequestMergeMethod);
-  const resolveProjectDefaultMergeMethod = usePullRequestDefaultMergeMethodResolver(
-    environmentId,
-    (project?.id as ProjectId | undefined) ?? null,
-  );
-  const [confirmingMerge, setConfirmingMerge] = useState(false);
-
-  const rowAction =
-    pendingAction === "ready" || pendingAction === "merge"
-      ? pendingAction
-      : resolveThreadPanelPullRequestAction(detail);
-  if (confirmingMerge && rowAction !== "merge") {
-    setConfirmingMerge(false);
-  }
+  const resolvedAction =
+    pendingAction === "ready" ? pendingAction : resolveThreadPanelPullRequestAction(detail);
+  // The row reports a mergeable PR with its checks and number; merging happens on the host.
+  const rowAction = resolvedAction === "merge" ? null : resolvedAction;
   const conflicting = isPullRequestConflicting(detail);
   const checksState = detail === null ? "none" : classifyPullRequestChecks(detail.checks);
   const checksRollup = detail === null ? null : pullRequestChecksState(detail.checks);
-  const selectedMergeMethod = resolvePullRequestMergeMethod(
-    allowedPullRequestMergeMethods(detail),
-    null,
-    resolveProjectDefaultMergeMethod(),
-    lastSelectedMergeMethod,
-  );
-  const mergeMethodKey =
-    selectedMergeMethod === "fast-forward" ? "fastForward" : selectedMergeMethod;
 
   const handOff = (kind: "conflicts" | "findings", task: PullRequestThreadTask) => {
     if (composerTarget === undefined) {
@@ -440,26 +407,7 @@ export function ThreadDetailsPrRow({
                   : gt("Fix the failing checks in this thread"),
               onClick: startFixChecks,
             }
-          : rowAction === "merge"
-            ? {
-                label: gt("Merge", { $context: "verb, merges a pull request" }),
-                pendingLabel: gt("Merging..."),
-                pending: actionPending,
-                destructive: false,
-                suffix: null,
-                tooltip: gt(
-                  "Merge this {term, select, mr {merge request} cr {change request} other {pull request}} ({method, select, merge {merge} squash {squash} rebase {rebase} fastForward {fast-forward} other {merge}})",
-                  {
-                    term,
-                    method: mergeMethodKey,
-                  },
-                ),
-                onClick: () => {
-                  setArmedMergeHead(detail?.headSha);
-                  setConfirmingMerge(true);
-                },
-              }
-            : null;
+          : null;
 
   const watching =
     onStopWatching !== undefined && (detail?.state ?? pr?.state ?? "open") === "open";
@@ -494,6 +442,24 @@ export function ThreadDetailsPrRow({
     </span>
   ) : null;
 
+  const showChecks =
+    detail !== null &&
+    detail.state === "open" &&
+    checksRollup !== null &&
+    !conflicting &&
+    !detail.isDraft;
+
+  const checksPresentation =
+    showChecks && checksRollup !== null
+      ? pullRequestChecksStatePresentation(checksRollup, m)
+      : null;
+  const checksIcon = checksPresentation ? (
+    <checksPresentation.Icon
+      aria-hidden
+      className={cn("size-3.5 shrink-0", checksPresentation.toneClassName)}
+    />
+  ) : null;
+
   const openRow = (part: "row" | "primary", showNumber: boolean) => (
     <Tooltip>
       <TooltipTrigger
@@ -513,33 +479,23 @@ export function ThreadDetailsPrRow({
         <span className={cn("min-w-0 flex-1 truncate text-left", THREAD_DETAILS_PANEL_LABEL_CLASS)}>
           {title || label}
         </span>
+        {showNumber ? checksIcon : null}
         {showNumber && numberTag}
       </TooltipTrigger>
       {rowTooltip}
     </Tooltip>
   );
 
-  const showChecks =
-    detail !== null &&
-    detail.state === "open" &&
-    checksRollup !== null &&
-    !conflicting &&
-    !detail.isDraft;
-
   return (
     <>
-      {(detail !== null && (showChecks || trailingAction !== null)) || watching ? (
+      {(detail !== null && trailingAction !== null) || watching ? (
         <div className={THREAD_DETAILS_PANEL_SPLIT_GROUP_CLASS}>
           {openRow("primary", false)}
-          <div className="flex shrink-0 items-center gap-0.5 pe-1.5 text-xs text-muted-foreground">
+          <div className="flex shrink-0 items-center gap-1.5 ps-1 pe-1.5 text-xs text-muted-foreground">
             {detail !== null && showChecks && checksRollup !== null ? (
-              <PullRequestChecksPopover
-                checksState={checksRollup}
-                checks={detail.checks}
-                variant="count"
-                render={<ThreadDetailsControl part="meta" className="min-w-0 shrink" />}
-              />
+              <PullRequestChecksPopover checksState={checksRollup} checks={detail.checks} />
             ) : null}
+            {numberTag}
             {watchControl}
             {trailingAction ? (
               <SharedTooltipTrigger
@@ -559,52 +515,12 @@ export function ThreadDetailsPrRow({
                 {trailingAction.pending ? trailingAction.pendingLabel : trailingAction.label}
                 {trailingAction.suffix}
               </SharedTooltipTrigger>
-            ) : (
-              <span className="ps-1">{numberTag}</span>
-            )}
+            ) : null}
           </div>
         </div>
       ) : (
         openRow("row", true)
       )}
-      {rowAction === "merge" ? (
-        <AlertDialog open={confirmingMerge} onOpenChange={(open) => setConfirmingMerge(open)}>
-          <AlertDialogPopup>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {gt(
-                  "Merge {term, select, mr {merge request} cr {change request} other {pull request}}?",
-                  { term },
-                )}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {gt(
-                  "This merges #{number} using {method, select, merge {merge} squash {squash} rebase {rebase} fastForward {fast-forward} other {merge}}.",
-                  {
-                    number,
-                    method: mergeMethodKey,
-                  },
-                )}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogClose render={<Button variant="outline" size="sm" />}>
-                <T>Cancel</T>
-              </AlertDialogClose>
-              <Button
-                size="sm"
-                disabled={actionPending}
-                onClick={() => {
-                  setConfirmingMerge(false);
-                  void perform("merge", selectedMergeMethod);
-                }}
-              >
-                <T context="verb, merges a pull request">Merge</T>
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogPopup>
-        </AlertDialog>
-      ) : null}
     </>
   );
 }

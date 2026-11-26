@@ -3227,7 +3227,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "位于打开此页面的计算机上"]
+      "c": [
+        " ",
+        "位于打开此页面的计算机上"
+      ]
     }
   ],
   "b2d53b4d1d48fbef": [
@@ -3239,7 +3242,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "· 运行它的任何人都会获得此访问权限"]
+      "c": [
+        " ",
+        "· 运行它的任何人都会获得此访问权限"
+      ]
     }
   ],
   "c54cc9c75db9dc58": "请只批准你刚刚发起的登录。",
@@ -3328,9 +3334,7 @@
   "a1b2db80983184df": "引用的原文已变化",
   "c6a4cb25e4dca706": "正在显示原回复，已保存的引用内容不变。",
   "65d4ba7177bca2bf": "选中的内容太长，无法引用",
-  "3390f0b2396998c0": "在输入框中引用选中内容",
   "e5dc8d61a6d178ed": "请缩短选中内容",
-  "a5b06aaaba1d742f": "引用",
   "b1d8a5a24bd684e3": "子智能体",
   "5a805b37d8940816": "命令",
   "da2da87e78bd6b11": "监控",
@@ -4267,12 +4271,8 @@
   "0e48be2053a4b817": "正在准备修复",
   "6f6c67fa4032196b": "在新会话中修复未通过的检查",
   "024f959a15903d60": "在此会话中修复未通过的检查",
-  "276c29ef2d344c50": "合并",
   "be85261ec6428209": "正在合并…",
-  "981f06e0ae41a346": "合并此 {term, select, mr {MR} cr {change request} other {PR}}（{method, select, merge {合并} squash {压缩合并} rebase {变基} fastForward {快进} other {合并}}）",
   "087d8cedc3ea219d": "停止关注 #{number}",
-  "f3ae1947e800fdb2": "合并 {term, select, mr {merge request} cr {change request} other {pull request}}？",
-  "1567df8ab4aaac42": "这会使用{method, select, merge {合并} squash {压缩合并} rebase {变基} fastForward {快进} other {合并}}方式合并 #{number}。",
   "636eb97a97862aef": [
     "与 ",
     {
@@ -4283,7 +4283,6 @@
     " 存在合并冲突"
   ],
   "159ddd0d146a0f22": "关注中：检查完成、有人评论或分支出现冲突时，智能体会被唤醒。点击停止关注。",
-  "1cbc8b5db51b4c77": "合并",
   "a3d040c4ef4fc6e9": "用量消耗偏快",
   "b16fdf56b16d99c9": "用量消耗适中",
   "90f977e97ae8b6c6": "用量消耗偏慢",
@@ -4414,8 +4413,6 @@
   "0ccd37739f9cf2b6": "无法停止服务器",
   "a610a81c4061bb4c": "服务器",
   "253bc8b5e99002dc": "已转发到 :{port}",
-  "bd1ca8ccb6d0b87c": "智能体",
-  "e25e045607262b40": "终端",
   "194a9791a83d3f79": "停止转发 localhost:{port}",
   "95bbbac2f2e17273": "将 localhost:{port} 转发到本机",
   "95b263aa683271cc": "停止 localhost:{port}",
@@ -13032,5 +13029,20 @@
       "v": "v"
     },
     " 项"
-  ]
+  ],
+  "e1da841f066004de": "Quoting",
+  "3f0490b459e9e79d": "Remove quote",
+  "a3f488b311b42bbf": "Selection actions",
+  "10f1cd6123dcb73b": "Quote selection in composer",
+  "1dad084c33093a20": "Quote",
+  "1ff41c0f37644b86": "Ask in side chat",
+  "34983001700ae8c6": "Question for the side chat",
+  "1433fa22d38f29ec": "Ask about this selection…",
+  "f97ecfb899dc6ede": "Start side chat",
+  "40da3578256381b4": "Usage and context",
+  "a7b6f00cff32a311": "Started by the agent",
+  "176e9d4d4033aaf2": "Started in a terminal",
+  "75fe9ced794c3f8c": "pid {pid}",
+  "fd8a2ee54ce70eef": "Open files appear here",
+  "b98b77906deb7369": "Pick a file in the tree."
 }

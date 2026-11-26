@@ -12,6 +12,12 @@ export const PIERRE_TREE_UNSAFE_CSS = `
   [data-truncate-content='visible'] { overflow: hidden; text-overflow: ellipsis; }
   [data-truncate-marker] { display: none; }
   button[data-type='item'], button[data-type='item']::before { border-radius: var(--radius-md); }
+  /* Change status reads from the colored letter at the row's end; names and icons stay neutral. */
+  button[data-item-git-status] > [data-item-section='content'] { color: var(--trees-fg); }
+  button[data-item-git-status] > [data-item-section='icon'] > :not([data-icon-token]):not([data-icon-name='file-tree-icon-chevron']) { color: var(--trees-fg-muted); }
+  /* A light chevron and resting indent guides keep nesting readable without heavy marks. */
+  svg[data-icon-name='file-tree-icon-chevron'] { width: 10px; height: 10px; color: var(--trees-fg-muted); }
+  [data-item-section='spacing-item'] { opacity: 0.5; }
   svg[data-icon-name='t3-tree-icon-loading'] { opacity: 0.6; }
   @media (prefers-reduced-motion: no-preference) {
     svg[data-icon-name='t3-tree-icon-loading'] { animation: t3-tree-spin 1s linear infinite; }
@@ -25,6 +31,12 @@ export function pierreTreeStyle(colorScheme: "light" | "dark"): CSSProperties {
     ["--trees-fg-override" as string]: "var(--contrast-foreground)",
     ["--trees-fg-muted-override" as string]: "var(--contrast-muted-foreground)",
     ["--trees-status-ignored-override" as string]: "var(--contrast-muted-foreground)",
+    // Rows start near the pane edge and read a step larger than the library's 13px default.
+    ["--trees-padding-inline-override" as string]: "4px",
+    ["--trees-item-padding-x-override" as string]: "6px",
+    // Each level then indents by half an icon plus the label gap, about 12px.
+    ["--trees-level-gap-override" as string]: "0px",
+    ["--trees-font-size-override" as string]: "14px",
   };
 }
 

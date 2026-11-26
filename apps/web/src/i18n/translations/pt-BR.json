@@ -3223,7 +3223,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "no computador que abriu esta página"]
+      "c": [
+        " ",
+        "no computador que abriu esta página"
+      ]
     }
   ],
   "b2d53b4d1d48fbef": [
@@ -3235,7 +3238,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "· quem executar recebe este acesso"]
+      "c": [
+        " ",
+        "· quem executar recebe este acesso"
+      ]
     }
   ],
   "c54cc9c75db9dc58": "Aprove apenas um login que você acabou de iniciar.",
@@ -3324,9 +3330,7 @@
   "a1b2db80983184df": "O texto citado mudou",
   "c6a4cb25e4dca706": "Mostrando a resposta de origem. A citação salva não mudou.",
   "65d4ba7177bca2bf": "A seleção é longa demais para citar",
-  "3390f0b2396998c0": "Citar a seleção no editor de mensagens",
   "e5dc8d61a6d178ed": "Encurtar seleção",
-  "a5b06aaaba1d742f": "Citar",
   "b1d8a5a24bd684e3": "subagente",
   "5a805b37d8940816": "comando",
   "da2da87e78bd6b11": "monitor",
@@ -4262,12 +4266,8 @@
   "0e48be2053a4b817": "Preparando a correção",
   "6f6c67fa4032196b": "Corrigir as verificações com falha em uma nova thread",
   "024f959a15903d60": "Corrigir as verificações com falha nesta thread",
-  "276c29ef2d344c50": "Mesclar",
   "be85261ec6428209": "Mesclando...",
-  "981f06e0ae41a346": "Mesclar {term, select, mr {este merge request} cr {esta solicitação de alteração} other {este pull request}} ({method, select, merge {merge} squash {squash} rebase {rebase} fastForward {fast-forward} other {merge}})",
   "087d8cedc3ea219d": "Parar de acompanhar #{number}",
-  "f3ae1947e800fdb2": "Mesclar {term, select, mr {o merge request} cr {a solicitação de alteração} other {o pull request}}?",
-  "1567df8ab4aaac42": "Isso mescla o #{number} usando {method, select, merge {merge} squash {squash} rebase {rebase} fastForward {fast-forward} other {merge}}.",
   "636eb97a97862aef": [
     "Conflitos de merge com ",
     {
@@ -4277,7 +4277,6 @@
     }
   ],
   "159ddd0d146a0f22": "Acompanhando: o agente é ativado quando as verificações terminam, alguém comenta ou o branch entra em conflito. Clique para parar.",
-  "1cbc8b5db51b4c77": "Mesclar",
   "a3d040c4ef4fc6e9": "Acima do ritmo",
   "b16fdf56b16d99c9": "No ritmo",
   "90f977e97ae8b6c6": "Abaixo do ritmo",
@@ -4408,8 +4407,6 @@
   "0ccd37739f9cf2b6": "Não foi possível parar o servidor",
   "a610a81c4061bb4c": "Servidores",
   "253bc8b5e99002dc": "Encaminhada para :{port}",
-  "bd1ca8ccb6d0b87c": "Agente",
-  "e25e045607262b40": "Terminal",
   "194a9791a83d3f79": "Parar de encaminhar localhost:{port}",
   "95bbbac2f2e17273": "Encaminhar localhost:{port} para esta máquina",
   "95b263aa683271cc": "Parar localhost:{port}",
@@ -13018,5 +13015,20 @@
       "v": "v"
     },
     " mais em Itens vinculados"
-  ]
+  ],
+  "e1da841f066004de": "Quoting",
+  "3f0490b459e9e79d": "Remove quote",
+  "a3f488b311b42bbf": "Selection actions",
+  "10f1cd6123dcb73b": "Quote selection in composer",
+  "1dad084c33093a20": "Quote",
+  "1ff41c0f37644b86": "Ask in side chat",
+  "34983001700ae8c6": "Question for the side chat",
+  "1433fa22d38f29ec": "Ask about this selection…",
+  "f97ecfb899dc6ede": "Start side chat",
+  "40da3578256381b4": "Usage and context",
+  "a7b6f00cff32a311": "Started by the agent",
+  "176e9d4d4033aaf2": "Started in a terminal",
+  "75fe9ced794c3f8c": "pid {pid}",
+  "fd8a2ee54ce70eef": "Open files appear here",
+  "b98b77906deb7369": "Pick a file in the tree."
 }

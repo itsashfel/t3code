@@ -26,6 +26,7 @@ import { formatUpcomingTimestamp } from "../../timestampFormat";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { formatContextWindowCompactionMessage } from "./compaction.logic";
 import { ThreadDetailsSection } from "./ThreadDetailsSection";
+import { THREAD_DETAILS_PANEL_TEXT_CLASS } from "./threadDetailsPanelStyles";
 import {
   nextPoolReset,
   poolSources,
@@ -62,7 +63,6 @@ export function ThreadDetailsUsage({
   providers,
   sources,
 }: Omit<ThreadDetailsUsageInput, "contextWindow">) {
-  const gt = useGT();
   const nowMinute = useNowMinute();
   const now = Date.parse(`${nowMinute}:00Z`);
   const resolved = resolveThreadDetailsLimits(providerInstanceId, model, providers, sources, now);
@@ -70,23 +70,17 @@ export function ThreadDetailsUsage({
   if (!resolved && quotas.length === 0) return null;
 
   return (
-    <ThreadDetailsSection
-      headingId="thread-details-usage-heading"
-      title={gt("Usage limits")}
-      showHeading={false}
-    >
-      <div className="grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs">
-        {resolved?.kind === "pool"
-          ? resolved.windows.map((window) => <PoolRow key={window.id} window={window} now={now} />)
-          : resolved &&
-            (quotas.length === 0 || limitsNotice(resolved.limits) === null) && (
-              <InstanceRows limits={resolved.limits} now={now} />
-            )}
-        {quotas.map(({ key, accountLabel, window }) => (
-          <LimitRow key={key} window={window} now={now} accountLabel={accountLabel} />
-        ))}
-      </div>
-    </ThreadDetailsSection>
+    <>
+      {resolved?.kind === "pool"
+        ? resolved.windows.map((window) => <PoolRow key={window.id} window={window} now={now} />)
+        : resolved &&
+          (quotas.length === 0 || limitsNotice(resolved.limits) === null) && (
+            <InstanceRows limits={resolved.limits} now={now} />
+          )}
+      {quotas.map(({ key, accountLabel, window }) => (
+        <LimitRow key={key} window={window} now={now} accountLabel={accountLabel} />
+      ))}
+    </>
   );
 }
 
@@ -115,6 +109,25 @@ function InstanceRows({
   return limits.windows.map((window) => <LimitRow key={window.id} window={window} now={now} />);
 }
 
+/**
+ * Limits and context share one group. They are readings, not controls: rows have no hover fill,
+ * and only a limit's label brightens, because it opens the usage page.
+ */
+export function ThreadDetailsReadings({ children }: { readonly children: ReactNode }) {
+  const gt = useGT();
+  return (
+    <ThreadDetailsSection
+      headingId="thread-details-readings-heading"
+      title={gt("Usage and context")}
+      showHeading={false}
+    >
+      <div className="grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 empty:hidden">
+        {children}
+      </div>
+    </ThreadDetailsSection>
+  );
+}
+
 /** The thread's context window. The bar fills as context is used; the tick marks auto-compaction. */
 export function ThreadDetailsContext({ usage }: { readonly usage: ContextWindowSnapshot }) {
   const maxTokens = usage.maxTokens != null && usage.maxTokens > 0 ? usage.maxTokens : null;
@@ -132,53 +145,43 @@ export function ThreadDetailsContext({ usage }: { readonly usage: ContextWindowS
   const locale = useLocale();
   const usedTokens = formatContextWindowTokens(usage.usedTokens);
   return (
-    <ThreadDetailsSection
-      headingId="thread-details-context-heading"
-      title={gt("Context window")}
-      showHeading={false}
-    >
-      <div className="grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs">
-        <UsageRow
-          label={gt("Context", { $context: "context window row label" })}
-          fill={used}
-          tone={used === null ? null : used >= 90 ? "error" : used >= 80 ? "warning" : null}
-          tick={tick}
-          muted
-          value={
-            maxTokens !== null
-              ? `${usedTokens} / ${formatContextWindowTokens(maxTokens)}`
-              : usedTokens
-          }
-          ariaValue={
-            used !== null
-              ? gt("{used}% used", { used })
-              : gt("{usedTokens} tokens used", { usedTokens })
-          }
-          tooltip={
-            <>
-              <span className="text-foreground">
-                {used !== null
-                  ? gt("Context: {used}% used", { used })
-                  : gt("Context: {usedTokens} tokens used", { usedTokens })}
-              </span>
-              {maxTokens !== null ? (
-                <span className="text-muted-foreground">
-                  {gt("{used} of {max} tokens", {
-                    used: usage.usedTokens.toLocaleString(locale),
-                    max: maxTokens.toLocaleString(locale),
-                  })}
-                </span>
-              ) : null}
-              {threshold !== null && threshold > 0 ? (
-                <span className="text-muted-foreground">
-                  {formatContextWindowCompactionMessage(threshold, m)}
-                </span>
-              ) : null}
-            </>
-          }
-        />
-      </div>
-    </ThreadDetailsSection>
+    <UsageRow
+      label={gt("Context", { $context: "context window row label" })}
+      fill={used}
+      tone={used === null ? null : used >= 90 ? "error" : used >= 80 ? "warning" : null}
+      tick={tick}
+      muted
+      value={
+        maxTokens !== null ? `${usedTokens} / ${formatContextWindowTokens(maxTokens)}` : usedTokens
+      }
+      ariaValue={
+        used !== null
+          ? gt("{used}% used", { used })
+          : gt("{usedTokens} tokens used", { usedTokens })
+      }
+      tooltip={
+        <>
+          <span className="text-foreground">
+            {used !== null
+              ? gt("Context: {used}% used", { used })
+              : gt("Context: {usedTokens} tokens used", { usedTokens })}
+          </span>
+          {maxTokens !== null ? (
+            <span className="text-muted-foreground">
+              {gt("{used} of {max} tokens", {
+                used: usage.usedTokens.toLocaleString(locale),
+                max: maxTokens.toLocaleString(locale),
+              })}
+            </span>
+          ) : null}
+          {threshold !== null && threshold > 0 ? (
+            <span className="text-muted-foreground">
+              {formatContextWindowCompactionMessage(threshold, m)}
+            </span>
+          ) : null}
+        </>
+      }
+    />
   );
 }
 
@@ -203,7 +206,6 @@ function LimitRow({
       label={window.label}
       fill={left}
       tone={limitTone(left)}
-      tick={timeLeft}
       value={`${left}%`}
       ariaValue={gt("{left}% left", { left })}
       opensUsage
@@ -320,10 +322,9 @@ function UsageRow({
   const rowProps = {
     "aria-label": gt("{label}: {value}", { label, value: ariaValue }),
     className: cn(
-      "col-span-3 grid h-6 grid-cols-subgrid items-center rounded-lg px-2.5 outline-none hover:bg-black/[0.035] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring data-popup-open:bg-black/[0.035] dark:hover:bg-white/[0.08] dark:data-popup-open:bg-white/[0.08]",
-      opensUsage
-        ? "group cursor-pointer active:bg-black/[0.06] dark:active:bg-white/[0.12]"
-        : "cursor-default",
+      "group col-span-3 grid h-8 grid-cols-subgrid items-center rounded-lg px-2.5 font-medium outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+      THREAD_DETAILS_PANEL_TEXT_CLASS,
+      opensUsage ? "cursor-pointer" : "cursor-default",
     ),
   };
   return (
@@ -333,11 +334,16 @@ function UsageRow({
           opensUsage ? <Link to="/usage" {...rowProps} /> : <div tabIndex={0} {...rowProps} />
         }
       >
-        <span className="max-w-28 truncate text-muted-foreground group-hover:text-foreground">
+        <span
+          className={cn(
+            "max-w-28 truncate text-muted-foreground transition-colors",
+            opensUsage && "group-hover:text-foreground group-focus-visible:text-foreground",
+          )}
+        >
           {label}
         </span>
         {fill !== null ? (
-          <span className="relative h-[3px] rounded-full bg-muted-foreground/30 dark:bg-muted-foreground/20">
+          <span className="relative h-0.75 rounded-full bg-muted-foreground/15">
             {fill > 0 ? (
               <span
                 className={cn(
@@ -347,16 +353,16 @@ function UsageRow({
                     : tone === "warning"
                       ? "bg-warning"
                       : muted
-                        ? "bg-muted-foreground"
-                        : "bg-foreground/80",
+                        ? "bg-muted-foreground/70"
+                        : "bg-foreground/60",
                 )}
-                style={{ width: `max(${fill}%, 6px)` }}
+                style={{ width: `max(${fill}%, 4px)` }}
               />
             ) : null}
             {tick !== null ? (
               <span
                 aria-hidden
-                className="absolute -top-[3px] h-[9px] w-px -translate-x-1/2 bg-foreground/75"
+                className="absolute -top-0.75 h-2.25 w-px -translate-x-1/2 bg-foreground/60"
                 style={{ left: `clamp(0.5px, ${tick}%, calc(100% - 0.5px))` }}
               />
             ) : null}
@@ -365,15 +371,13 @@ function UsageRow({
         <span
           className={cn(
             // Text-only rows span the bar column so they never widen the shared value column.
-            "text-end font-medium tabular-nums",
+            "text-end text-xs tabular-nums",
             fill === null && "col-span-2",
             tone === "error"
               ? "text-error-foreground"
               : tone === "warning"
                 ? "text-warning-foreground"
-                : fill === null
-                  ? "text-muted-foreground"
-                  : "text-foreground/80",
+                : "text-foreground/80",
           )}
         >
           {value}

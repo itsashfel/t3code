@@ -91,6 +91,8 @@ export function DiffFileTree({
 
   const { model } = useFileTree({
     density: "compact",
+    // Matches the 14px tree font shared with the files tree; the virtualizer reads this, not CSS.
+    itemHeight: 28,
     flattenEmptyDirectories: true,
     initialExpansion: "open",
     icons,

@@ -22,6 +22,7 @@ import {
   expandCollapsedComposerCursor,
   extendReplacementRangeForTrailingSpace,
   formatAssistantCitationForComposer,
+  leadingAssistantCitationsEnd,
   isPathSuggestionCurrent,
   replaceTextRange,
 } from "./composer-logic";
@@ -89,9 +90,26 @@ describe("formatAssistantCitationForComposer", () => {
     const comment = 'What does "keep" mean? 👋\n  Please show an example.';
     const text = formatAssistantCitationForComposer(citation, `  ${comment}\n`);
     const boundCitation = { ...citation, comment };
-    expect(text).toBe(`${serializeAssistantCitation(boundCitation)} `);
+    expect(text).toBe(`${serializeAssistantCitation(boundCitation)}\n`);
     expect(collectAssistantCitations(text).map((entry) => entry.citation)).toEqual([boundCitation]);
-    expect(expandAssistantCitationsForProvider(text)).toMatch(/^\[assistant-quote-1\] \n\n/);
+    expect(expandAssistantCitationsForProvider(text)).toMatch(/^\[assistant-quote-1\]\n\n/);
+  });
+});
+
+describe("leadingAssistantCitationsEnd", () => {
+  const quote = formatAssistantCitationForComposer(citation);
+
+  it("places a quote at the start of a prompt without quotes", () => {
+    expect(leadingAssistantCitationsEnd("")).toBe(0);
+    expect(leadingAssistantCitationsEnd("fix this")).toBe(0);
+  });
+
+  it("places a quote after the quotes that open the prompt", () => {
+    expect(leadingAssistantCitationsEnd(`${quote}${quote}fix this`)).toBe(quote.length * 2);
+  });
+
+  it("ignores a quote that sits inside the message", () => {
+    expect(leadingAssistantCitationsEnd(`fix ${quote}this`)).toBe(0);
   });
 });
 

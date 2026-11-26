@@ -86,6 +86,7 @@ import {
   detectComposerTrigger,
   expandCollapsedComposerCursor,
   formatAssistantCitationForComposer,
+  leadingAssistantCitationsEnd,
   isPathSuggestionCurrent,
   extendReplacementRangeForTrailingSpace,
   replaceTextRange,
@@ -2844,7 +2845,8 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
 
   const insertComposerText = (
     text: string,
-    position: "cursor" | "end",
+    /** An offset places the text there, whatever the caret. */
+    position: "cursor" | "end" | number,
     options?: {
       ensureLeadingBoundary?: boolean;
       citationCommentAnchor?: AssistantCitationSourceAnchor;
@@ -2865,7 +2867,12 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       text = importPastedComposerText(options.clipboardData, importContextFragment);
     }
     const prompt = promptRef.current;
-    const cursor = position === "cursor" ? readComposerSnapshot().expandedCursor : prompt.length;
+    const cursor =
+      typeof position === "number"
+        ? position
+        : position === "cursor"
+          ? readComposerSnapshot().expandedCursor
+          : prompt.length;
     const needsLeadingSpace =
       (options?.ensureLeadingBoundary ?? false) &&
       cursor > 0 &&
@@ -3356,8 +3363,8 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       citeAssistantText: (citation, sourceAnchor) =>
         insertComposerTextStable(
           formatAssistantCitationForComposer(citation, citation.comment),
-          "cursor",
-          { ensureLeadingBoundary: true, citationCommentAnchor: sourceAnchor },
+          leadingAssistantCitationsEnd(promptRef.current),
+          { citationCommentAnchor: sourceAnchor },
         ),
       replyToResponse: (response) => {
         // An open question owns the composer, and its answer would not carry the reply.

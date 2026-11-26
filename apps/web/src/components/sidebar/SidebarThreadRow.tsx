@@ -599,6 +599,10 @@ const TOP_STATUS_ICONS = {
   woke: AlarmClockIcon,
 } as const;
 
+// A card's status reads as a tinted capsule so it stands apart from the project name beside it.
+const STATUS_PILL_CLASS_NAME =
+  "inline-flex h-4.5 items-center gap-1 rounded-full px-1.5 text-2xs font-medium tabular-nums";
+
 function TopStatusIcon(props: { icon: keyof typeof TOP_STATUS_ICONS; className: string }) {
   const Icon = TOP_STATUS_ICONS[props.icon];
   return <Icon aria-hidden className={cn("shrink-0", props.className)} />;
@@ -829,54 +833,63 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                 : gt("Working", { $context: "thread status" }),
           icon: "working" as const,
           className: "text-info-foreground",
+          pillClassName: "bg-info/14",
         }
       : status === "waiting"
         ? {
             label: gt("Waiting", { $context: "thread status" }),
             icon: "waiting" as const,
             className: "text-muted-foreground",
+            pillClassName: "bg-muted-foreground/14",
           }
         : status === "approval"
           ? {
               label: gt("Approval", { $context: "thread status: needs approval" }),
               icon: "approval" as const,
               className: "text-warning-foreground",
+              pillClassName: "bg-warning/14",
             }
           : status === "input"
             ? {
                 label: gt("Input", { $context: "thread status: needs user input" }),
                 icon: "input" as const,
                 className: "text-indigo-600 dark:text-indigo-300",
+                pillClassName: "bg-indigo-500/14 dark:bg-indigo-400/14",
               }
             : status === "request"
               ? {
                   label: gt("Request", { $context: "thread status: guest request" }),
                   icon: "request" as const,
                   className: "text-guest-foreground",
+                  pillClassName: "bg-guest/14",
                 }
               : status === "limited"
                 ? {
                     label: gt("Limited", { $context: "thread status: usage limited" }),
                     icon: "failed" as const,
                     className: "text-warning-foreground",
+                    pillClassName: "bg-warning/14",
                   }
                 : status === "failed"
                   ? {
                       label: gt("Failed", { $context: "thread status" }),
                       icon: "failed" as const,
                       className: "text-error-foreground",
+                      pillClassName: "bg-error/14",
                     }
                   : isWoke
                     ? {
                         label: gt("Woke", { $context: "thread status: woke from snooze" }),
                         icon: "woke" as const,
                         className: "text-warning-foreground",
+                        pillClassName: "bg-warning/14",
                       }
                     : isUnread
                       ? {
                           label: gt("Done", { $context: "thread status" }),
                           icon: "done" as const,
                           className: "text-success-foreground",
+                          pillClassName: "bg-success/14",
                         }
                       : null;
   const isWokeStatus = topStatus?.icon === "woke";
@@ -1640,11 +1653,13 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                             aria-label={gt("Dismiss Woke notification")}
                             onClick={handleAcknowledgeWokeClick}
                             className={cn(
-                              "inline-flex cursor-pointer items-center gap-1 rounded-sm font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+                              STATUS_PILL_CLASS_NAME,
+                              "cursor-pointer outline-none hover:underline focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                               topStatus.className,
+                              topStatus.pillClassName,
                             )}
                           >
-                            <AlarmClockIcon aria-hidden className="size-4 shrink-0" />
+                            <AlarmClockIcon aria-hidden className="size-3 shrink-0" />
                             <span role="status">{topStatus.label}</span>
                           </button>
                         }
@@ -1657,15 +1672,16 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                     ) : (
                       <span
                         className={cn(
-                          "inline-flex items-center gap-1 font-medium",
+                          STATUS_PILL_CLASS_NAME,
                           topStatus.className,
+                          topStatus.pillClassName,
                         )}
                       >
-                        <TopStatusIcon icon={topStatus.icon} className="size-4" />
+                        <TopStatusIcon icon={topStatus.icon} className="size-3" />
                         {/* Not a live region: a collapsed sidebar is inert, so
                             BackgroundThreadAnnouncer and the open thread's
-                            timeline speak status changes instead. */}
-                        {topStatus.label}
+                            timeline speak status changes instead. Running states
+                            show only their timer; the row's label still names them. */}
                         {status === "preparing" || status === "working" ? (
                           <span aria-hidden>
                             <WorkingDuration
@@ -1680,7 +1696,9 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                               startedAt={thread.latestRun?.completedAt ?? null}
                             />
                           </span>
-                        ) : null}
+                        ) : (
+                          topStatus.label
+                        )}
                       </span>
                     )
                   ) : (

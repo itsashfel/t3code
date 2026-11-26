@@ -3222,7 +3222,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "(이 페이지를 연 컴퓨터)"]
+      "c": [
+        " ",
+        "(이 페이지를 연 컴퓨터)"
+      ]
     }
   ],
   "b2d53b4d1d48fbef": [
@@ -3234,7 +3237,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "· 실행하는 사람이 이 액세스 권한을 얻습니다"]
+      "c": [
+        " ",
+        "· 실행하는 사람이 이 액세스 권한을 얻습니다"
+      ]
     }
   ],
   "c54cc9c75db9dc58": "방금 시작한 로그인만 승인하세요.",
@@ -3323,9 +3329,7 @@
   "a1b2db80983184df": "인용된 텍스트가 변경되었습니다",
   "c6a4cb25e4dca706": "원본 응답을 표시합니다. 저장된 인용은 변경되지 않습니다.",
   "65d4ba7177bca2bf": "선택 영역이 너무 길어 인용할 수 없습니다",
-  "3390f0b2396998c0": "입력창에 선택 영역 인용",
   "e5dc8d61a6d178ed": "선택 영역 줄이기",
-  "a5b06aaaba1d742f": "인용",
   "b1d8a5a24bd684e3": "서브에이전트",
   "5a805b37d8940816": "명령",
   "da2da87e78bd6b11": "모니터",
@@ -4249,12 +4253,8 @@
   "0e48be2053a4b817": "수정 준비 중",
   "6f6c67fa4032196b": "새 스레드에서 실패한 검사 수정",
   "024f959a15903d60": "이 스레드에서 실패한 검사 수정",
-  "276c29ef2d344c50": "병합",
   "be85261ec6428209": "병합하는 중...",
-  "981f06e0ae41a346": "이 {term, select, mr {병합 요청} cr {변경 요청} other {풀 리퀘스트}} 병합({method, select, merge {병합} squash {스쿼시} rebase {리베이스} fastForward {빨리 감기} other {병합}})",
   "087d8cedc3ea219d": "#{number} 지켜보기 중지",
-  "f3ae1947e800fdb2": "{term, select, mr {병합 요청을} cr {변경 요청을} other {풀 리퀘스트를}} 병합할까요?",
-  "1567df8ab4aaac42": "#{number}을(를) {method, select, merge {병합} squash {스쿼시} rebase {리베이스} fastForward {빨리 감기} other {병합}} 방식으로 병합합니다.",
   "636eb97a97862aef": [
     {
       "i": 1,
@@ -4264,7 +4264,6 @@
     "와(과) 병합 충돌"
   ],
   "159ddd0d146a0f22": "지켜보는 중: 검사가 끝나거나, 누군가 댓글을 달거나, 브랜치가 충돌하면 에이전트가 깨어납니다. 클릭하여 중지하세요.",
-  "1cbc8b5db51b4c77": "병합",
   "a3d040c4ef4fc6e9": "예상보다 빠름",
   "b16fdf56b16d99c9": "예상대로",
   "90f977e97ae8b6c6": "예상보다 느림",
@@ -4395,8 +4394,6 @@
   "0ccd37739f9cf2b6": "서버를 중지할 수 없습니다",
   "a610a81c4061bb4c": "서버",
   "253bc8b5e99002dc": ":{port}로 포워딩됨",
-  "bd1ca8ccb6d0b87c": "에이전트",
-  "e25e045607262b40": "터미널",
   "194a9791a83d3f79": "localhost:{port} 포워딩 중지",
   "95bbbac2f2e17273": "localhost:{port}을(를) 이 컴퓨터로 포워딩",
   "95b263aa683271cc": "localhost:{port} 중지",
@@ -12951,5 +12948,20 @@
       "v": "v"
     },
     "개 더 보기"
-  ]
+  ],
+  "e1da841f066004de": "Quoting",
+  "3f0490b459e9e79d": "Remove quote",
+  "a3f488b311b42bbf": "Selection actions",
+  "10f1cd6123dcb73b": "Quote selection in composer",
+  "1dad084c33093a20": "Quote",
+  "1ff41c0f37644b86": "Ask in side chat",
+  "34983001700ae8c6": "Question for the side chat",
+  "1433fa22d38f29ec": "Ask about this selection…",
+  "f97ecfb899dc6ede": "Start side chat",
+  "40da3578256381b4": "Usage and context",
+  "a7b6f00cff32a311": "Started by the agent",
+  "176e9d4d4033aaf2": "Started in a terminal",
+  "75fe9ced794c3f8c": "pid {pid}",
+  "fd8a2ee54ce70eef": "Open files appear here",
+  "b98b77906deb7369": "Pick a file in the tree."
 }
