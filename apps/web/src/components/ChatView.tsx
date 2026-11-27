@@ -3623,7 +3623,27 @@ export default function ChatView(props: ChatViewProps) {
           </header>
         )}
 
-        <div className="relative flex min-h-0 min-w-0 flex-1">
+        <div
+          className="relative flex min-h-0 min-w-0 flex-1"
+          onKeyDown={(event) => {
+            // A click focuses the timeline scroller; native Tab would then focus the first
+            // control in DOM order and scroll the thread to its top. Hand off to the composer.
+            if (
+              event.key !== "Tab" ||
+              event.shiftKey ||
+              event.altKey ||
+              event.metaKey ||
+              event.ctrlKey ||
+              !(event.target instanceof HTMLElement) ||
+              !event.target.classList.contains("messages-timeline-scroll") ||
+              !composerRef.current
+            ) {
+              return;
+            }
+            event.preventDefault();
+            focusComposerStable();
+          }}
+        >
           <ThreadFindCanvas
             findOptions={{
               skills: timelineSkills,

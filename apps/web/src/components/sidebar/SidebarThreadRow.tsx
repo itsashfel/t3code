@@ -613,6 +613,38 @@ function TopStatusIcon(props: { icon: keyof typeof TOP_STATUS_ICONS; className: 
   return <Icon aria-hidden className={cn("shrink-0", props.className)} />;
 }
 
+/** The status capsule both card and folder rows show. Running states show only their timer. */
+function ThreadStatusPill(props: {
+  status: {
+    label: string;
+    icon: keyof typeof TOP_STATUS_ICONS;
+    className: string;
+    pillClassName: string;
+  };
+  environmentId: EnvironmentId;
+  timerStartedAt: string | null | undefined;
+}) {
+  const { status } = props;
+  return (
+    <span className={cn(STATUS_PILL_CLASS_NAME, status.className, status.pillClassName)}>
+      <TopStatusIcon icon={status.icon} className="size-3" />
+      {/* Not a live region: a collapsed sidebar is inert, so BackgroundThreadAnnouncer and the
+          open thread's timeline speak status changes instead. The row's label still names it. */}
+      {props.timerStartedAt === undefined ? (
+        status.label
+      ) : (
+        <span aria-hidden>
+          <WorkingDuration
+            environmentId={props.environmentId}
+            startedAt={props.timerStartedAt}
+            fallback={status.label}
+          />
+        </span>
+      )}
+    </span>
+  );
+}
+
 type SidebarThreadRowProps = {
   thread: SidebarThreadSummary;
   // "folder" is a one-line row inside a boring sidebar project folder;
@@ -898,6 +930,12 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                         }
                       : null;
   const isWokeStatus = topStatus?.icon === "woke";
+  const statusTimerStartedAt =
+    status === "preparing" || status === "working"
+      ? resolveWorkingStartedAt(thread)
+      : status === "waiting"
+        ? (thread.latestRun?.completedAt ?? null)
+        : undefined;
 
   const branchMismatch = resolveLocalCheckoutBranchMismatch({
     effectiveEnvMode: thread.worktreePath === null ? "local" : "worktree",
@@ -1452,7 +1490,12 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                           type="button"
                           aria-label={gt("Dismiss Woke notification")}
                           onClick={handleAcknowledgeWokeClick}
-                          className="inline-flex cursor-pointer items-center gap-1 rounded-sm text-xs font-medium text-warning-foreground outline-none hover:underline focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                          className={cn(
+                            "cursor-pointer outline-none hover:underline focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+                            inFolder && topStatus
+                              ? [STATUS_PILL_CLASS_NAME, topStatus.className, topStatus.pillClassName]
+                              : "inline-flex items-center gap-1 rounded-sm text-xs font-medium text-warning-foreground",
+                          )}
                         >
                           <AlarmClockIcon aria-hidden className="size-3" />
                           <span role="status">
@@ -1468,15 +1511,11 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                     />
                   ) : inFolder && topStatus ? (
                     // Folder rows have no status line, so the status takes the time slot.
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1 text-xs font-medium",
-                        topStatus.className,
-                      )}
-                    >
-                      <TopStatusIcon icon={topStatus.icon} className="size-3" />
-                      {topStatus.label}
-                    </span>
+                    <ThreadStatusPill
+                      status={topStatus}
+                      environmentId={thread.environmentId}
+                      timerStartedAt={statusTimerStartedAt}
+                    />
                   ) : (
                     <span className="text-xs">
                       <RelativeTimeLabel
@@ -1670,38 +1709,11 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                         }
                       />
                     ) : (
-                      <span
-                        className={cn(
-                          STATUS_PILL_CLASS_NAME,
-                          topStatus.className,
-                          topStatus.pillClassName,
-                        )}
-                      >
-                        <TopStatusIcon icon={topStatus.icon} className="size-3" />
-                        {/* Not a live region: a collapsed sidebar is inert, so
-                            BackgroundThreadAnnouncer and the open thread's
-                            timeline speak status changes instead. Running states
-                            show only their timer; the row's label still names them. */}
-                        {status === "preparing" || status === "working" ? (
-                          <span aria-hidden>
-                            <WorkingDuration
-                              environmentId={thread.environmentId}
-                              startedAt={resolveWorkingStartedAt(thread)}
-                              fallback={topStatus.label}
-                            />
-                          </span>
-                        ) : status === "waiting" ? (
-                          <span aria-hidden>
-                            <WorkingDuration
-                              environmentId={thread.environmentId}
-                              startedAt={thread.latestRun?.completedAt ?? null}
-                              fallback={topStatus.label}
-                            />
-                          </span>
-                        ) : (
-                          topStatus.label
-                        )}
-                      </span>
+                      <ThreadStatusPill
+                        status={topStatus}
+                        environmentId={thread.environmentId}
+                        timerStartedAt={statusTimerStartedAt}
+                      />
                     )
                   ) : (
                     <RelativeTimeLabel timestamp={resolveThreadActivityTimestamp(thread)} />
