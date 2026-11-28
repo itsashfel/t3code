@@ -362,25 +362,6 @@ export function ThreadDetailsPrRow({
             ) : null}
             {numberTag}
             {watchControl}
-            {trailingAction ? (
-              <SharedTooltipTrigger
-                render={
-                  <ThreadDetailsControl
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    part="meta"
-                    tone={trailingAction.destructive ? "destructive" : "primary"}
-                    disabled={actionPending || handoff !== null}
-                    onClick={trailingAction.onClick}
-                  />
-                }
-                label={trailingAction.tooltip}
-              >
-                {trailingAction.pending ? trailingAction.pendingLabel : trailingAction.label}
-                {trailingAction.suffix}
-              </SharedTooltipTrigger>
-            ) : null}
           </div>
         </div>
       ) : (

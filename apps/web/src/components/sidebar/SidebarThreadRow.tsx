@@ -1493,7 +1493,11 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThreadRowP
                           className={cn(
                             "cursor-pointer outline-none hover:underline focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                             inFolder && topStatus
-                              ? [STATUS_PILL_CLASS_NAME, topStatus.className, topStatus.pillClassName]
+                              ? [
+                                  STATUS_PILL_CLASS_NAME,
+                                  topStatus.className,
+                                  topStatus.pillClassName,
+                                ]
                               : "inline-flex items-center gap-1 rounded-sm text-xs font-medium text-warning-foreground",
                           )}
                         >

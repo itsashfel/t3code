@@ -207,7 +207,6 @@ export function PullRequestResolveConflictsButton({
   );
 }
 
-/** The header's one prominent control, which depends on where the pull request stands. */
 /** Hands the failing checks, open review threads and comments to an agent to fix. */
 export function PullRequestFixChecksButton({
   handoff,
@@ -219,28 +218,27 @@ export function PullRequestFixChecksButton({
   const gt = useGT();
   const label = handoff === "findings" ? gt("Preparing...") : gt("Fix checks");
   return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <span className="inline-flex shrink-0">
-            <Button
-              size="xs"
-              variant="destructive-outline"
-              disabled={handoff !== null}
-              onClick={onFix}
-              aria-label={label}
-            >
-              <CircleXIcon aria-hidden className="size-3.5" />
-              <span className="@max-[30rem]/pr-header:hidden">{label}</span>
-            </Button>
-          </span>
-        }
-      />
-      <TooltipPopup side="top">{gt("Fix the failing checks in a new thread")}</TooltipPopup>
-    </Tooltip>
+    <SharedTooltipTrigger
+      render={
+        <span className="inline-flex shrink-0">
+          <Button
+            size="xs"
+            variant="destructive-outline"
+            disabled={handoff !== null}
+            onClick={onFix}
+            aria-label={label}
+          >
+            <CircleXIcon aria-hidden className="size-3.5" />
+            <span className="@max-[30rem]/pr-header:hidden">{label}</span>
+          </Button>
+        </span>
+      }
+      label={gt("Fix the failing checks in a new thread")}
+    />
   );
 }
 
+/** The header's one prominent control, which depends on where the pull request stands. */
 export function PullRequestPrimaryAction({
   pullRequestKey,
   primaryAction,
